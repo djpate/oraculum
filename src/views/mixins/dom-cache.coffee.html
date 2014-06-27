@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>dom-cache.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../../doc-style.css" />
+  <script src="../../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../../", thisFile = "src/views/mixins/dom-cache.coffee", defaultSidebar = true;
+  </script>
+  <script src="../../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+      <div class="heading h2">
+        <a href="#example%20subviews%20configuration">Example subviews configuration</a>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>dom-cache.coffee</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="nx">define</span> <span class="p">[</span>
+  <span class="s">&#39;oraculum&#39;</span>
+  <span class="s">&#39;oraculum/libs&#39;</span>
+  <span class="s">&#39;oraculum/mixins/evented&#39;</span>
+  <span class="s">&#39;oraculum/mixins/evented-method&#39;</span>
+<span class="p">],</span> <span class="nf">(Oraculum) -&gt;</span>
+  <span class="s">&#39;use strict&#39;</span>
+
+  <span class="nv">_ = </span><span class="nx">Oraculum</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;underscore&#39;</span>
+
+  <span class="nx">Oraculum</span><span class="p">.</span><span class="nx">defineMixin</span> <span class="s">&#39;DOMCache.ViewMixin&#39;</span><span class="p">,</span> <span class="p">{</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="example%20subviews%20configuration">
+  <h2>
+    <a href="#example%20subviews%20configuration" name="example%20subviews%20configuration" class="pilcrow">&#182;</a>
+    Example subviews configuration
+  </h2>
+</div>
+
+
+
+<div class="highlight"><pre><code><span class="nv">mixinOptions:</span>
+  <span class="nv">domcache:</span>
+    <span class="nv">name: </span><span class="s">&#39;selector&#39;</span>
+</code></pre></div>
+
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">mixinOptions:</span>
+      <span class="nv">eventedMethods:</span>
+        <span class="nv">render: </span><span class="p">{}</span>
+
+    <span class="nv">mixconfig: </span><span class="nf">(mixinOptions, {domcache} = {}) -&gt;</span>
+      <span class="nv">mixinOptions.domcache = </span><span class="nx">_</span><span class="p">.</span><span class="nx">extend</span> <span class="p">{},</span> <span class="nx">mixinOptions</span><span class="p">.</span><span class="nx">domcache</span><span class="p">,</span> <span class="nx">domcache</span>
+
+    <span class="nv">mixinitialize: </span><span class="nf">-&gt;</span>
+      <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;render:after&#39;</span><span class="p">,</span> <span class="nx">@cacheDOM</span><span class="p">,</span> <span class="k">this</span>
+
+    <span class="nv">cacheDOM: </span><span class="nf">-&gt;</span>
+      <span class="vi">@domcache = </span><span class="p">{}</span>
+      <span class="nx">_</span><span class="p">.</span><span class="nx">each</span> <span class="nx">@$</span><span class="p">(</span><span class="s">&#39;[data-cache]&#39;</span><span class="p">),</span> <span class="nx">@cacheElement</span><span class="p">,</span> <span class="k">this</span>
+      <span class="nx">_</span><span class="p">.</span><span class="nx">each</span> <span class="nx">@mixinOptions</span><span class="p">.</span><span class="nx">domcache</span><span class="p">,</span> <span class="nx">@cacheElement</span><span class="p">,</span> <span class="k">this</span>
+      <span class="nx">@trigger</span> <span class="s">&#39;domcache&#39;</span><span class="p">,</span> <span class="k">this</span>
+
+    <span class="nv">cacheElement: </span><span class="nf">(element, name) -&gt;</span>
+      <span class="nv">$element = </span><span class="nx">@$</span> <span class="nx">element</span>
+      <span class="nv">name = </span><span class="nx">$element</span><span class="p">.</span><span class="nx">attr</span> <span class="s">&#39;data-cache&#39;</span> <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isElement</span> <span class="nx">element</span>
+      <span class="nx">@domcache</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="nx">$element</span> <span class="k">if</span> <span class="nx">name</span> <span class="o">and</span> <span class="nx">$element</span><span class="p">.</span><span class="nx">length</span>
+
+  <span class="p">},</span> <span class="nv">mixins: </span><span class="p">[</span>
+    <span class="s">&#39;Evented.Mixin&#39;</span>
+    <span class="s">&#39;EventedMethod.Mixin&#39;</span>
+  <span class="p">]</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

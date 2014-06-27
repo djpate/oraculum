@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>pub-sub.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../doc-style.css" />
+  <script src="../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../", thisFile = "src/mixins/pub-sub.coffee", defaultSidebar = true;
+  </script>
+  <script src="../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+      <div class="heading h1">
+        <a href="#pubsub.mixin">PubSub.Mixin</a>
+      </div>
+      <div class="heading h2">
+        <a href="#publish%20event">Publish Event</a>
+      </div>
+      <div class="heading h2">
+        <a href="#subscribe%20event">Subscribe Event</a>
+      </div>
+      <div class="heading h2">
+        <a href="#subscribe%20once">Subscribe Once</a>
+      </div>
+      <div class="heading h2">
+        <a href="#unsubscribe%20event">Unsubscribe Event</a>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>pub-sub.coffee</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="nx">define</span> <span class="p">[</span>
+  <span class="s">&#39;oraculum&#39;</span>
+  <span class="s">&#39;oraculum/libs&#39;</span>
+  <span class="s">&#39;oraculum/mixins/evented&#39;</span>
+<span class="p">],</span> <span class="nf">(Oraculum) -&gt;</span>
+  <span class="s">&#39;use strict&#39;</span>
+
+  <span class="nv">Backbone = </span><span class="nx">Oraculum</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;Backbone&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="pubsub.mixin">
+  <h1>
+    <a href="#pubsub.mixin" name="pubsub.mixin" class="pilcrow">&#182;</a>
+    PubSub.Mixin
+  </h1>
+</div>
+
+
+<p>This mixin provides an interface to our global event bus.
+For the sake of simplicity, <code>Backbone</code> act as our global event bus.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <a href="http://backbonejs.org/#Events-catalog
+">http://backbonejs.org/#Events-catalog
+</a>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+  <span class="nx">Oraculum</span><span class="p">.</span><span class="nx">defineMixin</span> <span class="s">&#39;PubSub.Mixin&#39;</span><span class="p">,</span> <span class="p">{</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="publish%20event">
+  <h2>
+    <a href="#publish%20event" name="publish%20event" class="pilcrow">&#182;</a>
+    Publish Event
+  </h2>
+</div>
+
+
+<p>Trigger an event on the global event bus.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">name</span>
+      <span class="dox_type">String</span>
+      <span>The event to trigger.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">args...</span>
+      <span class="dox_type">Mixed</span>
+      <span>Any arguments pass through the event.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">publishEvent: </span><span class="nf">(name, args...) -&gt;</span>
+      <span class="nx">Backbone</span><span class="p">.</span><span class="nx">trigger</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">args</span><span class="p">...</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="subscribe%20event">
+  <h2>
+    <a href="#subscribe%20event" name="subscribe%20event" class="pilcrow">&#182;</a>
+    Subscribe Event
+  </h2>
+</div>
+
+
+<p>Listen for events on the global event bus.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">name</span>
+      <span class="dox_type">String</span>
+      <span>The event(s) name to listen for.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">callback</span>
+      <span class="dox_type">Function</span>
+      <span>The function to bind to the event.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">subscribeEvent: </span><span class="nf">(name, callback) -&gt;</span>
+      <span class="nx">@listenTo</span> <span class="nx">Backbone</span><span class="p">,</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">callback</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="subscribe%20once">
+  <h2>
+    <a href="#subscribe%20once" name="subscribe%20once" class="pilcrow">&#182;</a>
+    Subscribe Once
+  </h2>
+</div>
+
+
+<p>Listen for events on the global event bus and immediately remove the
+listener after it's been invoked once.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">name</span>
+      <span class="dox_type">String</span>
+      <span>The event(s) name to listen for.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">callback</span>
+      <span class="dox_type">Function</span>
+      <span>The function to bind to the event.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">subscribeOnce: </span><span class="nf">(name, callback) -&gt;</span>
+      <span class="nx">@listenToOnce</span> <span class="nx">Backbone</span><span class="p">,</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">callback</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="unsubscribe%20event">
+  <h2>
+    <a href="#unsubscribe%20event" name="unsubscribe%20event" class="pilcrow">&#182;</a>
+    Unsubscribe Event
+  </h2>
+</div>
+
+
+<p>Stop listening to events on the global event bus.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">name</span>
+      <span class="dox_type">String</span>
+      <span>The event(s) to stop listening for.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">callback?</span>
+      <span class="dox_type">Function</span>
+      <span>The function to stop binding.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">unsubscribeEvent: </span><span class="nf">(name, callback) -&gt;</span>
+      <span class="nx">@stopListening</span> <span class="nx">Backbone</span><span class="p">,</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">callback</span>
+
+  <span class="p">},</span> <span class="nv">mixins: </span><span class="p">[</span>
+    <span class="s">&#39;Evented.Mixin&#39;</span>
+  <span class="p">]</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

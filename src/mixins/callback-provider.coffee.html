@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>callback-provider.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../doc-style.css" />
+  <script src="../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../", thisFile = "src/mixins/callback-provider.coffee", defaultSidebar = true;
+  </script>
+  <script src="../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+      <div class="heading h2">
+        <a href="#handlers">Handlers</a>
+      </div>
+      <div class="heading h1">
+        <a href="#callbackprovider.mixin">CallbackProvider.Mixin</a>
+      </div>
+      <div class="heading h2">
+        <a href="#mixin%20options">Mixin Options</a>
+      </div>
+      <div class="heading h3">
+        <a href="#example%20configuration">Example configuration</a>
+      </div>
+      <div class="heading h2">
+        <a href="#mixinitialize">Mixinitialize</a>
+      </div>
+      <div class="heading h2">
+        <a href="#provide%20callback">Provide Callback</a>
+      </div>
+      <div class="heading h2">
+        <a href="#remove%20callbacks">Remove Callbacks</a>
+      </div>
+      <div class="heading h1">
+        <a href="#callbackdelegate.mixin">CallbackDelegate.Mixin</a>
+      </div>
+      <div class="heading h2">
+        <a href="#execute%20callback">Execute Callback</a>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>callback-provider.coffee</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="nx">define</span> <span class="p">[</span>
+  <span class="s">&#39;oraculum&#39;</span>
+  <span class="s">&#39;oraculum/libs&#39;</span>
+  <span class="s">&#39;oraculum/mixins/evented&#39;</span>
+  <span class="s">&#39;oraculum/mixins/listener&#39;</span>
+<span class="p">],</span> <span class="nf">(Oraculum) -&gt;</span>
+
+  <span class="nv">_ = </span><span class="nx">Oraculum</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;underscore&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="handlers">
+  <h2>
+    <a href="#handlers" name="handlers" class="pilcrow">&#182;</a>
+    Handlers
+  </h2>
+</div>
+
+
+<p>All callbacks registered across all instances invoking <code>provideCallback</code>
+will be collected here in the closure.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Type</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">Object
+</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+  <span class="nv">handlers = </span><span class="p">{}</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="callbackprovider.mixin">
+  <h1>
+    <a href="#callbackprovider.mixin" name="callbackprovider.mixin" class="pilcrow">&#182;</a>
+    CallbackProvider.Mixin
+  </h1>
+</div>
+
+
+<p>This mixin replaces the <code>setHandler</code> method implicit to Chaplin's mediator
+with the <code>provideCallback</code> method. It's functionally the same, however
+it can be mixed on any object providing a more consistent interface
+while allowing for other conveniences such as providing <code>this</code> as the
+default callback scope.</p>
+  </div>
+  <div class="body">
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+  <span class="nx">Oraculum</span><span class="p">.</span><span class="nx">defineMixin</span> <span class="s">&#39;CallbackProvider.Mixin&#39;</span><span class="p">,</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="mixin%20options">
+  <h2>
+    <a href="#mixin%20options" name="mixin%20options" class="pilcrow">&#182;</a>
+    Mixin Options
+  </h2>
+</div>
+
+
+<p>Allow the callback configuration to be defined using a mapping of callback
+names and methods as described in the examples below.s</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">Object</span>
+      <span class="dox_type">Object</span>
+      <span>containing the callback map.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="example%20configuration">
+  <h3>
+    <a href="#example%20configuration" name="example%20configuration" class="pilcrow">&#182;</a>
+    Example configuration
+  </h3>
+</div>
+
+
+
+<div class="highlight"><pre><code><span class="nv">mixinOptions:</span>
+  <span class="nv">provideCallbacks:</span>
+    <span class="nv">someName: </span><span class="nf">-&gt;</span> <span class="nx">doSomething</span><span class="p">()</span>
+    <span class="nv">anotherName: </span><span class="s">&#39;instanceMethodName&#39;</span>
+</code></pre></div>
+
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="mixinitialize">
+  <h2>
+    <a href="#mixinitialize" name="mixinitialize" class="pilcrow">&#182;</a>
+    Mixinitialize
+  </h2>
+</div>
+
+
+<p>Initialize the component.</p>
+  </div>
+  <div class="body">
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">mixinitialize: </span><span class="nf">-&gt;</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-7" id="section-7">&#182;</a>
+</div>
+<p>Iterate over and register the configured callbacks</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nx">_</span><span class="p">.</span><span class="nx">each</span> <span class="nx">@mixinOptions</span><span class="p">.</span><span class="nx">provideCallbacks</span><span class="p">,</span> <span class="nf">(callback, name) =&gt;</span>
+        <span class="nv">callback = </span><span class="nx">@</span><span class="p">[</span><span class="nx">callback</span><span class="p">]</span> <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isString</span> <span class="nx">callback</span>
+        <span class="nx">@provideCallback</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">callback</span><span class="p">,</span> <span class="k">this</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-8" id="section-8">&#182;</a>
+</div>
+<p>To make the callback collection memory-safe, listen for the disposal of
+the instance and remove any callbacks it may have registered.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nx">@</span><span class="kc">on</span><span class="o">?</span> <span class="s">&#39;dispose:after&#39;</span><span class="p">,</span> <span class="nf">(target) =&gt;</span> <span class="nx">@removeCallbacks</span> <span class="k">this</span> <span class="k">if</span> <span class="nx">target</span> <span class="o">is</span> <span class="k">this</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="provide%20callback">
+  <h2>
+    <a href="#provide%20callback" name="provide%20callback" class="pilcrow">&#182;</a>
+    Provide Callback
+  </h2>
+</div>
+
+
+<p>The <strong>only</strong> registration interface to our callback collector.
+This method will perform sanity checking for registered callbacks as well as
+sane defaults to ensure that nothing gets pushed to the handlers cache that
+doesn't make sense.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">name</span>
+      <span class="dox_type">String</span>
+      <span>The name of the callback.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">callback</span>
+      <span class="dox_type">Function</span>
+      <span>The callback implemenation.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">instance?</span>
+      <span class="dox_type">Object</span>
+      <span>The instance to which the callback shoudl be scoped. (defaults to <code>this</code>)</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">provideCallback: </span><span class="nf">(name, callback, instance = this) -&gt;</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nx">TypeError</span> <span class="s">&#39;&#39;&#39;</span>
+<span class="s">        CallbackProvider.Mixin::provideCallback requires name</span>
+<span class="s">      &#39;&#39;&#39;</span> <span class="k">unless</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isString</span> <span class="nx">name</span>
+
+      <span class="k">throw</span> <span class="k">new</span> <span class="nx">TypeError</span> <span class="s">&#39;&#39;&#39;</span>
+<span class="s">        CallbackProvider.Mixin::provideCallback requires callback</span>
+<span class="s">      &#39;&#39;&#39;</span> <span class="k">unless</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span> <span class="nx">callback</span>
+
+      <span class="nx">console</span><span class="o">?</span><span class="p">.</span><span class="nx">warn</span><span class="o">?</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">        CallbackProvider.Mixin: Overriding </span><span class="si">#{</span><span class="nx">name</span><span class="si">}</span><span class="s"> callback</span>
+<span class="s">      &quot;&quot;&quot;</span> <span class="k">if</span> <span class="nx">handlers</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span><span class="o">?</span>
+
+      <span class="nx">handlers</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="nx">callback</span><span class="p">,</span> <span class="nx">instance</span><span class="p">}</span>
+      <span class="k">return</span> <span class="c1"># void 0</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="remove%20callbacks">
+  <h2>
+    <a href="#remove%20callbacks" name="remove%20callbacks" class="pilcrow">&#182;</a>
+    Remove Callbacks
+  </h2>
+</div>
+
+
+<p>Similar to <code>provideCallback</code>, this is the only interface for removing
+callbacks from the collector. It accepts an array of callback names,
+or an instance. Providing an instance will remove all registered callbacks
+scoped to that instance.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">input</span>
+      <span class="dox_type">Array</span>
+      <span>A list of named callbacks to remove.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">input</span>
+      <span class="dox_type">Object</span>
+      <span>An instance scope to remove the callbacks for.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">removeCallbacks: </span><span class="nf">(input) -&gt;</span>
+      <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isArray</span> <span class="nx">input</span> <span class="k">then</span> <span class="k">delete</span> <span class="nx">handlers</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="k">for</span> <span class="nx">name</span> <span class="k">in</span> <span class="nx">input</span>
+      <span class="k">else</span> <span class="k">for</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">handler</span> <span class="k">of</span> <span class="nx">handlers</span> <span class="k">when</span> <span class="nx">handler</span><span class="p">.</span><span class="nx">instance</span> <span class="o">is</span> <span class="nx">input</span>
+        <span class="k">delete</span> <span class="nx">handlers</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span>
+      <span class="k">return</span> <span class="c1"># void 0</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="callbackdelegate.mixin">
+  <h1>
+    <a href="#callbackdelegate.mixin" name="callbackdelegate.mixin" class="pilcrow">&#182;</a>
+    CallbackDelegate.Mixin
+  </h1>
+</div>
+
+
+<p>This mixin provides the <code>executeCallback</code> method. It's only purpose is to
+allow the invocation of arbitrary callbacks registered by
+<code>CallbackProvider.Mixin</code>.</p>
+  </div>
+  <div class="body">
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+  <span class="nx">Oraculum</span><span class="p">.</span><span class="nx">defineMixin</span> <span class="s">&#39;CallbackDelegate.Mixin&#39;</span><span class="p">,</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="execute%20callback">
+  <h2>
+    <a href="#execute%20callback" name="execute%20callback" class="pilcrow">&#182;</a>
+    Execute Callback
+  </h2>
+</div>
+
+
+<p>This method takes a callback name and attempts to invoked the registered
+callback of that name, passing through whatever arguments are provided.
+If the named callback is not available, this method will throw.
+The error throwing behavior can be bypassed by using an object as the
+first argument with the structure <code>{name: 'name', silent: true}</code></p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">name</span>
+      <span class="dox_type">String</span>
+      <span>The named callback to execute.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">name</span>
+      <span class="dox_type">Object</span>
+      <span>The afformentioned silent spec.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">args</span>
+      <span class="dox_type">[Mixed]</span>
+      <span>Any arguments to pass to the callback.</span>
+    </div>
+    <div class="dox_tag_title">Returns</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span class="dox_type">Mixed</span>
+      <span>The return value of the callback, if any.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">executeCallback: </span><span class="nf">(name, args...) -&gt;</span>
+      <span class="p">{</span><span class="nx">name</span><span class="p">,</span> <span class="nx">silent</span><span class="p">}</span> <span class="o">=</span> <span class="nx">name</span> <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isObject</span> <span class="nx">name</span>
+
+      <span class="nv">handler = </span><span class="nx">handlers</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">        CallbackDelegate.Mixin: No callback defined for </span><span class="si">#{</span><span class="nx">name</span><span class="si">}</span><span class="s"></span>
+<span class="s">      &quot;&quot;&quot;</span> <span class="k">if</span> <span class="o">not</span> <span class="nx">handler</span> <span class="o">and</span> <span class="o">not</span> <span class="nx">silent</span>
+
+      <span class="k">return</span> <span class="nx">handler</span><span class="p">.</span><span class="nx">callback</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">handler</span><span class="p">.</span><span class="nx">instance</span><span class="p">,</span> <span class="nx">args</span> <span class="k">if</span> <span class="nx">handler</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

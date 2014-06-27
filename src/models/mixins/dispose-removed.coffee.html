@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>dispose-removed.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../../doc-style.css" />
+  <script src="../../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../../", thisFile = "src/models/mixins/dispose-removed.coffee", defaultSidebar = true;
+  </script>
+  <script src="../../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+      <div class="heading h1">
+        <a href="#disposeremoved.collectionmixin">DisposeRemoved.CollectionMixin</a>
+      </div>
+      <div class="heading h2">
+        <a href="#mixin%20options">Mixin Options</a>
+      </div>
+      <div class="heading h2">
+        <a href="#mixconfig">Mixconfig</a>
+      </div>
+      <div class="heading h2">
+        <a href="#mixinitialize">Mixinitialize</a>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>dispose-removed.coffee</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="nx">define</span> <span class="p">[</span>
+  <span class="s">&#39;oraculum&#39;</span>
+<span class="p">],</span> <span class="nf">(Oraculum) -&gt;</span>
+  <span class="s">&#39;use strict&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="disposeremoved.collectionmixin">
+  <h1>
+    <a href="#disposeremoved.collectionmixin" name="disposeremoved.collectionmixin" class="pilcrow">&#182;</a>
+    DisposeRemoved.CollectionMixin
+  </h1>
+</div>
+
+
+<p>Automatically <code>dispose</code> a <code>Model</code> that has been removed from a <code>Collection</code>.
+This mixin is intended to be used at the <code>Collection</code> layer so that it can
+ensure that it's not disposing of <code>Model</code>s that may have been removed from
+a separate <code>Collection</code>.</p>
+  </div>
+  <div class="body">
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+  <span class="nx">Oraculum</span><span class="p">.</span><span class="nx">defineMixin</span> <span class="s">&#39;DisposeRemoved.CollectionMixin&#39;</span><span class="p">,</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="mixin%20options">
+  <h2>
+    <a href="#mixin%20options" name="mixin%20options" class="pilcrow">&#182;</a>
+    Mixin Options
+  </h2>
+</div>
+
+
+<p>Allow the <code>disposeRemoved</code> flag to be set on the definition.</p>
+  </div>
+  <div class="body">
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">mixinOptions:</span>
+      <span class="nv">disposeRemoved: </span><span class="kc">true</span> <span class="c1"># Whether or not to `dispose` removed `Model`s.</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="mixconfig">
+  <h2>
+    <a href="#mixconfig" name="mixconfig" class="pilcrow">&#182;</a>
+    Mixconfig
+  </h2>
+</div>
+
+
+<p>Allow the <code>disposeRemoved</code> flag to be set in the constructor options.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">disposeRemoved</span>
+      <span class="dox_type">Boolean</span>
+      <span>Whether or not to <code>dispose</code> removed <code>Model</code>s.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">mixconfig: </span><span class="nf">(mixinOptions, models, {disposeRemoved} = {}) -&gt;</span>
+      <span class="nv">mixinOptions.disposeRemoved = </span><span class="nx">disposeRemoved</span> <span class="k">if</span> <span class="nx">disposeRemoved</span><span class="o">?</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="mixinitialize">
+  <h2>
+    <a href="#mixinitialize" name="mixinitialize" class="pilcrow">&#182;</a>
+    Mixinitialize
+  </h2>
+</div>
+
+
+<p>Set up an event listener to respond to <code>remove</code> events by invoking <code>dispose</code>
+on the removed <code>Model</code>. Additionally, add an event listener to respond to
+<code>reset</code> events by invoking <code>dispose</code> on <code>Model</code>s that were removed during
+the <code>reset</code> operation.
+By design, this will throw if the target model does not impement the
+<code>dispose</code> method.</p>
+  </div>
+  <div class="body">
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">mixinitialize: </span><span class="nf">-&gt;</span>
+      <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;remove&#39;</span><span class="p">,</span> <span class="nf">(model) =&gt;</span>
+        <span class="k">return</span> <span class="k">unless</span> <span class="nx">@mixinOptions</span><span class="p">.</span><span class="nx">disposeRemoved</span>
+        <span class="nx">model</span><span class="p">.</span><span class="nx">dispose</span><span class="p">()</span>
+
+      <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;reset&#39;</span><span class="p">,</span> <span class="nf">(models, {previousModels}) =&gt;</span>
+        <span class="k">return</span> <span class="k">unless</span> <span class="nx">@mixinOptions</span><span class="p">.</span><span class="nx">disposeRemoved</span>
+        <span class="nx">_</span><span class="p">.</span><span class="nx">invoke</span> <span class="nx">previousModels</span><span class="p">,</span> <span class="s">&#39;dispose&#39;</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

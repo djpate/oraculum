@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>polymorphactory.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../doc-style.css" />
+  <script src="../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../", thisFile = "src/abstract/polymorphactory.coffee", defaultSidebar = true;
+  </script>
+  <script src="../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+      <div class="heading h1">
+        <a href="#polymorphactory">PolymorPhactory</a>
+      </div>
+      <div class="heading h2">
+        <a href="#type%20map">Type Map</a>
+      </div>
+      <div class="heading h3">
+        <a href="#example%20configuration">Example configuration</a>
+      </div>
+      <div class="heading h2">
+        <a href="#get%20type%20string">Get Type String</a>
+      </div>
+      <div class="heading h2">
+        <a href="#constructor">Constructor</a>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>polymorphactory.coffee</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="nx">define</span> <span class="p">[</span>
+  <span class="s">&#39;oraculum&#39;</span>
+<span class="p">],</span> <span class="nf">(Oraculum) -&gt;</span>
+  <span class="s">&#39;use strict&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="polymorphactory">
+  <h1>
+    <a href="#polymorphactory" name="polymorphactory" class="pilcrow">&#182;</a>
+    PolymorPhactory
+  </h1>
+</div>
+
+
+<p>The purpose of <code>PolymorPhactory</code> is to provide a simple mechanism with which
+the factory can resolve instances of different definitions based on some
+arbitrary condition.
+A common use case for this is for resolving different view definitions for
+models if disparate types in a collection.</p>
+  </div>
+  <div class="body">
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+  <span class="nx">Oraculum</span><span class="p">.</span><span class="nx">define</span> <span class="s">&#39;PolymorPhactory&#39;</span><span class="p">,</span> <span class="k">class</span> <span class="nx">PolymorPhactory</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="type%20map">
+  <h2>
+    <a href="#type%20map" name="type%20map" class="pilcrow">&#182;</a>
+    Type Map
+  </h2>
+</div>
+
+
+<p><code>typeMap</code> provides a lookup index for your variable definitions where
+the value will be a definition available in the factory.
+In the example above, it may map model definition names to view
+definition names, like so:</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Type</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">Object
+</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="example%20configuration">
+  <h3>
+    <a href="#example%20configuration" name="example%20configuration" class="pilcrow">&#182;</a>
+    Example configuration
+  </h3>
+</div>
+
+
+
+<div class="highlight"><pre><code><span class="nv">typeMap:</span>
+  <span class="s">&#39;Some.Model&#39;</span><span class="o">:</span> <span class="s">&#39;SomeModel.View&#39;</span>
+  <span class="s">&#39;Another.Model&#39;</span><span class="o">:</span> <span class="s">&#39;AnotherModel.View&#39;</span>
+</code></pre></div>
+
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">typeMap: </span><span class="kc">null</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="get%20type%20string">
+  <h2>
+    <a href="#get%20type%20string" name="get%20type%20string" class="pilcrow">&#182;</a>
+    Get Type String
+  </h2>
+</div>
+
+
+<p>This method must be overridden to return a value that will be used as an
+index key on <code>@typeMap</code>.
+It receives any arguments passed to the constructor.
+Continuing our example, a common implementation may look like this:</p>
+  </div>
+  <div class="body">
+<div class="highlight"><pre><code><span class="nv">getTypeString: </span><span class="nf">({model}) -&gt;</span> <span class="nx">model</span><span class="p">.</span><span class="nx">__type</span><span class="p">()</span>
+</code></pre></div>
+
+
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Returns</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span class="dox_type">String</span>
+      <span>Key to use to lookup value of <code>@typeMap</code></span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">getTypeString: </span><span class="nf">-&gt;</span> <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span> <span class="s">&#39;&#39;&#39;</span>
+<span class="s">      PolymorPhactory::getTypeString must be overridden</span>
+<span class="s">    &#39;&#39;&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="constructor_NaN">
+  <h2>
+    <a href="#constructor_NaN" name="constructor_NaN" class="pilcrow">&#182;</a>
+    Constructor
+  </h2>
+</div>
+
+
+<p>The constructor will return an instance of whatever definition is mapped
+to the return value of <code>@getTypeString</code> in <code>@typeMap</code>, passing through
+any constructor arguments to the factory getter.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Returns</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span class="dox_type">Object</span>
+      <span>Instance of definition reolved by <code>@getTypeString</code></span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">constructor: </span><span class="nf">-&gt;</span>
+      <span class="nv">typeString = </span><span class="nx">@getTypeString</span> <span class="nx">arguments</span><span class="p">...</span>
+      <span class="nv">typeString = </span><span class="nx">@typeMap</span><span class="p">[</span><span class="nx">typeString</span><span class="p">]</span> <span class="k">if</span> <span class="nx">@typeMap</span><span class="p">[</span><span class="nx">typeString</span><span class="p">]</span><span class="o">?</span>
+      <span class="k">return</span> <span class="nx">@__factory</span><span class="p">().</span><span class="nx">get</span> <span class="nx">typeString</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">...</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

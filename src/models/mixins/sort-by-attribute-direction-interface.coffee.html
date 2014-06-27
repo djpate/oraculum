@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>sort-by-attribute-direction-interface.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../../doc-style.css" />
+  <script src="../../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../../", thisFile = "src/models/mixins/sort-by-attribute-direction-interface.coffee", defaultSidebar = true;
+  </script>
+  <script src="../../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>sort-by-attribute-direction-interface.coffee</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="nx">define</span> <span class="p">[</span>
+  <span class="s">&#39;oraculum&#39;</span>
+  <span class="s">&#39;oraculum/mixins/evented&#39;</span>
+  <span class="s">&#39;oraculum/mixins/disposable&#39;</span>
+<span class="p">],</span> <span class="nf">(Oraculum) -&gt;</span>
+  <span class="s">&#39;use strict&#39;</span>
+
+  <span class="nv">stateModelName = </span><span class="s">&#39;_SortByAttributeDirectionInterfaceState.Model&#39;</span>
+  <span class="nx">Oraculum</span><span class="p">.</span><span class="nx">extend</span> <span class="s">&#39;Model&#39;</span><span class="p">,</span> <span class="nx">stateModelName</span><span class="p">,</span> <span class="p">{</span>
+    <span class="nv">idAttribute: </span><span class="s">&#39;attribute&#39;</span>
+
+    <span class="nv">validate: </span><span class="nf">({attribute, direction}) -&gt;</span>
+      <span class="k">return</span> <span class="s">&quot;&#39;attribute&#39; attribute required&quot;</span> <span class="k">unless</span> <span class="nx">attribute</span>
+      <span class="k">return</span> <span class="s">&quot;&#39;direction&#39; attribute required&quot;</span> <span class="k">unless</span> <span class="nx">direction</span>
+      <span class="k">return</span> <span class="s">&quot;Invalid direction: &#39;</span><span class="si">#{</span><span class="nx">direction</span><span class="si">}</span><span class="s">&#39;&quot;</span> <span class="k">unless</span> <span class="nx">direction</span> <span class="k">in</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+
+  <span class="p">},</span> <span class="nv">mixins: </span><span class="p">[</span>
+    <span class="s">&#39;Disposable.Mixin&#39;</span>
+  <span class="p">]</span>
+
+  <span class="nx">Oraculum</span><span class="p">.</span><span class="nx">defineMixin</span> <span class="s">&#39;SortByAttributeDirectionInterface.CollectionMixin&#39;</span><span class="p">,</span> <span class="p">{</span>
+
+    <span class="nv">mixinOptions:</span>
+      <span class="nv">sortByAttributeDirection:</span>
+        <span class="nv">defaults: </span><span class="p">{}</span>
+
+    <span class="nv">mixconfig: </span><span class="nf">({sortByAttributeDirection}, models, {sortDefaults} = {}) -&gt;</span>
+      <span class="nv">sortByAttributeDirection.defaults = </span><span class="nx">sortDefaults</span> <span class="k">if</span> <span class="nx">sortDefaults</span><span class="o">?</span>
+
+    <span class="nv">mixinitialize: </span><span class="nf">-&gt;</span>
+      <span class="nv">defaults = </span><span class="nx">@mixinOptions</span><span class="p">.</span><span class="nx">sortByAttributeDirection</span><span class="p">.</span><span class="nx">defaults</span>
+      <span class="vi">@sortState = </span><span class="nx">@__factory</span><span class="p">().</span><span class="nx">get</span> <span class="nx">stateModelName</span><span class="p">,</span> <span class="nx">defaults</span>
+      <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;dispose&#39;</span><span class="p">,</span> <span class="nf">(target) =&gt;</span>
+        <span class="k">return</span> <span class="k">unless</span> <span class="nx">target</span> <span class="o">is</span> <span class="k">this</span>
+        <span class="nx">@sortState</span><span class="p">.</span><span class="nx">dispose</span><span class="p">()</span>
+        <span class="k">delete</span> <span class="nx">@sortState</span>
+
+    <span class="nv">addAttributeDirection: </span><span class="nf">(attribute, direction) -&gt;</span>
+      <span class="k">return</span> <span class="nx">@unsort</span><span class="p">()</span> <span class="k">unless</span> <span class="nx">direction</span>
+      <span class="nx">@sortState</span><span class="p">.</span><span class="nx">set</span> <span class="p">{</span><span class="nx">attribute</span><span class="p">,</span> <span class="nx">direction</span><span class="p">}</span>
+
+    <span class="nv">getAttributeDirection: </span><span class="nf">(attribute) -&gt;</span>
+      <span class="k">return</span> <span class="mi">0</span> <span class="k">unless</span> <span class="nx">attribute</span> <span class="o">is</span> <span class="nx">@sortState</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;attribute&#39;</span>
+      <span class="k">return</span> <span class="nx">@sortState</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;direction&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-2" id="section-2">&#182;</a>
+</div>
+<p>For a single attribute/direction sorting mechanism, removing the current
+attribute and clearing the sort state completely are functionally the same</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+    <span class="nv">removeAttributeDirection: </span><span class="nf">-&gt;</span> <span class="nx">@unsort</span><span class="p">()</span>
+    <span class="nv">unsort: </span><span class="nf">-&gt;</span> <span class="nx">@sortState</span><span class="p">.</span><span class="nx">unset</span> <span class="p">{</span><span class="s">&#39;attribute&#39;</span><span class="p">,</span> <span class="s">&#39;direction&#39;</span><span class="p">}</span>
+
+  <span class="p">},</span> <span class="nv">mixins: </span><span class="p">[</span>
+    <span class="s">&#39;Evented.Mixin&#39;</span>
+  <span class="p">]</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

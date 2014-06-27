@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>sync-machine.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../../doc-style.css" />
+  <script src="../../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../../", thisFile = "src/models/mixins/sync-machine.coffee", defaultSidebar = true;
+  </script>
+  <script src="../../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+      <div class="heading h2">
+        <a href="#get%20the%20current%20state">Get the current state</a>
+      </div>
+      <div class="heading h2">
+        <a href="#transitions">Transitions</a>
+      </div>
+      <div class="heading h2">
+        <a href="#create%20shortcut%20methods%20to%20bind%20a%20handler%20to%20a%20state%20change">Create shortcut methods to bind a handler to a state change</a>
+      </div>
+      <div class="heading h2">
+        <a href="#export%20syncmachine%20as%20a%20proper%20mixin">Export SyncMachine as a proper mixin</a>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>sync-machine.coffee</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="nx">define</span> <span class="p">[</span>
+  <span class="s">&#39;oraculum&#39;</span>
+<span class="p">],</span> <span class="nf">(Oraculum) -&gt;</span>
+  <span class="s">&#39;use strict&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-2" id="section-2">&#182;</a>
+</div>
+<p>Simple finite state machine for synchronization of models/collections
+Three states: unsynced, syncing and synced
+Several transitions between them
+Fires Backbone events on every transition
+(unsynced, syncing, synced; syncStateChange)
+Provides shortcut methods to call handlers when a given state is reached
+(named after the events above)</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+  <span class="nv">SYNCED   = </span><span class="s">&#39;synced&#39;</span>
+  <span class="nv">SYNCING  = </span><span class="s">&#39;syncing&#39;</span>
+  <span class="nv">UNSYNCED = </span><span class="s">&#39;unsynced&#39;</span>
+
+  <span class="nv">STATE_CHANGE = </span><span class="s">&#39;syncStateChange&#39;</span>
+
+  <span class="nv">SyncMachine =</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-3" id="section-3">&#182;</a>
+</div>
+<p>Set up the object</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+    <span class="nv">mixinitialize: </span><span class="nf">-&gt;</span>
+      <span class="vi">@_syncState = </span><span class="nx">UNSYNCED</span>
+      <span class="vi">@_previousSyncState = </span><span class="kc">null</span>
+      <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;request&#39;</span><span class="p">,</span> <span class="nx">@beginSync</span><span class="p">,</span> <span class="k">this</span>
+      <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;error&#39;</span><span class="p">,</span> <span class="nx">@abortSync</span><span class="p">,</span> <span class="k">this</span>
+      <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;sync&#39;</span><span class="p">,</span> <span class="nx">@finishSync</span><span class="p">,</span> <span class="k">this</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="get%20the%20current%20state">
+  <h2>
+    <a href="#get%20the%20current%20state" name="get%20the%20current%20state" class="pilcrow">&#182;</a>
+    Get the current state
+  </h2>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+    <span class="nv">syncState: </span><span class="nf">-&gt;</span> <span class="nx">@_syncState</span>
+    <span class="nv">isSynced: </span><span class="nf">-&gt;</span> <span class="nx">@_syncState</span> <span class="o">is</span> <span class="nx">SYNCED</span>
+    <span class="nv">isSyncing: </span><span class="nf">-&gt;</span> <span class="nx">@_syncState</span> <span class="o">is</span> <span class="nx">SYNCING</span>
+    <span class="nv">isUnsynced: </span><span class="nf">-&gt;</span> <span class="nx">@_syncState</span> <span class="o">is</span> <span class="nx">UNSYNCED</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="transitions">
+  <h2>
+    <a href="#transitions" name="transitions" class="pilcrow">&#182;</a>
+    Transitions
+  </h2>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+    <span class="nv">unsync: </span><span class="nf">-&gt;</span>
+      <span class="k">return</span> <span class="k">unless</span> <span class="nx">@_syncState</span> <span class="k">in</span> <span class="p">[</span><span class="nx">SYNCING</span><span class="p">,</span> <span class="nx">SYNCED</span><span class="p">]</span>
+      <span class="vi">@_previousSync = </span><span class="nx">@_syncState</span>
+      <span class="vi">@_syncState = </span><span class="nx">UNSYNCED</span>
+      <span class="nx">@trigger</span> <span class="nx">@_syncState</span><span class="p">,</span> <span class="k">this</span><span class="p">,</span> <span class="nx">@_syncState</span>
+      <span class="nx">@trigger</span> <span class="nx">STATE_CHANGE</span><span class="p">,</span> <span class="k">this</span><span class="p">,</span> <span class="nx">@_syncState</span>
+
+    <span class="nv">beginSync: </span><span class="nf">-&gt;</span>
+      <span class="k">return</span> <span class="k">unless</span> <span class="nx">@_syncState</span> <span class="k">in</span> <span class="p">[</span><span class="nx">UNSYNCED</span><span class="p">,</span> <span class="nx">SYNCED</span><span class="p">]</span>
+      <span class="vi">@_previousSync = </span><span class="nx">@_syncState</span>
+      <span class="vi">@_syncState = </span><span class="nx">SYNCING</span>
+      <span class="nx">@trigger</span> <span class="nx">@_syncState</span><span class="p">,</span> <span class="k">this</span><span class="p">,</span> <span class="nx">@_syncState</span>
+      <span class="nx">@trigger</span> <span class="nx">STATE_CHANGE</span><span class="p">,</span> <span class="k">this</span><span class="p">,</span> <span class="nx">@_syncState</span>
+
+    <span class="nv">finishSync: </span><span class="nf">-&gt;</span>
+      <span class="k">return</span> <span class="k">unless</span> <span class="nx">@_syncState</span> <span class="o">is</span> <span class="nx">SYNCING</span>
+      <span class="vi">@_previousSync = </span><span class="nx">@_syncState</span>
+      <span class="vi">@_syncState = </span><span class="nx">SYNCED</span>
+      <span class="nx">@trigger</span> <span class="nx">@_syncState</span><span class="p">,</span> <span class="k">this</span><span class="p">,</span> <span class="nx">@_syncState</span>
+      <span class="nx">@trigger</span> <span class="nx">STATE_CHANGE</span><span class="p">,</span> <span class="k">this</span><span class="p">,</span> <span class="nx">@_syncState</span>
+
+    <span class="nv">abortSync: </span><span class="nf">-&gt;</span>
+      <span class="k">return</span> <span class="k">unless</span> <span class="nx">@_syncState</span> <span class="o">is</span> <span class="nx">SYNCING</span>
+      <span class="vi">@_syncState = </span><span class="nx">@_previousSync</span>
+      <span class="vi">@_previousSync = </span><span class="nx">@_syncState</span>
+      <span class="nx">@trigger</span> <span class="nx">@_syncState</span><span class="p">,</span> <span class="k">this</span><span class="p">,</span> <span class="nx">@_syncState</span>
+      <span class="nx">@trigger</span> <span class="nx">STATE_CHANGE</span><span class="p">,</span> <span class="k">this</span><span class="p">,</span> <span class="nx">@_syncState</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="create%20shortcut%20methods%20to%20bind%20a%20handler%20to%20a%20state%20change">
+  <h2>
+    <a href="#create%20shortcut%20methods%20to%20bind%20a%20handler%20to%20a%20state%20change" name="create%20shortcut%20methods%20to%20bind%20a%20handler%20to%20a%20state%20change" class="pilcrow">&#182;</a>
+    Create shortcut methods to bind a handler to a state change
+  </h2>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+  <span class="k">for</span> <span class="nx">event</span> <span class="k">in</span> <span class="p">[</span><span class="nx">UNSYNCED</span><span class="p">,</span> <span class="nx">SYNCING</span><span class="p">,</span> <span class="nx">SYNCED</span><span class="p">,</span> <span class="nx">STATE_CHANGE</span><span class="p">]</span>
+    <span class="nx">do</span> <span class="nf">(event) -&gt;</span>
+      <span class="nx">SyncMachine</span><span class="p">[</span><span class="nx">event</span><span class="p">]</span> <span class="o">=</span> <span class="nf">(callback, context = this) -&gt;</span>
+        <span class="nx">@</span><span class="kc">on</span> <span class="nx">event</span><span class="p">,</span> <span class="nx">callback</span><span class="p">,</span> <span class="nx">context</span>
+        <span class="nx">callback</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">context</span><span class="p">)</span> <span class="k">if</span> <span class="nx">@_syncState</span> <span class="o">is</span> <span class="nx">event</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="export%20syncmachine%20as%20a%20proper%20mixin">
+  <h2>
+    <a href="#export%20syncmachine%20as%20a%20proper%20mixin" name="export%20syncmachine%20as%20a%20proper%20mixin" class="pilcrow">&#182;</a>
+    Export SyncMachine as a proper mixin
+  </h2>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+  <span class="nx">Oraculum</span><span class="p">.</span><span class="nx">defineMixin</span> <span class="s">&#39;SyncMachine.ModelMixin&#39;</span><span class="p">,</span> <span class="nx">SyncMachine</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

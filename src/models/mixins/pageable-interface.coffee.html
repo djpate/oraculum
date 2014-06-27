@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>pageable-interface.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../../doc-style.css" />
+  <script src="../../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../../", thisFile = "src/models/mixins/pageable-interface.coffee", defaultSidebar = true;
+  </script>
+  <script src="../../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>pageable-interface.coffee</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="nx">define</span> <span class="p">[</span>
+  <span class="s">&#39;oraculum&#39;</span>
+  <span class="s">&#39;oraculum/libs&#39;</span>
+  <span class="s">&#39;oraculum/mixins/listener&#39;</span>
+  <span class="s">&#39;oraculum/mixins/disposable&#39;</span>
+<span class="p">],</span> <span class="nf">(Oraculum) -&gt;</span>
+  <span class="s">&#39;use strict&#39;</span>
+
+  <span class="nv">_ = </span><span class="nx">Oraculum</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;underscore&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-2" id="section-2">&#182;</a>
+</div>
+<p>This mixin provides pageable behavior to a collection.
+The semantics and defaults are based on the ElasticSearch page/size api</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+  <span class="nv">stateModelName = </span><span class="s">&#39;_PageableCollectionInterfaceState.Model&#39;</span>
+  <span class="nx">Oraculum</span><span class="p">.</span><span class="nx">extend</span> <span class="s">&#39;Model&#39;</span><span class="p">,</span> <span class="nx">stateModelName</span><span class="p">,</span> <span class="p">{</span>
+
+    <span class="nv">defaults:</span>
+      <span class="nv">from: </span> <span class="mi">0</span> <span class="c1"># The current first-record offset.</span>
+      <span class="nv">size: </span><span class="mi">10</span> <span class="c1"># How many records to request.</span>
+
+      <span class="nv">start: </span><span class="mi">0</span> <span class="c1"># The zero-index offset of your paging API.</span>
+      <span class="nv">total: </span><span class="mi">0</span> <span class="c1"># The total number of records available.</span>
+      <span class="nv">end: </span>  <span class="mi">0</span> <span class="c1"># The last record offset relative to `start`.</span>
+
+      <span class="nv">page: </span> <span class="mi">1</span> <span class="c1"># The numerical representation of of the current page.</span>
+      <span class="nv">pages: </span><span class="mi">1</span> <span class="c1"># The numerical representation of the last available page.</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-3" id="section-3">&#182;</a>
+</div>
+<p>Add listeners for all attributes that would affect the outcome of our
+reclaculation methods.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+    <span class="nv">mixinOptions:</span>
+      <span class="nv">listen:</span>
+        <span class="s">&#39;change:size change:start change:page this&#39;</span><span class="o">:</span> <span class="s">&#39;_calculateFrom&#39;</span>
+        <span class="s">&#39;change:size change:start change:from this&#39;</span><span class="o">:</span> <span class="s">&#39;_calculatePage&#39;</span>
+        <span class="s">&#39;change:size change:start change:total this&#39;</span><span class="o">:</span> <span class="s">&#39;_calculateEnd&#39;</span>
+
+    <span class="nv">_calculateFrom: </span><span class="nf">-&gt;</span>
+      <span class="nv">page = </span><span class="nx">@get</span> <span class="s">&#39;page&#39;</span>
+      <span class="nv">size = </span><span class="nx">@get</span> <span class="s">&#39;size&#39;</span>
+      <span class="nv">start = </span><span class="nx">@get</span> <span class="s">&#39;start&#39;</span>
+      <span class="nv">from = </span><span class="p">((</span><span class="nx">page</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="nx">size</span><span class="p">)</span> <span class="o">+</span> <span class="nx">start</span>
+      <span class="nx">@set</span> <span class="p">{</span> <span class="nx">from</span> <span class="p">}</span>
+
+    <span class="nv">_calculatePage: </span><span class="nf">-&gt;</span>
+      <span class="nv">from = </span><span class="nx">@get</span> <span class="s">&#39;from&#39;</span>
+      <span class="nv">size = </span><span class="nx">@get</span> <span class="s">&#39;size&#39;</span>
+      <span class="nv">start = </span><span class="nx">@get</span> <span class="s">&#39;start&#39;</span>
+      <span class="nv">relativeOffset = </span><span class="nx">from</span> <span class="o">-</span> <span class="nx">start</span>
+      <span class="nv">page = </span><span class="mi">1</span> <span class="o">+</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span> <span class="nx">relativeOffset</span> <span class="o">/</span> <span class="nx">size</span>
+      <span class="nx">@set</span> <span class="p">{</span> <span class="nx">page</span> <span class="p">}</span>
+
+    <span class="nv">_calculateEnd: </span><span class="nf">-&gt;</span>
+      <span class="nv">size = </span><span class="nx">@get</span> <span class="s">&#39;size&#39;</span>
+      <span class="nv">start = </span><span class="nx">@get</span> <span class="s">&#39;start&#39;</span>
+      <span class="nv">total = </span><span class="nx">@get</span> <span class="s">&#39;total&#39;</span>
+      <span class="nv">end = </span><span class="nx">total</span> <span class="o">+</span> <span class="nx">start</span>
+      <span class="nv">pages = </span><span class="nb">Math</span><span class="p">.</span><span class="nx">max</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span> <span class="nx">total</span> <span class="o">/</span> <span class="nx">size</span>
+      <span class="nx">@set</span> <span class="p">{</span> <span class="nx">end</span><span class="p">,</span> <span class="nx">pages</span> <span class="p">}</span>
+
+    <span class="nv">parse: </span><span class="nf">(response) -&gt;</span>
+      <span class="nv">response = </span><span class="nx">_</span><span class="p">.</span><span class="nx">clone</span> <span class="nx">response</span>
+      <span class="nv">defaultKeys = </span><span class="nx">_</span><span class="p">.</span><span class="nx">chain</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">result</span><span class="p">(</span><span class="s">&#39;defaults&#39;</span><span class="p">).</span><span class="nx">keys</span><span class="p">().</span><span class="nx">value</span><span class="p">()</span>
+      <span class="nx">_</span><span class="p">.</span><span class="nx">each</span> <span class="nx">response</span><span class="p">,</span> <span class="nf">(value, key) -&gt;</span>
+        <span class="k">return</span> <span class="k">unless</span> <span class="nx">key</span> <span class="k">in</span> <span class="nx">defaultKeys</span>
+        <span class="nv">numericValue = </span><span class="nb">parseInt</span> <span class="nx">value</span><span class="p">,</span> <span class="mi">10</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nx">TypeError</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">          Value for </span><span class="si">#{</span><span class="nx">key</span><span class="si">}</span><span class="s">: </span><span class="si">#{</span><span class="nx">value</span><span class="si">}</span><span class="s"> is not a number.</span>
+<span class="s">        &quot;&quot;&quot;</span> <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nb">isNaN</span> <span class="nx">numericValue</span>
+        <span class="nx">response</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="nx">numericValue</span>
+      <span class="k">return</span> <span class="nx">response</span>
+
+  <span class="p">},</span> <span class="nv">mixins: </span><span class="p">[</span>
+    <span class="s">&#39;Listener.Mixin&#39;</span>
+    <span class="s">&#39;Disposable.Mixin&#39;</span>
+  <span class="p">]</span>
+
+  <span class="nx">Oraculum</span><span class="p">.</span><span class="nx">defineMixin</span> <span class="s">&#39;PageableInterface.CollectionMixin&#39;</span><span class="p">,</span>
+
+    <span class="nv">mixinOptions:</span>
+      <span class="nv">pageable:</span>
+        <span class="nv">from: </span> <span class="mi">0</span> <span class="c1"># The current first-record offset.</span>
+        <span class="nv">size: </span><span class="mi">10</span> <span class="c1"># How many records to request.</span>
+        <span class="nv">start: </span><span class="mi">0</span> <span class="c1"># The zero-index offset of your paging API.</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-4" id="section-4">&#182;</a>
+</div>
+<p>Allow configuration overrides at construction</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+    <span class="nv">mixconfig: </span><span class="nf">({pageable}, models, {start, from, size} = {}) -&gt;</span>
+      <span class="nv">pageable.start = </span><span class="nx">start</span> <span class="k">if</span> <span class="nx">start</span><span class="o">?</span>
+      <span class="nv">pageable.from = </span><span class="nx">from</span> <span class="k">if</span> <span class="nx">from</span><span class="o">?</span>
+      <span class="nv">pageable.size = </span><span class="nx">size</span> <span class="k">if</span> <span class="nx">size</span><span class="o">?</span>
+
+    <span class="nv">mixinitialize: </span><span class="nf">-&gt;</span>
+      <span class="p">{</span><span class="nx">start</span><span class="p">,</span> <span class="nx">from</span><span class="p">,</span> <span class="nx">size</span><span class="p">}</span> <span class="o">=</span> <span class="nx">@mixinOptions</span><span class="p">.</span><span class="nx">pageable</span>
+      <span class="vi">@pageState = </span><span class="nx">@__factory</span><span class="p">().</span><span class="nx">get</span> <span class="nx">stateModelName</span><span class="p">,</span>
+        <span class="p">{</span><span class="nx">start</span><span class="p">,</span> <span class="nx">from</span><span class="p">,</span> <span class="nx">size</span><span class="p">},</span> <span class="nv">parse: </span><span class="kc">true</span>
+      <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;dispose&#39;</span><span class="p">,</span> <span class="nf">(target) =&gt;</span>
+        <span class="k">return</span> <span class="k">unless</span> <span class="nx">target</span> <span class="o">is</span> <span class="k">this</span>
+        <span class="nx">@pageState</span><span class="p">.</span><span class="nx">dispose</span><span class="p">()</span>
+        <span class="k">delete</span> <span class="nx">@pageState</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-5" id="section-5">&#182;</a>
+</div>
+<p>State querying interface</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+    <span class="nv">hasPrevious: </span><span class="nf">-&gt;</span>
+      <span class="nv">page = </span><span class="nx">@pageState</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;page&#39;</span>
+      <span class="k">return</span> <span class="nx">page</span> <span class="o">&gt;</span> <span class="mi">1</span>
+
+    <span class="nv">hasNext: </span><span class="nf">-&gt;</span>
+      <span class="nv">page = </span><span class="nx">@pageState</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;page&#39;</span>
+      <span class="nv">pages = </span><span class="nx">@pageState</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;pages&#39;</span>
+      <span class="k">return</span> <span class="nx">page</span> <span class="o">&lt;</span> <span class="nx">pages</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-6" id="section-6">&#182;</a>
+</div>
+<p>Simplified paginating interface</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+    <span class="nv">previous: </span><span class="nf">-&gt;</span>
+      <span class="nv">page = </span><span class="nx">@pageState</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;page&#39;</span>
+      <span class="nx">@pageState</span><span class="p">.</span><span class="nx">set</span> <span class="s">&#39;page&#39;</span><span class="p">,</span> <span class="o">--</span><span class="nx">page</span> <span class="k">if</span> <span class="nx">@hasPrevious</span><span class="p">()</span>
+
+    <span class="nv">next: </span><span class="nf">-&gt;</span>
+      <span class="nv">page = </span><span class="nx">@pageState</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;page&#39;</span>
+      <span class="nx">@pageState</span><span class="p">.</span><span class="nx">set</span> <span class="s">&#39;page&#39;</span><span class="p">,</span> <span class="o">++</span><span class="nx">page</span> <span class="k">if</span> <span class="nx">@hasNext</span><span class="p">()</span>
+
+    <span class="nv">jumpTo: </span><span class="nf">(page) -&gt;</span>
+      <span class="nv">page = </span><span class="nb">parseInt</span> <span class="nx">page</span><span class="p">,</span> <span class="mi">10</span>
+      <span class="nv">pages = </span><span class="nx">@pageState</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;pages&#39;</span>
+      <span class="k">return</span> <span class="k">unless</span> <span class="nx">page</span> <span class="o">&gt;=</span> <span class="mi">1</span> <span class="o">and</span> <span class="nx">page</span> <span class="o">&lt;=</span> <span class="nx">pages</span>
+      <span class="nx">@pageState</span><span class="p">.</span><span class="nx">set</span> <span class="p">{</span> <span class="nx">page</span> <span class="p">}</span>
+
+    <span class="nv">jumpToFirst: </span><span class="nf">-&gt;</span> <span class="nx">@jumpTo</span> <span class="mi">1</span>
+    <span class="nv">jumpToLast: </span><span class="nf">-&gt;</span> <span class="nx">@jumpTo</span> <span class="nx">@pageState</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;pages&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-7" id="section-7">&#182;</a>
+</div>
+<p>Config/reconfig interface</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+    <span class="nv">setPageSize: </span><span class="nf">(size) -&gt;</span> <span class="nx">@pageState</span><span class="p">.</span><span class="nx">set</span> <span class="p">{</span> <span class="nx">size</span> <span class="p">}</span>
+    <span class="nv">setPageStart: </span><span class="nf">(start) -&gt;</span> <span class="nx">@pageState</span><span class="p">.</span><span class="nx">set</span> <span class="p">{</span> <span class="nx">start</span> <span class="p">}</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

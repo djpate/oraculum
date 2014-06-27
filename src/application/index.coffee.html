@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>index.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../doc-style.css" />
+  <script src="../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../", thisFile = "src/application/index.coffee", defaultSidebar = true;
+  </script>
+  <script src="../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+      <div class="heading h1">
+        <a href="#application">Application</a>
+      </div>
+      <div class="heading h2">
+        <a href="#title">Title</a>
+      </div>
+      <div class="heading h2">
+        <a href="#started">Started</a>
+      </div>
+      <div class="heading h2">
+        <a href="#core%20object%20instantiation">Core Object Instantiation</a>
+      </div>
+      <div class="heading h2">
+        <a href="#constructor">Constructor</a>
+      </div>
+      <div class="heading h2">
+        <a href="#mixin%20options">Mixin Options</a>
+      </div>
+      <div class="heading h2">
+        <a href="#initialize%20router">Initialize Router</a>
+      </div>
+      <div class="heading h2">
+        <a href="#initialize%20dispatcher">Initialize Dispatcher</a>
+      </div>
+      <div class="heading h2">
+        <a href="#initialize%20layout">Initialize Layout</a>
+      </div>
+      <div class="heading h2">
+        <a href="#initialize%20composer">Initialize Composer</a>
+      </div>
+      <div class="heading h2">
+        <a href="#initialize">Initialize</a>
+      </div>
+      <div class="heading h2">
+        <a href="#start">Start</a>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>index.coffee</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="nx">define</span> <span class="p">[</span>
+  <span class="s">&#39;oraculum&#39;</span>
+  <span class="s">&#39;oraculum/mixins/pub-sub&#39;</span>
+  <span class="s">&#39;oraculum/mixins/freezable&#39;</span>
+  <span class="s">&#39;oraculum/mixins/disposable&#39;</span>
+  <span class="s">&#39;oraculum/application/router&#39;</span>
+  <span class="s">&#39;oraculum/application/composer&#39;</span>
+  <span class="s">&#39;oraculum/application/dispatcher&#39;</span>
+<span class="p">],</span> <span class="nf">(Oraculum) -&gt;</span>
+  <span class="s">&#39;use strict&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="application">
+  <h1>
+    <a href="#application" name="application" class="pilcrow">&#182;</a>
+    Application
+  </h1>
+</div>
+
+
+<p>The role of the <code>Application</code> is to act as the entrypoint/primary bootstrapper
+for our application, stitching together our <code>Router</code>, <code>Dispatcher</code>, <code>Layout</code>,
+and <code>Composer</code>.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">application/router.coffee</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">application/composer.coffee</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">application/dispatcher.coffee
+</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+  <span class="nx">Oraculum</span><span class="p">.</span><span class="nx">define</span> <span class="s">&#39;Application&#39;</span><span class="p">,</span> <span class="p">(</span><span class="k">class</span> <span class="nx">Application</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="title">
+  <h2>
+    <a href="#title" name="title" class="pilcrow">&#182;</a>
+    Title
+  </h2>
+</div>
+
+
+<p>Site-wide title that is mapped to HTML <code>title</code> tag.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Type</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">String
+</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">title: </span><span class="s">&#39;&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="started">
+  <h2>
+    <a href="#started" name="started" class="pilcrow">&#182;</a>
+    Started
+  </h2>
+</div>
+
+
+<p>Track whether or not the <code>Application</code> has been started. This value is set
+to <code>true</code> upon invoking <code>@start</code>.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Type</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">Boolean
+</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">started: </span><span class="kc">false</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="core%20object%20instantiation">
+  <h2>
+    <a href="#core%20object%20instantiation" name="core%20object%20instantiation" class="pilcrow">&#182;</a>
+    Core Object Instantiation
+  </h2>
+</div>
+
+
+<p>The application instantiates three <strong>core modules</strong>:</p>
+  </div>
+  <div class="body">
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-6" id="section-6">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><p>A <code>View</code> that supports the <code>Layout.ViewMixin</code> interface.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">views/mixins/layout.coffee</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <a href="http://backbonejs.org/#View
+">http://backbonejs.org/#View
+</a>
+    </div>
+    <div class="dox_tag_title">Type</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">View
+</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">layout: </span><span class="kc">null</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-7" id="section-7">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><p>A global <code>Router</code>.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Type</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">Router
+</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">router: </span><span class="kc">null</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-8" id="section-8">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><p>A global <code>Composer</code>.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Type</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">Composer
+</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">composer: </span><span class="kc">null</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-9" id="section-9">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><p>And a global <code>Dispatcher</code>.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Type</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">Dispatcher
+</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">dispatcher: </span><span class="kc">null</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="constructor_NaN">
+  <h2>
+    <a href="#constructor_NaN" name="constructor_NaN" class="pilcrow">&#182;</a>
+    Constructor
+  </h2>
+</div>
+
+
+<p>Initializes core components.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">options?</span>
+      <span class="dox_type">Object</span>
+      <span>Any options to be passed to our initializers.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">constructor: </span><span class="nf">(options = {}) -&gt;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-11" id="section-11">&#182;</a>
+</div>
+<p>Register all of our <code>Route</code>s, passing through our <code>options</code>.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nx">@initRouter</span> <span class="nx">options</span><span class="p">.</span><span class="nx">routes</span><span class="p">,</span> <span class="nx">options</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-12" id="section-12">&#182;</a>
+</div>
+<p>Dispatcher listens for routing events and initialises controllers.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nx">@initDispatcher</span> <span class="nx">options</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-13" id="section-13">&#182;</a>
+</div>
+<p>Layout listens for click events &amp; delegates internal links to router.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nx">@initLayout</span> <span class="nx">options</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-14" id="section-14">&#182;</a>
+</div>
+<p>Composer grants the ability for views and stuff to be persisted.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nx">@initComposer</span> <span class="nx">options</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-15" id="section-15">&#182;</a>
+</div>
+<p>Invoke our initialize method</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nx">@initialize</span><span class="p">.</span><span class="nx">apply</span> <span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-16" id="section-16">&#182;</a>
+</div>
+<p>Start the application.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nx">@start</span><span class="p">()</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="mixin%20options">
+  <h2>
+    <a href="#mixin%20options" name="mixin%20options" class="pilcrow">&#182;</a>
+    Mixin Options
+  </h2>
+</div>
+
+
+<p>Automatically freeze this object after its construction and instruct the
+<code>Disposable.Mixin</code> to dispose all of our properties upon disposal.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">mixins/freezable.coffee</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">mixins/disposable.coffee
+</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">mixinOptions:</span>
+      <span class="nv">freeze: </span><span class="kc">true</span>
+      <span class="nv">disposable:</span>
+        <span class="nv">disposeAll: </span><span class="kc">true</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="initialize%20router">
+  <h2>
+    <a href="#initialize%20router" name="initialize%20router" class="pilcrow">&#182;</a>
+    Initialize Router
+  </h2>
+</div>
+
+
+<p>Creates the global <code>Router</code>, passing it all of our <code>options</code>.
+Invokes the <code>routes</code> function, if available, passing through the <code>Router</code>s
+<code>match</code> method, creating <code>Route</code>s for each specification.
+Resolves <code>options.router</code> to a factory definition to use as the <code>Router</code>.
+If <code>options.router</code> is not defined, it will default to <code>'Router'</code>.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">application/route.coffee</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">application/router.coffee
+</span>
+    </div>
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">routes?</span>
+      <span class="dox_type">Function</span>
+      <span>The <code>routes</code> function.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">object?</span>
+      <span class="dox_type">Object</span>
+      <span>Any options to pass to the <code>Router</code>'s constructor.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">initRouter: </span><span class="nf">(routes, options = {}) -&gt;</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-19" id="section-19">&#182;</a>
+</div>
+<p>Save the reference for testing introspection only.
+Modules should communicate with each other via <strong>publish/subscribe</strong>.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nx">options</span><span class="p">.</span><span class="nx">router</span> <span class="o">?=</span> <span class="s">&#39;Router&#39;</span>
+      <span class="vi">@router = </span><span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isString</span> <span class="nx">options</span><span class="p">.</span><span class="nx">router</span>
+      <span class="k">then</span> <span class="nx">@__factory</span><span class="p">().</span><span class="nx">get</span> <span class="nx">options</span><span class="p">.</span><span class="nx">router</span><span class="p">,</span> <span class="nx">options</span>
+      <span class="k">else</span> <span class="k">new</span> <span class="nx">options</span><span class="p">.</span><span class="nx">router</span> <span class="nx">options</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-20" id="section-20">&#182;</a>
+</div>
+<p>Register any provided routes.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nx">routes</span><span class="o">?</span> <span class="nx">@router</span><span class="p">.</span><span class="nx">match</span>
+
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="initialize%20dispatcher">
+  <h2>
+    <a href="#initialize%20dispatcher" name="initialize%20dispatcher" class="pilcrow">&#182;</a>
+    Initialize Dispatcher
+  </h2>
+</div>
+
+
+<p>Creates the global <code>Dispatcher</code>, passing it all of our <code>options</code>.
+Resolves <code>options.dispatcher</code> to a factory definition to use as the
+<code>Dispatcher</code>.
+If <code>options.dispatcher</code> is not defined, it will default to <code>'Dispatcher'</code>.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">application/dispatcher.coffee
+</span>
+    </div>
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">object?</span>
+      <span class="dox_type">Object</span>
+      <span>Any options to pass to the <code>Dispatcher</code>'s constructor.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">initDispatcher: </span><span class="nf">(options = {}) -&gt;</span>
+      <span class="nx">options</span><span class="p">.</span><span class="nx">dispatcher</span> <span class="o">?=</span> <span class="s">&#39;Dispatcher&#39;</span>
+      <span class="vi">@dispatcher = </span><span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isString</span> <span class="nx">options</span><span class="p">.</span><span class="nx">dispatcher</span>
+      <span class="k">then</span> <span class="nx">@__factory</span><span class="p">().</span><span class="nx">get</span> <span class="nx">options</span><span class="p">.</span><span class="nx">dispatcher</span><span class="p">,</span> <span class="nx">options</span>
+      <span class="k">else</span> <span class="k">new</span> <span class="nx">options</span><span class="p">.</span><span class="nx">dispatcher</span> <span class="nx">options</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="initialize%20layout">
+  <h2>
+    <a href="#initialize%20layout" name="initialize%20layout" class="pilcrow">&#182;</a>
+    Initialize Layout
+  </h2>
+</div>
+
+
+<p>Creates the global <code>Layout</code> <code>View</code>, passing it all of our <code>options</code>.
+Assigns <code>options.title</code> as <code>@title</code> if <code>options.title</code> is not defined.
+Resolves <code>options.layout</code> to a factory definition to use as the <code>Layout</code>.
+If <code>options.layout</code> is not defined, it will throw.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">views/mixins/layout.coffee</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <a href="http://backbonejs.org/#View
+">http://backbonejs.org/#View
+</a>
+    </div>
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">object?</span>
+      <span class="dox_type">Object</span>
+      <span>Any options to pass to the <code>Layout</code>'s constructor.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">initLayout: </span><span class="nf">(options = {}) -&gt;</span>
+      <span class="nx">options</span><span class="p">.</span><span class="nx">title</span> <span class="o">?=</span> <span class="nx">@title</span>
+      <span class="vi">@layout = </span><span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isString</span> <span class="nx">options</span><span class="p">.</span><span class="nx">layout</span>
+      <span class="k">then</span> <span class="nx">@__factory</span><span class="p">().</span><span class="nx">get</span> <span class="nx">options</span><span class="p">.</span><span class="nx">layout</span><span class="p">,</span> <span class="nx">options</span>
+      <span class="k">else</span> <span class="k">new</span> <span class="nx">options</span><span class="p">.</span><span class="nx">layout</span> <span class="nx">options</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="initialize%20composer">
+  <h2>
+    <a href="#initialize%20composer" name="initialize%20composer" class="pilcrow">&#182;</a>
+    Initialize Composer
+  </h2>
+</div>
+
+
+<p>Creates the global <code>Composer</code>, passing it all of our <code>options</code>.
+Resolves <code>options.composer</code> to a factory definition to use as the
+<code>Composer</code>.
+If <code>options.composer</code> is not defined, it will default to <code>'Composer'</code>.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">application/composer.coffee
+</span>
+    </div>
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">object?</span>
+      <span class="dox_type">Object</span>
+      <span>Any options to pass to the <code>Composer</code>'s constructor.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">initComposer: </span><span class="nf">(options = {}) -&gt;</span>
+      <span class="nx">options</span><span class="p">.</span><span class="nx">composer</span> <span class="o">?=</span> <span class="s">&#39;Composer&#39;</span>
+      <span class="vi">@composer = </span><span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isString</span> <span class="nx">options</span><span class="p">.</span><span class="nx">composer</span>
+      <span class="k">then</span> <span class="nx">@__factory</span><span class="p">().</span><span class="nx">get</span> <span class="nx">options</span><span class="p">.</span><span class="nx">composer</span><span class="p">,</span> <span class="nx">options</span>
+      <span class="k">else</span> <span class="k">new</span> <span class="nx">options</span><span class="p">.</span><span class="nx">composer</span> <span class="nx">options</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="initialize">
+  <h2>
+    <a href="#initialize" name="initialize" class="pilcrow">&#182;</a>
+    Initialize
+  </h2>
+</div>
+
+
+<p>We provide a basic <code>initialize</code> method to perform the most common use case
+implementation while keeping this logic out of <code>constructor</code> so that an
+extending definition can override <code>initialize</code>, taking control over the
+<code>@start</code> method's invocation.
+Throws if invoked after <code>@started</code> is set to <code>true</code>.</p>
+  </div>
+  <div class="body">
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">initialize: </span><span class="nf">-&gt;</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-25" id="section-25">&#182;</a>
+</div>
+<p>Check if app is already started.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span> <span class="s">&#39;&#39;&#39;</span>
+<span class="s">        Application#initialize: App was already started</span>
+<span class="s">      &#39;&#39;&#39;</span> <span class="k">if</span> <span class="nx">@started</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="start">
+  <h2>
+    <a href="#start" name="start" class="pilcrow">&#182;</a>
+    Start
+  </h2>
+</div>
+
+
+<p>Starts the <code>Router</code>'s history tracking, setting forth a chain of events that
+should lead to <code>History</code> reading the URL state, causing the <code>Router</code> notify
+the <code>Dispatcher</code> of a matched <code>Route</code>, culminating in the creation of a
+<code>Controller</code> and the execution of the <code>Route</code>'s prescribed action.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">application/route.coffee</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">application/router.coffee</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">application/history.coffee</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">application/controller.coffee</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">application/dispatcher.coffee
+</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+    <span class="nv">start: </span><span class="nf">-&gt;</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-27" id="section-27">&#182;</a>
+</div>
+<p>After registering the routes, start <strong>Backbone.history</strong>.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nx">@router</span><span class="p">.</span><span class="nx">startHistory</span><span class="p">()</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-28" id="section-28">&#182;</a>
+</div>
+<p>Mark app as initialized.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="vi">@started = </span><span class="kc">true</span>
+
+  <span class="p">),</span> <span class="p">{</span>
+    <span class="nv">singleton: </span><span class="kc">true</span>
+    <span class="nv">mixins: </span><span class="p">[</span>
+      <span class="s">&#39;PubSub.Mixin&#39;</span>
+      <span class="s">&#39;Disposable.Mixin&#39;</span>
+      <span class="s">&#39;Freezable.Mixin&#39;</span>
+    <span class="p">]</span>
+  <span class="p">}</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

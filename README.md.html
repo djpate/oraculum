@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>README.md</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="doc-style.css" />
+  <script src="doc-filelist.js"></script>
+  <script>
+    var relativeDir = "", thisFile = "README.md", defaultSidebar = true;
+  </script>
+  <script src="doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="docs markdown">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+<div class='highlight'><pre><code language=''> _______                             __
+ \   _  \____________    ____  __ __|  |  __ __  _____
+ /  / \  \_  __ \__  \ _/ ___\|  |  \  | |  |  \/     \
+/  (___)  \  | \// __ \\  \___|  |  /  |_|  |  /  Y Y  \
+\_______  /__|  (____  /\___  &gt;____/|____/____/|__|_|  /
+        \/           \/     \/                       \/
+</code></pre></div>
+
+<p><a href="http://hackers.lookout.com/oraculum/README.md.html">Documentation</a></p>
+
+<p>Oraculum is a <a href="http://todomvc.com/architecture-examples/oraculum/">javascript MVC framework</a> and a collection of mixins for <a href="http://backbonejs.org/">Backbone</a> <code>Model</code>s, <code>Collection</code>s and <code>View</code>s written for <a href="https://github.com/lookout/factoryjs/">FactoryJS</a>. It inherits all of its application structure, many behaviors, and is generally inspired by <a href="http://chaplinjs.org/">Chaplin</a>.</p>
+
+<p>Though a large portion of Oraculum's behavior is inherited from Chaplin, Oraculum employs a signficiantly different strategy surrounding the issues of inheritance, structure, and coupling. Applications built with Oraculum take full advantage of the <a href="http://en.wikipedia.org/wiki/Aspect-oriented_programming">aspect-oriented programming</a> and <a href="http://en.wikipedia.org/wiki/Composition_over_inheritance">composition</a> paradigms offered by FactoryJS. The purpose of this project is to collect abstract, reusable behaviors into a framework that  can be used by anyone building complex applications with Backbone.</p>
+
+<p>One of the core values provided by Oraculum is its lack of implicit behavior. All non-essential behaviors are optional. No non-essential behavior is implicit. This means that your objects only ever execute code paths relevant to their concerns and you should never have to alter an object's prototype to stub its implicit behaviors. Oraculum accomplishes this by hooking targeted methods of object instances in-memory and providing a consistent eventing interface to those hooks.</p>
+
+<p>Objects and classes composed with Oraculum are often no more than a few lines simple configuration, yet through their mixins they can be perform incredibly complex tasks. There are mixins that emulate or implement every behavior Chaplin provides, plus many other behaviors unique to Oraculum. Because all behaviors are optional and formatted using the FactoryJS mixin syntax, it's incredibly easy to add custom behaviors or import behaviors authored by the open source community.</p></div>
+  </div>
+</body>
+</html>

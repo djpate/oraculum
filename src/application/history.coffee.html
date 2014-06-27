@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>history.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../doc-style.css" />
+  <script src="../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../", thisFile = "src/application/history.coffee", defaultSidebar = true;
+  </script>
+  <script src="../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+      <div class="heading h1">
+        <a href="#history">History</a>
+      </div>
+      <div class="heading h2">
+        <a href="#get%20fragment%20override">Get Fragment Override</a>
+      </div>
+      <div class="heading h2">
+        <a href="#start%20override">Start Override</a>
+      </div>
+      <div class="heading h2">
+        <a href="#navigate%20override">Navigate Override</a>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>history.coffee</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="nx">define</span> <span class="p">[</span>
+  <span class="s">&#39;oraculum&#39;</span>
+  <span class="s">&#39;oraculum/libs&#39;</span>
+<span class="p">],</span> <span class="nf">(Oraculum) -&gt;</span>
+  <span class="s">&#39;use strict&#39;</span>
+
+  <span class="nv">_ = </span><span class="nx">Oraculum</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;underscore&#39;</span>
+  <span class="nv">Backbone = </span><span class="nx">Oraculum</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;Backbone&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-2" id="section-2">&#182;</a>
+</div>
+<p>Cached regex for stripping a leading hash/slash and trailing space.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+  <span class="nv">routeStripper = </span><span class="sr">/^[#\/]|\s+$/g</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-3" id="section-3">&#182;</a>
+</div>
+<p>Cached regex for stripping leading and trailing slashes.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+  <span class="nv">rootStripper = </span><span class="sr">/^\/+|\/+$/g</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-4" id="section-4">&#182;</a>
+</div>
+<p>Cached regex for removing a trailing slash.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+  <span class="nv">trailingSlash = </span><span class="sr">/\/$/</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="history">
+  <h1>
+    <a href="#history" name="history" class="pilcrow">&#182;</a>
+    History
+  </h1>
+</div>
+
+
+<p>Patch Backbone.History with a basic query strings support.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <a href="http://backbonejs.org/#History
+">http://backbonejs.org/#History
+</a>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+  <span class="nx">Oraculum</span><span class="p">.</span><span class="nx">define</span> <span class="s">&#39;History&#39;</span><span class="p">,</span> <span class="k">class</span> <span class="nx">History</span> <span class="k">extends</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">History</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="get%20fragment%20override">
+  <h2>
+    <a href="#get%20fragment%20override" name="get%20fragment%20override" class="pilcrow">&#182;</a>
+    Get Fragment Override
+  </h2>
+</div>
+
+
+<p>Get the cross-browser normalized URL fragment, either from the URL,
+the hash, or the override.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">fragment</span>
+      <span class="dox_type">String</span>
+      <span>The current URL fragment.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">forcePushState?</span>
+      <span class="dox_type">Boolean</span>
+      <span>Flag used to force a change to the URL via push state.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">getFragment: </span><span class="nf">(fragment, forcePushState) -&gt;</span>
+      <span class="k">unless</span> <span class="nx">fragment</span><span class="o">?</span>
+        <span class="k">if</span> <span class="nx">@_hasPushState</span> <span class="o">or</span> <span class="o">not</span> <span class="nx">@_wantsHashChange</span> <span class="o">or</span> <span class="nx">forcePushState</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-7" id="section-7">&#182;</a>
+</div>
+<p>CHANGED: Make fragment include query string.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+          <span class="nv">root = </span><span class="nx">@root</span><span class="p">.</span><span class="nx">replace</span> <span class="nx">trailingSlash</span><span class="p">,</span> <span class="s">&#39;&#39;</span>
+          <span class="nv">fragment = </span><span class="nx">@location</span><span class="p">.</span><span class="nx">pathname</span> <span class="o">+</span> <span class="nx">@location</span><span class="p">.</span><span class="nx">search</span>
+          <span class="nv">fragment = </span><span class="nx">fragment</span><span class="p">.</span><span class="nx">substr</span> <span class="nx">root</span><span class="p">.</span><span class="nx">length</span> <span class="k">unless</span> <span class="nx">fragment</span><span class="p">.</span><span class="nx">indexOf</span> <span class="nx">root</span>
+        <span class="k">else</span>
+          <span class="nv">fragment = </span><span class="nx">@getHash</span><span class="p">()</span>
+
+      <span class="k">return</span> <span class="nx">fragment</span><span class="p">.</span><span class="nx">replace</span> <span class="nx">routeStripper</span><span class="p">,</span> <span class="s">&#39;&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="start%20override">
+  <h2>
+    <a href="#start%20override" name="start%20override" class="pilcrow">&#182;</a>
+    Start Override
+  </h2>
+</div>
+
+
+<p>Start the hash change handling, returning <code>true</code> if the current URL matches
+an existing route, and <code>false</code> otherwise.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">options
+</span>
+      <span class="dox_type">Object</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">start: </span><span class="nf">(options) -&gt;</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span> <span class="s">&#39;&#39;&#39;</span>
+<span class="s">        Backbone.history has already been started</span>
+<span class="s">      &#39;&#39;&#39;</span> <span class="k">if</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">History</span><span class="p">.</span><span class="nx">started</span> <span class="o">is</span> <span class="kc">true</span>
+      <span class="nv">Backbone.History.started = </span><span class="kc">true</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-9" id="section-9">&#182;</a>
+</div>
+<p>Figure out the initial configuration. Do we need an iframe?
+Is pushState desired ... is it available?</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="vi">@options = </span><span class="nx">_</span><span class="p">.</span><span class="nx">extend</span> <span class="p">{},</span> <span class="p">{</span><span class="nv">root: </span><span class="s">&#39;/&#39;</span><span class="p">},</span> <span class="nx">@options</span><span class="p">,</span> <span class="nx">options</span>
+
+      <span class="vi">@root = </span><span class="nx">@options</span><span class="p">.</span><span class="nx">root</span>
+      <span class="vi">@fragment = </span><span class="nx">@getFragment</span><span class="p">()</span>
+      <span class="vi">@_hasPushState = </span><span class="nb">Boolean</span> <span class="p">(</span><span class="nx">@options</span><span class="p">.</span><span class="nx">pushState</span> <span class="o">and</span> <span class="nx">@history</span><span class="o">?</span><span class="p">.</span><span class="nx">pushState</span><span class="p">)</span>
+      <span class="vi">@_wantsPushState = </span><span class="nb">Boolean</span> <span class="nx">@options</span><span class="p">.</span><span class="nx">pushState</span>
+      <span class="vi">@_wantsHashChange = </span><span class="nx">@options</span><span class="p">.</span><span class="nx">hashChange</span> <span class="o">isnt</span> <span class="kc">false</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-10" id="section-10">&#182;</a>
+</div>
+<p>Normalize root to always include a leading and trailing slash.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="vi">@root = </span><span class="s">&quot;/</span><span class="si">#{</span><span class="nx">@root</span><span class="si">}</span><span class="s">/&quot;</span><span class="p">.</span><span class="nx">replace</span> <span class="nx">rootStripper</span><span class="p">,</span> <span class="s">&#39;/&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-11" id="section-11">&#182;</a>
+</div>
+<p>Depending on whether we're using pushState or hashes, and whether
+'onhashchange' is supported, determine how we check the URL state.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">@_hasPushState</span><span class="p">)</span>
+      <span class="k">then</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="nb">window</span><span class="p">).</span><span class="nx">on</span> <span class="s">&#39;popstate&#39;</span><span class="p">,</span> <span class="nx">@checkUrl</span>
+
+      <span class="k">else</span> <span class="k">if</span> <span class="nx">@_wantsHashChange</span> <span class="o">and</span> <span class="s">&#39;onhashchange&#39;</span> <span class="k">of</span> <span class="nb">window</span>
+      <span class="k">then</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="nb">window</span><span class="p">).</span><span class="nx">on</span> <span class="s">&#39;hashchange&#39;</span><span class="p">,</span> <span class="nx">@checkUrl</span>
+
+      <span class="k">else</span> <span class="k">if</span> <span class="nx">@_wantsHashChange</span>
+      <span class="k">then</span> <span class="vi">@_checkUrlInterval = </span><span class="nx">setInterval</span> <span class="nx">@checkUrl</span><span class="p">,</span> <span class="nx">@interval</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-12" id="section-12">&#182;</a>
+</div>
+<p>Determine if we need to change the base url, for a pushState link
+opened by a non-pushState browser.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nv">loc = </span><span class="nx">@location</span>
+      <span class="nv">atRoot = </span><span class="nx">@location</span><span class="p">.</span><span class="nx">pathname</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/[^\/]$/</span><span class="p">,</span> <span class="s">&#39;$&amp;/&#39;</span><span class="p">)</span> <span class="o">is</span> <span class="nx">@root</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-13" id="section-13">&#182;</a>
+</div>
+<p>If we've started off with a route from a <code>pushState</code>-enabled browser,
+but we're currently in a browser that doesn't support it...</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="k">if</span> <span class="nx">@_wantsPushState</span> <span class="o">and</span> <span class="nx">@_wantsHashChange</span>
+        <span class="k">if</span> <span class="o">not</span> <span class="nx">atRoot</span> <span class="o">and</span> <span class="o">not</span> <span class="nx">@_hasPushState</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-14" id="section-14">&#182;</a>
+</div>
+<p>CHANGED: Prevent query string from being added before hash.
+So, it will appear only after #, as it has been already included
+into @fragment</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+          <span class="vi">@fragment = </span><span class="nx">@getFragment</span> <span class="kc">null</span><span class="p">,</span> <span class="kc">true</span>
+          <span class="nx">@location</span><span class="p">.</span><span class="nx">replace</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">@root</span><span class="si">}</span><span class="err">#</span><span class="si">#{</span><span class="nx">@fragment</span><span class="si">}</span><span class="s">&quot;</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-15" id="section-15">&#182;</a>
+</div>
+<p>Return immediately as browser will do redirect to new url</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+          <span class="k">return</span> <span class="kc">true</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-16" id="section-16">&#182;</a>
+</div>
+<p>Or if we've started out with a hash-based route, but we're currently
+in a browser where it could be <code>pushState</code>-based instead...</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+        <span class="k">else</span> <span class="k">if</span> <span class="nx">atRoot</span> <span class="o">and</span> <span class="nx">loc</span><span class="p">.</span><span class="nx">hash</span>
+          <span class="vi">@fragment = </span><span class="nx">@getHash</span><span class="p">().</span><span class="nx">replace</span> <span class="nx">routeStripper</span><span class="p">,</span> <span class="s">&#39;&#39;</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-17" id="section-17">&#182;</a>
+</div>
+<p>CHANGED: It's no longer needed to add loc.search at the end,
+as query params have been already included into @fragment</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+          <span class="nx">@history</span><span class="p">.</span><span class="nx">replaceState</span> <span class="p">{},</span> <span class="nb">document</span><span class="p">.</span><span class="nx">title</span><span class="p">,</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">@root</span><span class="si">}#{</span><span class="nx">@fragment</span><span class="si">}</span><span class="s">&quot;</span>
+
+      <span class="nx">@loadUrl</span><span class="p">()</span> <span class="k">unless</span> <span class="nx">@options</span><span class="p">.</span><span class="nx">silent</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="navigate%20override">
+  <h2>
+    <a href="#navigate%20override" name="navigate%20override" class="pilcrow">&#182;</a>
+    Navigate Override
+  </h2>
+</div>
+
+
+<p>Save a fragment into the hash history, or replace the URL state if the
+'replace' option is passed. You are responsible for properly URL-encoding
+the fragment in advance.</p>
+  </div>
+  <div class="body"><p>The options object can contain <code>trigger: true</code> if you wish to have the
+route callback be fired (not usually desirable), or <code>replace: true</code>, if
+you wish to modify the current URL without adding an entry to the history.</p>
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">fragment</span>
+      <span class="dox_type">String</span>
+      <span>The url fragment to route.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">options?</span>
+      <span class="dox_type">Object</span>
+      <span>An object containing navigation options.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">options?</span>
+      <span class="dox_type">Boolean</span>
+      <span>An Boolean value indicating whether to trigger the route callback.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">navigate: </span><span class="nf">(fragment = &#39;&#39;, options = false) -&gt;</span>
+      <span class="k">return</span> <span class="kc">false</span> <span class="k">unless</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">History</span><span class="p">.</span><span class="nx">started</span>
+      <span class="nv">options = </span><span class="p">{</span><span class="nv">trigger: </span><span class="nx">options</span><span class="p">}</span> <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isBoolean</span> <span class="nx">options</span>
+
+      <span class="nv">fragment = </span><span class="nx">@getFragment</span> <span class="nx">fragment</span>
+      <span class="nv">url = </span><span class="s">&quot;</span><span class="si">#{</span><span class="nx">@root</span><span class="si">}#{</span><span class="nx">fragment</span><span class="si">}</span><span class="s">&quot;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-19" id="section-19">&#182;</a>
+</div>
+<p>Remove fragment replace, coz query string different mean difference page
+Strip the fragment of the query and hash for matching.
+fragment = fragment.replace(pathStripper, '')</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="k">return</span> <span class="kc">false</span> <span class="k">if</span> <span class="nx">@fragment</span> <span class="o">is</span> <span class="nx">fragment</span>
+      <span class="vi">@fragment = </span><span class="nx">fragment</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-20" id="section-20">&#182;</a>
+</div>
+<p>Don't include a trailing slash on the root.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nv">url = </span><span class="nx">url</span><span class="p">.</span><span class="nx">slice</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="k">if</span> <span class="nx">fragment</span><span class="p">.</span><span class="nx">length</span> <span class="o">is</span> <span class="mi">0</span> <span class="o">and</span> <span class="nx">url</span> <span class="o">isnt</span> <span class="s">&#39;/&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-21" id="section-21">&#182;</a>
+</div>
+<p>If pushState is available, we use it to set the fragment as a real URL.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="k">if</span> <span class="nx">@_hasPushState</span>
+        <span class="nv">historyMethod = </span><span class="k">if</span> <span class="nx">options</span><span class="p">.</span><span class="nx">replace</span> <span class="k">then</span> <span class="s">&#39;replaceState&#39;</span> <span class="k">else</span> <span class="s">&#39;pushState&#39;</span>
+        <span class="nx">@history</span><span class="p">[</span><span class="nx">historyMethod</span><span class="p">]</span> <span class="p">{},</span> <span class="nb">document</span><span class="p">.</span><span class="nx">title</span><span class="p">,</span> <span class="nx">url</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-22" id="section-22">&#182;</a>
+</div>
+<p>If hash changes haven't been explicitly disabled, update the hash
+fragment to store history.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="k">else</span> <span class="k">if</span> <span class="nx">@_wantsHashChange</span>
+        <span class="nx">@_updateHash</span> <span class="nx">@location</span><span class="p">,</span> <span class="nx">fragment</span><span class="p">,</span> <span class="nx">options</span><span class="p">.</span><span class="nx">replace</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-23" id="section-23">&#182;</a>
+</div>
+<p>iframe</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+        <span class="nv">isSameFragment = </span><span class="nx">fragment</span> <span class="o">isnt</span> <span class="nx">@getFragment</span> <span class="nx">@getHash</span> <span class="nx">@iframe</span>
+        <span class="k">if</span> <span class="nx">@iframe</span><span class="o">?</span> <span class="o">and</span> <span class="nx">isSameFragment</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-24" id="section-24">&#182;</a>
+</div>
+<p>Opening and closing the iframe tricks IE7 and earlier to push a
+history entry on hash-tag change.  When replace is true, we don't</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+          <span class="nx">@iframe</span><span class="p">.</span><span class="nb">document</span><span class="p">.</span><span class="nx">open</span><span class="p">().</span><span class="nx">close</span><span class="p">()</span> <span class="k">unless</span> <span class="nx">options</span><span class="p">.</span><span class="nx">replace</span>
+          <span class="nx">@_updateHash</span> <span class="nx">@iframe</span><span class="p">.</span><span class="nx">location</span><span class="p">,</span> <span class="nx">fragment</span><span class="p">,</span> <span class="nx">options</span><span class="p">.</span><span class="nx">replace</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-25" id="section-25">&#182;</a>
+</div>
+<p>If you've told us that you explicitly don't want fallback hashchange-
+based history, then <code>navigate</code> becomes a page refresh.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="k">else</span>
+        <span class="k">return</span> <span class="nx">@location</span><span class="p">.</span><span class="nx">assign</span> <span class="nx">url</span>
+
+      <span class="k">if</span> <span class="nx">options</span><span class="p">.</span><span class="nx">trigger</span>
+        <span class="k">return</span> <span class="nx">@loadUrl</span> <span class="nx">fragment</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

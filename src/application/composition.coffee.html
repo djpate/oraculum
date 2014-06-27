@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>composition.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../doc-style.css" />
+  <script src="../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../", thisFile = "src/application/composition.coffee", defaultSidebar = true;
+  </script>
+  <script src="../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+      <div class="heading h1">
+        <a href="#composition">Composition</a>
+      </div>
+      <div class="heading h2">
+        <a href="#constructor">Constructor</a>
+      </div>
+      <div class="heading h2">
+        <a href="#mixin%20options">Mixin Options</a>
+      </div>
+      <div class="heading h2">
+        <a href="#compose">Compose</a>
+      </div>
+      <div class="heading h2">
+        <a href="#check">Check</a>
+      </div>
+      <div class="heading h2">
+        <a href="#stale">Stale</a>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>composition.coffee</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="nx">define</span> <span class="p">[</span>
+  <span class="s">&#39;oraculum&#39;</span>
+  <span class="s">&#39;oraculum/libs&#39;</span>
+  <span class="s">&#39;oraculum/mixins/evented&#39;</span>
+  <span class="s">&#39;oraculum/mixins/disposable&#39;</span>
+<span class="p">],</span> <span class="nf">(Oraculum) -&gt;</span>
+  <span class="s">&#39;use strict&#39;</span>
+
+  <span class="nv">_ = </span><span class="nx">Oraculum</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;underscore&#39;</span>
+  <span class="nv">Backbone = </span><span class="nx">Oraculum</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;Backbone&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="composition">
+  <h1>
+    <a href="#composition" name="composition" class="pilcrow">&#182;</a>
+    Composition
+  </h1>
+</div>
+
+
+<p>The role of a composition is to control the lifecycle of a view between
+controller actions.
+Compositions are managed by the <code>Composer</code> and used to track and maintain
+the state of an interlying <code>item</code>.
+Currently, the <code>Composer</code> is only intended to manage <code>View</code>s.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">application/composer.coffee</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <a href="http://backbonejs.org/#View
+">http://backbonejs.org/#View
+</a>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+  <span class="nx">Oraculum</span><span class="p">.</span><span class="nx">define</span> <span class="s">&#39;Composition&#39;</span><span class="p">,</span> <span class="p">(</span><span class="k">class</span> <span class="nx">Composition</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-3" id="section-3">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><p>State variable tracking the composed item.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Type</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">View
+</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">item: </span><span class="kc">null</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-4" id="section-4">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><p>State variable tracking whether the composed item is "stale".
+A composition becomes "stale" when the controlling <code>Composer</code> receives
+the <code>dispatcher:dispatch</code> event from the global message bus, indicating
+that the current dispatch cycle has been completed.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Type</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">Boolean
+</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">_stale: </span><span class="kc">false</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-5" id="section-5">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><p>A local cache of the options that this composition was constructed with.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Type</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">Object
+</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">options: </span><span class="kc">null</span>
+
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="constructor_NaN">
+  <h2>
+    <a href="#constructor_NaN" name="constructor_NaN" class="pilcrow">&#182;</a>
+    Constructor
+  </h2>
+</div>
+
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">options</span>
+      <span class="dox_type">Object</span>
+      <span>The options to be used to construct/test our composed <code>View</code></span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">constructor: </span><span class="nf">(options) -&gt;</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-7" id="section-7">&#182;</a>
+</div>
+<p>Assign <code>@item</code> to <code>this</code> by default.
+This supports function-driven composition patterns.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="vi">@item = </span><span class="k">this</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-8" id="section-8">&#182;</a>
+</div>
+<p>Clone and ensure that <code>options</code> is an object.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="vi">@options = </span><span class="nx">_</span><span class="p">.</span><span class="nx">extend</span> <span class="p">{},</span> <span class="nx">options</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-9" id="section-9">&#182;</a>
+</div>
+<p>Invoke <code>@initialize</code> if it's available.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nx">@initialize</span><span class="o">?</span> <span class="nx">arguments</span><span class="p">...</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="mixin%20options">
+  <h2>
+    <a href="#mixin%20options" name="mixin%20options" class="pilcrow">&#182;</a>
+    Mixin Options
+  </h2>
+</div>
+
+
+<p>Instruct the <code>Disposable.Mixin</code> to dispose all of our properties upon
+disposal.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">mixins/disposable.coffee
+</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">mixinOptions:</span>
+      <span class="nv">disposable:</span>
+        <span class="nv">disposeAll: </span><span class="kc">true</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="compose">
+  <h2>
+    <a href="#compose" name="compose" class="pilcrow">&#182;</a>
+    Compose
+  </h2>
+</div>
+
+
+<p>The compose method is called to construct the underlying <code>View</code>.
+It is a no-op method by default, and gets assigned during the <code>Composer</code>'s
+<code>_compose</code> method.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">application/composer.coffee
+</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">compose: </span><span class="nf">-&gt;</span> <span class="c1"># Empty per default.</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="check">
+  <h2>
+    <a href="#check" name="check" class="pilcrow">&#182;</a>
+    Check
+  </h2>
+</div>
+
+
+<p>This method is called when the <code>Composer</code> attempts to re-compose this
+composition. The default implementation checks if the keys/values of
+<code>options</code> are the same as the keys/values of <code>@options</code>, however this method
+may be overridden during the <code>Composer</code>'s <code>_compose</code> method.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">application/composer.coffee
+</span>
+    </div>
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">options</span>
+      <span class="dox_type">Object</span>
+      <span>The options for the new composition.</span>
+    </div>
+    <div class="dox_tag_title">Returns</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span class="dox_type">Boolean</span>
+      <span>Whether <code>options</code> matches <code>@options</code></span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">check: </span><span class="nf">(options) -&gt;</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isEqual</span> <span class="nx">options</span><span class="p">,</span> <span class="nx">@options</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="stale">
+  <h2>
+    <a href="#stale" name="stale" class="pilcrow">&#182;</a>
+    Stale
+  </h2>
+</div>
+
+
+<p>Getter/setter for the <code>@_stale</code> property.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">value</span>
+      <span class="dox_type">Undefined</span>
+      <span>Gets the current value of <code>@_stale</code>.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">value</span>
+      <span class="dox_type">Boolean</span>
+      <span>Sets the current value of <code>@_stale</code>.</span>
+    </div>
+    <div class="dox_tag_title">Returns</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span class="dox_type">Boolean?</span>
+      <span>The value of <code>@_stale</code> if <code>value</code> is <code>undefined</code>.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">stale: </span><span class="nf">(value) -&gt;</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-14" id="section-14">&#182;</a>
+</div>
+<p>Return the current property if not requesting a change.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="k">return</span> <span class="nx">@_stale</span> <span class="k">unless</span> <span class="nx">value</span><span class="o">?</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-15" id="section-15">&#182;</a>
+</div>
+<p>Set the stale property for every item in the composition that has it.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="vi">@_stale = </span><span class="nx">value</span>
+      <span class="nx">_</span><span class="p">.</span><span class="nx">each</span> <span class="k">this</span><span class="p">,</span> <span class="nf">(property, name) -&gt;</span>
+        <span class="k">return</span> <span class="k">if</span> <span class="nx">property</span> <span class="o">is</span> <span class="k">this</span>
+        <span class="k">return</span> <span class="k">unless</span> <span class="nx">property</span><span class="o">?</span>
+        <span class="k">return</span> <span class="k">unless</span> <span class="nx">property</span><span class="p">.</span><span class="nx">_stale</span><span class="o">?</span>
+        <span class="nv">property._stale = </span><span class="nx">value</span>
+
+      <span class="k">return</span> <span class="c1"># undefined</span>
+
+  <span class="p">),</span> <span class="nv">mixins: </span><span class="p">[</span>
+    <span class="s">&#39;Evented.Mixin&#39;</span>
+    <span class="s">&#39;Disposable.Mixin&#39;</span>
+  <span class="p">]</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

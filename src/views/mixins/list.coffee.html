@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>list.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../../doc-style.css" />
+  <script src="../../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../../", thisFile = "src/views/mixins/list.coffee", defaultSidebar = true;
+  </script>
+  <script src="../../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>list.coffee</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="nx">define</span> <span class="p">[</span>
+  <span class="s">&#39;oraculum&#39;</span>
+  <span class="s">&#39;oraculum/libs&#39;</span>
+  <span class="s">&#39;oraculum/mixins/evented&#39;</span>
+  <span class="s">&#39;oraculum/mixins/evented-method&#39;</span>
+  <span class="s">&#39;oraculum/views/mixins/subview&#39;</span>
+<span class="p">],</span> <span class="nf">(Oraculum) -&gt;</span>
+  <span class="s">&#39;use strict&#39;</span>
+
+  <span class="nv">_ = </span><span class="nx">Oraculum</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;underscore&#39;</span>
+
+  <span class="nv">subviewPrefix = </span><span class="s">&#39;modelView:&#39;</span>
+  <span class="nv">subviewName = </span><span class="nf">({cid}) -&gt;</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">subviewPrefix</span><span class="si">}#{</span><span class="nx">cid</span><span class="si">}</span><span class="s">&quot;</span>
+
+  <span class="nv">initModelView = </span><span class="nf">(model) -&gt;</span>
+    <span class="p">{</span><span class="nx">modelView</span><span class="p">,</span> <span class="nx">viewOptions</span><span class="p">}</span> <span class="o">=</span> <span class="nx">@mixinOptions</span><span class="p">.</span><span class="nx">list</span>
+    <span class="k">throw</span> <span class="k">new</span> <span class="nx">TypeError</span> <span class="s">&#39;&#39;&#39;</span>
+<span class="s">      List.ViewMixin: The modelView mixin option must be defined or the</span>
+<span class="s">      initModelView() must be overridden.</span>
+<span class="s">    &#39;&#39;&#39;</span> <span class="k">unless</span> <span class="nx">modelView</span>
+    <span class="nv">viewOptions = </span><span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span> <span class="nx">viewOptions</span>
+    <span class="k">then</span> <span class="nx">viewOptions</span><span class="p">.</span><span class="nx">call</span> <span class="k">this</span><span class="p">,</span> <span class="p">{</span><span class="nx">model</span><span class="p">}</span>
+    <span class="k">else</span> <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span> <span class="p">{</span> <span class="nx">model</span> <span class="p">},</span> <span class="nx">viewOptions</span>
+    <span class="k">return</span> <span class="nx">@createView</span> <span class="p">{</span> <span class="nv">view: </span><span class="nx">modelView</span><span class="p">,</span> <span class="nx">viewOptions</span> <span class="p">}</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-2" id="section-2">&#182;</a>
+</div>
+<p>A function that will be executed after each filter.
+Hides excluded items by default.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+  <span class="nv">toggleView = </span><span class="nf">(view, included) -&gt;</span>
+    <span class="nx">view</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">stop</span> <span class="kc">true</span><span class="p">,</span> <span class="kc">true</span>
+    <span class="nx">view</span><span class="p">.</span><span class="nx">$el</span><span class="p">.</span><span class="nx">css</span> <span class="s">&#39;display&#39;</span><span class="p">,</span> <span class="k">unless</span> <span class="nx">included</span> <span class="k">then</span> <span class="s">&#39;none&#39;</span> <span class="k">else</span> <span class="s">&#39;&#39;</span>
+
+  <span class="nx">Oraculum</span><span class="p">.</span><span class="nx">defineMixin</span> <span class="s">&#39;List.ViewMixin&#39;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="nv">mixinOptions:</span>
+      <span class="nv">list:</span>
+        <span class="nv">filterer: </span><span class="kc">null</span>
+        <span class="nv">modelView: </span><span class="s">&#39;View&#39;</span>
+        <span class="nv">renderItems: </span><span class="kc">true</span>
+        <span class="nv">viewOptions: </span><span class="kc">null</span>
+        <span class="nv">listSelector: </span><span class="kc">null</span>
+        <span class="nv">viewSelector: </span><span class="kc">undefined</span>
+        <span class="nv">filterCallback: </span><span class="nx">toggleView</span>
+      <span class="nv">eventedMethods:</span>
+        <span class="nv">render: </span><span class="p">{}</span>
+
+    <span class="nv">mixconfig: </span><span class="nf">({list}, options = {}) -&gt;</span>
+      <span class="p">{</span><span class="nx">viewOptions</span><span class="p">,</span> <span class="nx">modelView</span><span class="p">}</span> <span class="o">=</span> <span class="nx">options</span>
+      <span class="nv">list.modelView = </span><span class="nx">modelView</span> <span class="k">if</span> <span class="nx">modelView</span><span class="o">?</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-3" id="section-3">&#182;</a>
+</div>
+<p>Allow the viewOptions constructor arg to override our mixinOptions
+viewOptions if it's a function, otherwise extend it as an object.
+<strong>Functions always win</strong></p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nv">list.viewOptions = </span><span class="nx">viewOptions</span> <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span> <span class="nx">viewOptions</span>
+      <span class="k">unless</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span> <span class="nx">list</span><span class="p">.</span><span class="nx">viewOptions</span>
+        <span class="nv">list.viewOptions = </span><span class="nx">_</span><span class="p">.</span><span class="nx">extend</span> <span class="p">{},</span> <span class="nx">list</span><span class="p">.</span><span class="nx">viewOptions</span><span class="p">,</span> <span class="nx">viewOptions</span>
+
+      <span class="p">{</span><span class="nx">filterer</span><span class="p">,</span> <span class="nx">filterCallback</span><span class="p">}</span> <span class="o">=</span> <span class="nx">options</span>
+      <span class="nv">list.filterer = </span><span class="nx">filterer</span> <span class="k">if</span> <span class="nx">filterer</span><span class="o">?</span>
+      <span class="nv">list.filterCallback = </span><span class="nx">filterCallback</span> <span class="k">if</span> <span class="nx">filterCallback</span><span class="o">?</span>
+
+      <span class="nv">renderItems = </span><span class="nx">options</span><span class="p">.</span><span class="nx">renderItems</span>
+      <span class="nv">list.renderItems = </span><span class="nx">renderItems</span> <span class="k">if</span> <span class="nx">renderItems</span><span class="o">?</span>
+
+      <span class="p">{</span><span class="nx">listSelector</span><span class="p">,</span> <span class="nx">viewSelector</span><span class="p">}</span> <span class="o">=</span> <span class="nx">options</span>
+      <span class="nv">list.listSelector = </span><span class="nx">listSelector</span> <span class="k">if</span> <span class="nx">listSelector</span><span class="o">?</span>
+      <span class="nv">list.viewSelector = </span><span class="nx">viewSelector</span> <span class="k">if</span> <span class="nx">viewSelector</span><span class="o">?</span>
+
+    <span class="nv">mixinitialize: </span><span class="nf">-&gt;</span>
+      <span class="vi">@visibleModels = </span><span class="p">[]</span>
+      <span class="nx">@initModelView</span> <span class="o">?=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">bind</span> <span class="nx">initModelView</span><span class="p">,</span> <span class="k">this</span>
+      <span class="nx">@listenTo</span> <span class="nx">@collection</span><span class="p">,</span> <span class="s">&#39;add&#39;</span><span class="p">,</span> <span class="nx">@modelAdded</span>
+      <span class="nx">@listenTo</span> <span class="nx">@collection</span><span class="p">,</span> <span class="s">&#39;remove&#39;</span><span class="p">,</span> <span class="nx">@modelRemoved</span>
+      <span class="nx">@listenTo</span> <span class="nx">@collection</span><span class="p">,</span> <span class="s">&#39;reset sort&#39;</span><span class="p">,</span> <span class="nx">@renderAllModels</span>
+      <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;render:after&#39;</span><span class="p">,</span> <span class="nx">@renderCollection</span><span class="p">,</span> <span class="k">this</span>
+
+    <span class="nv">modelAdded: </span><span class="nf">(model, collection, {at:index}) -&gt;</span>
+      <span class="nv">view = </span><span class="nx">@renderModel</span> <span class="nx">model</span>
+      <span class="nx">@insertView</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">view</span><span class="p">,</span> <span class="nx">index</span>
+
+    <span class="nv">modelRemoved: </span><span class="nf">(model) -&gt;</span>
+      <span class="nx">@updateVisibleModels</span> <span class="nx">model</span><span class="p">,</span> <span class="kc">false</span>
+      <span class="nx">@removeSubview</span> <span class="nx">subviewName</span> <span class="nx">model</span>
+
+    <span class="nv">renderCollection: </span><span class="nf">-&gt;</span>
+      <span class="p">{</span><span class="nx">renderItems</span><span class="p">,</span> <span class="nx">listSelector</span><span class="p">}</span> <span class="o">=</span> <span class="nx">@mixinOptions</span><span class="p">.</span><span class="nx">list</span>
+      <span class="vi">@_$list = </span><span class="k">if</span> <span class="nx">listSelector</span><span class="o">?</span> <span class="k">then</span> <span class="nx">@$</span> <span class="nx">listSelector</span>  <span class="k">else</span> <span class="nx">@$el</span>
+      <span class="nx">@renderAllModels</span><span class="p">()</span> <span class="k">if</span> <span class="nx">renderItems</span>
+
+    <span class="nv">renderAllModels: </span><span class="nf">-&gt;</span>
+      <span class="vi">@visibleModels = </span><span class="p">[]</span>
+      <span class="nv">remainingViewsByName = </span><span class="p">{}</span>
+      <span class="nv">models = </span><span class="nx">@collection</span><span class="p">.</span><span class="nx">models</span>
+
+      <span class="nx">_</span><span class="p">.</span><span class="nx">each</span> <span class="nx">models</span><span class="p">,</span> <span class="nf">(model) =&gt;</span>
+        <span class="nv">name = </span><span class="nx">subviewName</span> <span class="nx">model</span>
+        <span class="k">return</span> <span class="k">unless</span> <span class="nv">view = </span><span class="nx">@subview</span> <span class="nx">name</span>
+        <span class="nx">remainingViewsByName</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="nx">view</span>
+
+      <span class="nx">_</span><span class="p">.</span><span class="nx">each</span> <span class="nx">@_subviewsByName</span><span class="p">,</span> <span class="nf">(view, name) =&gt;</span>
+        <span class="k">return</span> <span class="k">unless</span> <span class="mi">0</span> <span class="o">is</span> <span class="nx">name</span><span class="p">.</span><span class="nx">indexOf</span> <span class="nx">subviewPrefix</span>
+        <span class="nx">@removeSubview</span> <span class="nx">name</span> <span class="k">unless</span> <span class="nx">name</span> <span class="k">of</span> <span class="nx">remainingViewsByName</span>
+
+      <span class="nx">_</span><span class="p">.</span><span class="nx">each</span> <span class="nx">models</span><span class="p">,</span> <span class="nf">(model, index) =&gt;</span>
+        <span class="nv">name = </span><span class="nx">subviewName</span> <span class="nx">model</span>
+        <span class="nv">view = </span><span class="nx">@subview</span> <span class="nx">name</span>
+        <span class="nx">view</span> <span class="o">?=</span> <span class="nx">@renderModel</span> <span class="nx">model</span>
+        <span class="nx">@insertView</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">view</span><span class="p">,</span> <span class="nx">index</span>
+
+      <span class="nx">@trigger</span> <span class="s">&#39;visibilityChange&#39;</span><span class="p">,</span> <span class="nx">@visibleModels</span>
+
+    <span class="nv">getModelViews: </span><span class="nf">-&gt;</span>
+      <span class="k">return</span> <span class="nx">_</span><span class="p">.</span><span class="nx">chain</span><span class="p">(</span><span class="nx">@_subviewsByName</span><span class="p">)</span>
+      <span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="nf">(view, name) -&gt;</span> <span class="mi">0</span> <span class="o">is</span> <span class="nx">name</span><span class="p">.</span><span class="nx">indexOf</span> <span class="nx">subviewPrefix</span><span class="p">)</span>
+      <span class="p">.</span><span class="nx">values</span><span class="p">().</span><span class="nx">value</span><span class="p">()</span>
+
+    <span class="nv">renderModel: </span><span class="nf">(model) -&gt;</span>
+      <span class="nv">viewName = </span><span class="nx">subviewName</span> <span class="nx">model</span>
+      <span class="nv">view = </span><span class="nx">@subview</span> <span class="nx">viewName</span>
+      <span class="nx">view</span> <span class="o">?=</span> <span class="nx">@subview</span> <span class="nx">viewName</span><span class="p">,</span> <span class="nx">@initModelView</span> <span class="nx">model</span>
+      <span class="nx">view</span><span class="p">.</span><span class="nx">render</span><span class="p">()</span>
+      <span class="k">return</span> <span class="nx">view</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-4" id="section-4">&#182;</a>
+</div>
+<p>Applies a filter to the collection view.
+Expects an iterator function as first parameter
+which need to return true or false.
+Optional filter callback which is called to
+show/hide the view or mark it otherwise as filtered.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+    <span class="nv">filter: </span><span class="nf">(filterer, filterCallback) -&gt;</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-5" id="section-5">&#182;</a>
+</div>
+<p>Save the filterer and filterCallback functions.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="k">if</span> <span class="nx">filterer</span> <span class="o">is</span> <span class="kc">null</span> <span class="o">or</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span> <span class="nx">filterer</span>
+        <span class="vi">@mixinOptions.list.filterer = </span><span class="nx">filterer</span>
+
+      <span class="k">if</span> <span class="nx">filterCallback</span> <span class="o">is</span> <span class="kc">null</span> <span class="o">or</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span> <span class="nx">filterCallback</span>
+        <span class="vi">@mixinOptions.list.filterCallback = </span><span class="nx">filterCallback</span>
+
+      <span class="p">{</span><span class="nx">filterer</span><span class="p">,</span> <span class="nx">filterCallback</span><span class="p">}</span> <span class="o">=</span> <span class="nx">@mixinOptions</span><span class="p">.</span><span class="nx">list</span>
+
+      <span class="nv">hasItemViews = </span><span class="nx">do</span> <span class="o">=&gt;</span>
+        <span class="k">if</span> <span class="nx">@_subviews</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span>
+          <span class="k">for</span> <span class="nx">name</span> <span class="k">of</span> <span class="nx">@_subviewsByName</span> <span class="k">when</span> <span class="mi">0</span> <span class="o">is</span> <span class="nx">name</span><span class="p">.</span><span class="nx">indexOf</span> <span class="nx">subviewPrefix</span>
+            <span class="k">return</span> <span class="kc">true</span>
+        <span class="k">return</span> <span class="kc">false</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-6" id="section-6">&#182;</a>
+</div>
+<p>Show/hide existing views.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="k">if</span> <span class="nx">hasItemViews</span>
+        <span class="k">for</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">index</span> <span class="k">in</span> <span class="nx">@collection</span><span class="p">.</span><span class="nx">models</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-7" id="section-7">&#182;</a>
+</div>
+<p>Apply filter to the model.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+          <span class="nv">included = </span><span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span> <span class="nx">filterer</span>
+          <span class="k">then</span> <span class="nx">filterer</span><span class="p">.</span><span class="nx">call</span> <span class="k">this</span><span class="p">,</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">index</span>
+          <span class="k">else</span> <span class="kc">true</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-8" id="section-8">&#182;</a>
+</div>
+<p>Show/hide the view accordingly.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+          <span class="nv">view = </span><span class="nx">@subview</span> <span class="nx">subviewName</span> <span class="nx">model</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-9" id="section-9">&#182;</a>
+</div>
+<p>A view has not been created for this model yet.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+          <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">            List.ViewMixin</span><span class="err">#</span><span class="s">filter No view found for </span><span class="si">#{</span><span class="nx">model</span><span class="p">.</span><span class="nx">cid</span><span class="si">}</span><span class="s"></span>
+<span class="s">          &quot;&quot;&quot;</span> <span class="k">unless</span> <span class="nx">view</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-10" id="section-10">&#182;</a>
+</div>
+<p>Show/hide or mark the view accordingly.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+          <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span> <span class="nx">filterCallback</span>
+            <span class="nx">filterCallback</span><span class="p">.</span><span class="nx">call</span> <span class="k">this</span><span class="p">,</span> <span class="nx">view</span><span class="p">,</span> <span class="nx">included</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-11" id="section-11">&#182;</a>
+</div>
+<p>Update visibleModels list, but do not trigger an event immediately.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+          <span class="nx">@updateVisibleModels</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">included</span><span class="p">,</span> <span class="kc">false</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-12" id="section-12">&#182;</a>
+</div>
+<p>Trigger a combined <code>visibilityChange</code> event.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nx">@trigger</span> <span class="s">&#39;visibilityChange&#39;</span><span class="p">,</span> <span class="nx">@visibleModels</span>
+
+    <span class="nv">insertView: </span><span class="nf">(model, view, position) -&gt;</span>
+      <span class="p">{</span><span class="nx">filterer</span><span class="p">,</span> <span class="nx">filterCallback</span><span class="p">,</span> <span class="nx">viewSelector</span><span class="p">}</span> <span class="o">=</span> <span class="nx">@mixinOptions</span><span class="p">.</span><span class="nx">list</span>
+
+      <span class="nv">included = </span><span class="kc">true</span>
+      <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span> <span class="nx">filterer</span>
+        <span class="nv">included = </span><span class="nx">filterer</span><span class="p">.</span><span class="nx">call</span> <span class="k">this</span><span class="p">,</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">position</span>
+        <span class="nx">filterCallback</span><span class="p">.</span><span class="nx">call</span> <span class="k">this</span><span class="p">,</span> <span class="nx">view</span><span class="p">,</span> <span class="nx">included</span> <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span> <span class="nx">filterCallback</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-13" id="section-13">&#182;</a>
+</div>
+<p>Use .css instead of .toggle to avoid jquery's assumptions
+about what display mode an element should have</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nx">toggleView</span> <span class="nx">view</span><span class="p">,</span> <span class="nx">included</span>
+
+      <span class="nv">length = </span><span class="nx">@collection</span><span class="p">.</span><span class="nx">length</span>
+      <span class="nv">position = </span><span class="nx">@collection</span><span class="p">.</span><span class="nx">indexOf</span> <span class="nx">model</span> <span class="k">unless</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isNumber</span> <span class="nx">position</span>
+
+      <span class="nv">insertInMiddle = </span><span class="p">(</span><span class="mi">0</span> <span class="o">&lt;</span> <span class="nx">position</span> <span class="o">&lt;</span> <span class="nx">length</span><span class="p">)</span>
+      <span class="nv">isEnd = </span><span class="nf">(length) -&gt;</span> <span class="nx">length</span> <span class="k">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="nx">position</span><span class="p">]</span>
+
+      <span class="k">if</span> <span class="nx">insertInMiddle</span> <span class="o">or</span> <span class="nx">viewSelector</span>
+        <span class="nv">children = </span><span class="nx">@_$list</span><span class="p">.</span><span class="nx">children</span> <span class="nx">viewSelector</span>
+        <span class="k">if</span> <span class="nx">children</span><span class="p">[</span><span class="nx">position</span><span class="p">]</span> <span class="o">isnt</span> <span class="nx">view</span><span class="p">.</span><span class="nx">el</span>
+          <span class="nv">childrenLength = </span><span class="nx">children</span><span class="p">.</span><span class="nx">length</span>
+          <span class="k">if</span> <span class="nx">isEnd</span> <span class="nx">childrenLength</span>
+          <span class="k">then</span> <span class="nx">@_$list</span><span class="p">.</span><span class="nx">append</span> <span class="nx">view</span><span class="p">.</span><span class="nx">el</span>
+          <span class="k">else</span> <span class="k">if</span> <span class="nx">position</span> <span class="o">is</span> <span class="mi">0</span>
+          <span class="k">then</span> <span class="nx">children</span><span class="p">.</span><span class="nx">eq</span><span class="p">(</span><span class="nx">position</span><span class="p">).</span><span class="nx">before</span> <span class="nx">view</span><span class="p">.</span><span class="nx">el</span>
+          <span class="k">else</span> <span class="nx">children</span><span class="p">.</span><span class="nx">eq</span><span class="p">(</span><span class="nx">position</span> <span class="o">-</span> <span class="mi">1</span><span class="p">).</span><span class="nx">after</span> <span class="nx">view</span><span class="p">.</span><span class="nx">el</span>
+      <span class="k">else</span>
+        <span class="nv">method = </span><span class="s">&#39;prepend&#39;</span>
+        <span class="nv">method = </span><span class="s">&#39;append&#39;</span> <span class="k">if</span> <span class="nx">isEnd</span> <span class="nx">length</span>
+        <span class="nx">@_$list</span><span class="p">[</span><span class="nx">method</span><span class="p">]</span> <span class="nx">view</span><span class="p">.</span><span class="nx">el</span>
+
+      <span class="nx">view</span><span class="p">.</span><span class="nx">trigger</span> <span class="s">&#39;addedToParent&#39;</span>
+      <span class="nx">@updateVisibleModels</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">included</span>
+
+      <span class="k">return</span> <span class="nx">view</span>
+
+    <span class="nv">updateVisibleModels: </span><span class="nf">(model, includedInFilter, triggerEvent = true) -&gt;</span>
+      <span class="nv">visibilityChanged = </span><span class="kc">false</span>
+      <span class="nv">visibleModelsIndex = </span><span class="nx">@visibleModels</span><span class="p">.</span><span class="nx">indexOf</span> <span class="nx">model</span>
+      <span class="nv">includedInVisibleItems = </span><span class="nx">visibleModelsIndex</span> <span class="o">isnt</span> <span class="o">-</span><span class="mi">1</span>
+
+      <span class="k">if</span> <span class="nx">includedInFilter</span> <span class="o">and</span> <span class="o">not</span> <span class="nx">includedInVisibleItems</span>
+        <span class="nx">@visibleModels</span><span class="p">.</span><span class="nx">push</span> <span class="nx">model</span>
+        <span class="nv">visibilityChanged = </span><span class="kc">true</span>
+      <span class="k">else</span> <span class="k">if</span> <span class="o">not</span> <span class="nx">includedInFilter</span> <span class="o">and</span> <span class="nx">includedInVisibleItems</span>
+        <span class="nx">@visibleModels</span><span class="p">.</span><span class="nx">splice</span> <span class="nx">visibleModelsIndex</span><span class="p">,</span> <span class="mi">1</span>
+        <span class="nv">visibilityChanged = </span><span class="kc">true</span>
+
+      <span class="k">if</span> <span class="nx">visibilityChanged</span> <span class="o">and</span> <span class="nx">triggerEvent</span>
+        <span class="nx">@trigger</span> <span class="s">&#39;visibilityChange&#39;</span><span class="p">,</span> <span class="nx">@visibleModels</span>
+
+      <span class="k">return</span> <span class="nx">visibilityChanged</span>
+
+  <span class="p">},</span> <span class="nv">mixins: </span><span class="p">[</span>
+    <span class="s">&#39;Evented.Mixin&#39;</span>
+    <span class="s">&#39;Subview.ViewMixin&#39;</span>
+    <span class="s">&#39;EventedMethod.Mixin&#39;</span>
+  <span class="p">]</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

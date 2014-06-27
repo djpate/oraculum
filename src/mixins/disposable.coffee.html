@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>disposable.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../doc-style.css" />
+  <script src="../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../", thisFile = "src/mixins/disposable.coffee", defaultSidebar = true;
+  </script>
+  <script src="../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+      <div class="heading h1">
+        <a href="#disposable.mixin">Disposable.Mixin</a>
+      </div>
+      <div class="heading h2">
+        <a href="#mixin%20options">Mixin Options</a>
+      </div>
+      <div class="heading h2">
+        <a href="#dispose">Dispose</a>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>disposable.coffee</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="nx">define</span> <span class="p">[</span>
+  <span class="s">&#39;oraculum&#39;</span>
+  <span class="s">&#39;oraculum/libs&#39;</span>
+  <span class="s">&#39;oraculum/mixins/evented&#39;</span>
+  <span class="s">&#39;oraculum/mixins/freezable&#39;</span>
+<span class="p">],</span> <span class="nf">(Oraculum) -&gt;</span>
+  <span class="s">&#39;use strict&#39;</span>
+
+  <span class="nv">_ = </span><span class="nx">Oraculum</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;underscore&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="disposable.mixin">
+  <h1>
+    <a href="#disposable.mixin" name="disposable.mixin" class="pilcrow">&#182;</a>
+    Disposable.Mixin
+  </h1>
+</div>
+
+
+<p>This mixin is the heart of the memory management in Oraculum.
+Originally derived from Chaplin's per-class dispose() implementations,
+this mixin provides disposal in a uniform way that can be applied to any
+definition provided by Oraculum.</p>
+  </div>
+  <div class="body">
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+  <span class="nx">Oraculum</span><span class="p">.</span><span class="nx">defineMixin</span> <span class="s">&#39;Disposable.Mixin&#39;</span><span class="p">,</span> <span class="p">{</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="mixin%20options">
+  <h2>
+    <a href="#mixin%20options" name="mixin%20options" class="pilcrow">&#182;</a>
+    Mixin Options
+  </h2>
+</div>
+
+
+<p>Provide a namespace for disposable configuration and expose the
+<code>disposeAll</code> configuration option. When true, the <code>dispose</code> method
+will attempt to invoke <code>dispose</code> on any top-level attribute of the
+instance it was called on.</p>
+  </div>
+  <div class="body">
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">mixinOptions:</span>
+      <span class="nv">disposable:</span>
+        <span class="nv">disposeAll: </span><span class="kc">false</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="dispose">
+  <h2>
+    <a href="#dispose" name="dispose" class="pilcrow">&#182;</a>
+    Dispose
+  </h2>
+</div>
+
+
+<p>The disposal interface.</p>
+  </div>
+  <div class="body">
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">dispose: </span><span class="nf">-&gt;</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-5" id="section-5">&#182;</a>
+</div>
+<p>Gate the method based on the disposed state of the instance.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="k">return</span> <span class="k">this</span> <span class="k">if</span> <span class="nx">@disposed</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-6" id="section-6">&#182;</a>
+</div>
+<p>Provide event hooks for SRP disposal. I.e. if any mixed in behavior
+creates non-primitive memory-unsafe objects, notify them of the
+impending disposal of this instance, and allow them an opportunity
+to clean up after themselves.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+      <span class="nx">@trigger</span> <span class="s">&#39;dispose:before&#39;</span><span class="p">,</span> <span class="k">this</span>
+      <span class="nx">@trigger</span> <span class="s">&#39;dispose&#39;</span><span class="p">,</span> <span class="k">this</span>
+      <span class="vi">@disposed = </span><span class="kc">true</span>
+      <span class="nx">@trigger</span> <span class="s">&#39;dispose:after&#39;</span><span class="p">,</span> <span class="k">this</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-7" id="section-7">&#182;</a>
+</div>
+<p>Remove all event listeners from the instance.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nx">@</span><span class="kc">off</span><span class="p">()</span>
+      <span class="nx">@stopListening</span><span class="p">()</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-8" id="section-8">&#182;</a>
+</div>
+<p>Dispose of any disposable properties if the <code>disposeAll</code> bit it set.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="k">if</span> <span class="nx">@mixinOptions</span><span class="p">.</span><span class="nx">disposable</span><span class="o">?</span><span class="p">.</span><span class="nx">disposeAll</span>
+        <span class="nx">_</span><span class="p">.</span><span class="nx">each</span> <span class="k">this</span><span class="p">,</span> <span class="nf">(prop, name) -&gt;</span> <span class="nx">prop</span><span class="o">?</span><span class="p">.</span><span class="nx">dispose</span><span class="o">?</span><span class="p">()</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-9" id="section-9">&#182;</a>
+</div>
+<p>Delete all of our non-object primitives, assuming we're not frozen.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="k">unless</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">isFrozen</span><span class="o">?</span> <span class="k">this</span>
+        <span class="nx">_</span><span class="p">.</span><span class="nx">each</span> <span class="k">this</span><span class="p">,</span> <span class="nf">(prop, name) =&gt;</span>
+          <span class="k">return</span> <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span> <span class="nx">prop</span>
+          <span class="k">return</span> <span class="k">unless</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isObject</span> <span class="nx">prop</span>
+          <span class="k">delete</span> <span class="nx">@</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-10" id="section-10">&#182;</a>
+</div>
+<p>Freeze the instance to prevent further changes.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nx">@freeze</span><span class="p">()</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-11" id="section-11">&#182;</a>
+</div>
+<p>Finally, remove the instance from the factory.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nx">@__dispose</span> <span class="k">this</span> <span class="k">if</span> <span class="nx">@__factory</span><span class="p">().</span><span class="nx">verifyTags</span> <span class="k">this</span>
+
+  <span class="p">},</span> <span class="nv">mixins: </span><span class="p">[</span>
+    <span class="s">&#39;Evented.Mixin&#39;</span>
+    <span class="s">&#39;Freezable.Mixin&#39;</span>
+  <span class="p">]</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

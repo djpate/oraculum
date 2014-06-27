@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>middleware-method.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../doc-style.css" />
+  <script src="../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../", thisFile = "src/mixins/middleware-method.coffee", defaultSidebar = true;
+  </script>
+  <script src="../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+      <div class="heading h1">
+        <a href="#make%20middleware%20method">Make Middleware Method</a>
+      </div>
+      <div class="heading h2">
+        <a href="#mixin%20options">Mixin Options</a>
+      </div>
+      <div class="heading h3">
+        <a href="#example%20configuration">Example configuration</a>
+      </div>
+      <div class="heading h2">
+        <a href="#mixinitialize">Mixinitialize</a>
+      </div>
+      <div class="heading h2">
+        <a href="#make%20middleware%20methods">Make Middleware Methods</a>
+      </div>
+      <div class="heading h2">
+        <a href="#make%20middleware%20method">Make Middleware Method</a>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>middleware-method.coffee</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="nx">define</span> <span class="p">[</span>
+  <span class="s">&#39;oraculum&#39;</span>
+  <span class="s">&#39;oraculum/libs&#39;</span>
+  <span class="s">&#39;oraculum/mixins/evented&#39;</span>
+  <span class="s">&#39;oraculum/extensions/make-middleware-method&#39;</span>
+<span class="p">],</span> <span class="nf">(Oraculum) -&gt;</span>
+  <span class="s">&#39;use strict&#39;</span>
+
+  <span class="nv">_ = </span><span class="nx">Oraculum</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;underscore&#39;</span>
+  <span class="nv">makeMiddlewareMethod = </span><span class="nx">Oraculum</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;makeMiddlewareMethod&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="make%20middleware%20method">
+  <h1>
+    <a href="#make%20middleware%20method" name="make%20middleware%20method" class="pilcrow">&#182;</a>
+    Make Middleware Method
+  </h1>
+</div>
+
+
+<p>This mixin exposes the heart of our dynamic AOP-based decoupling.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">extensions/make-middleware-method.coffee
+</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+  <span class="nx">Oraculum</span><span class="p">.</span><span class="nx">defineMixin</span> <span class="s">&#39;MiddlewareMethod.Mixin&#39;</span><span class="p">,</span> <span class="p">{</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="mixin%20options">
+  <h2>
+    <a href="#mixin%20options" name="mixin%20options" class="pilcrow">&#182;</a>
+    Mixin Options
+  </h2>
+</div>
+
+
+<p>Allow the targeting of our instance methods to be middlewared using a mapping
+of method names and middlewared method spec as described in the examples below.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">middlewaredMethods</span>
+      <span class="dox_type">Object</span>
+      <span>Object containing the middleware map.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="example%20configuration">
+  <h3>
+    <a href="#example%20configuration" name="example%20configuration" class="pilcrow">&#182;</a>
+    Example configuration
+  </h3>
+</div>
+
+
+
+<div class="highlight"><pre><code><span class="nv">mixinOptions:</span>
+  <span class="nv">middlewaredMethods:</span>
+    <span class="c1"># Hook the `render` method using defaults.</span>
+    <span class="nv">render: </span><span class="p">{}</span>
+
+    <span class="c1"># Hook the `attach` method using defaults.</span>
+    <span class="nv">attach:</span>
+      <span class="nv">emitter: </span><span class="kc">null</span> <span class="c1"># defaults to this instance</span>
+      <span class="nv">trigger: </span><span class="kc">null</span> <span class="c1"># defaults to &#39;trigger&#39;</span>
+
+    <span class="c1"># Hook the `subview` method using `Backbone` as the</span>
+    <span class="c1"># event emitter and prefix its event names with</span>
+    <span class="c1"># `SomeView:`.</span>
+    <span class="nv">subview:</span>
+      <span class="nv">emitter: </span><span class="nx">Backbone</span>
+      <span class="nv">eventPrefix: </span><span class="s">&#39;SomeView&#39;</span>
+
+    <span class="c1"># Hook the `getTemplateData` method using `publishEvent`</span>
+    <span class="c1"># as the triggering mechanism.</span>
+    <span class="nv">getTemplateData:</span>
+      <span class="nv">trigger: </span><span class="s">&#39;publishEvent&#39;</span>
+
+    <span class="c1"># Hook the view element selector using the view&#39;s</span>
+    <span class="c1"># element as the emitter and the `fire` event as the</span>
+    <span class="c1"># triggering mechanism.</span>
+    <span class="nv">$: </span><span class="nf">-&gt;</span>
+      <span class="nv">emitter: </span><span class="nx">@$el</span>
+      <span class="nv">trigger: </span><span class="s">&#39;fire&#39;</span>
+</code></pre></div>
+
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="mixinitialize">
+  <h2>
+    <a href="#mixinitialize" name="mixinitialize" class="pilcrow">&#182;</a>
+    Mixinitialize
+  </h2>
+</div>
+
+
+<p>Invoke <code>@makeMiddlewareMethods</code>.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">@makeMiddlewareMethods
+</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">mixinitialize: </span><span class="nf">-&gt;</span>
+      <span class="nx">@makeMiddlewareMethods</span><span class="p">()</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="make%20middleware%20methods">
+  <h2>
+    <a href="#make%20middleware%20methods" name="make%20middleware%20methods" class="pilcrow">&#182;</a>
+    Make Middleware Methods
+  </h2>
+</div>
+
+
+<p>Iterate over the middleware map, passing our method names and their
+middleware specs through to <code>@makeMiddlewareMethod</code>.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">@makeMiddlewareMethod
+</span>
+    </div>
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">middlewareMap?</span>
+      <span class="dox_type">Array</span>
+      <span>An middleware map. Defaults to our configured middleware map.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">makeMiddlewareMethods: </span><span class="nf">(middlewareMap) -&gt;</span>
+      <span class="k">return</span> <span class="k">unless</span> <span class="nx">middlewareMap</span> <span class="o">?=</span> <span class="nx">@mixinOptions</span><span class="p">.</span><span class="nx">middlewaredMethods</span>
+      <span class="nx">_</span><span class="p">.</span><span class="nx">each</span> <span class="nx">middlewareMap</span><span class="p">,</span> <span class="nf">({emitter, trigger, prefix}, method) =&gt;</span>
+        <span class="nx">@makeMiddlewareMethod</span> <span class="nx">method</span><span class="p">,</span> <span class="nx">emitter</span><span class="p">,</span> <span class="nx">trigger</span><span class="p">,</span> <span class="nx">prefix</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="make%20middleware%20method">
+  <h2>
+    <a href="#make%20middleware%20method" name="make%20middleware%20method" class="pilcrow">&#182;</a>
+    Make Middleware Method
+  </h2>
+</div>
+
+
+<p>A proxy for the global <code>makeMiddlewareMethod</code> function.
+Forces the middlewared method's scope to <code>this</code>.</p>
+  </div>
+  <div class="body">
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">makeMiddlewareMethod: </span><span class="nf">-&gt;</span>
+      <span class="nx">makeMiddlewareMethod</span> <span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">...</span>
+
+  <span class="p">},</span> <span class="nv">mixins: </span><span class="p">[</span>
+    <span class="s">&#39;Evented.Mixin&#39;</span>
+  <span class="p">]</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

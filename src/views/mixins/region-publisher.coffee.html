@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>region-publisher.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../../doc-style.css" />
+  <script src="../../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../../", thisFile = "src/views/mixins/region-publisher.coffee", defaultSidebar = true;
+  </script>
+  <script src="../../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+      <div class="heading h2">
+        <a href="#example%20regions%20configuration">Example regions configuration</a>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>region-publisher.coffee</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="nx">define</span> <span class="p">[</span>
+  <span class="s">&#39;oraculum&#39;</span>
+  <span class="s">&#39;oraculum/libs&#39;</span>
+  <span class="s">&#39;oraculum/mixins/callback-provider&#39;</span>
+<span class="p">],</span> <span class="nf">(Oraculum) -&gt;</span>
+  <span class="s">&#39;use strict&#39;</span>
+
+  <span class="nx">Oraculum</span><span class="p">.</span><span class="nx">defineMixin</span> <span class="s">&#39;RegionPublisher.ViewMixin&#39;</span><span class="p">,</span> <span class="p">{</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="example%20regions%20configuration">
+  <h2>
+    <a href="#example%20regions%20configuration" name="example%20regions%20configuration" class="pilcrow">&#182;</a>
+    Example regions configuration
+  </h2>
+</div>
+
+
+
+<div class="highlight"><pre><code><span class="nv">mixinOptions:</span>
+  <span class="nv">regions:</span>
+    <span class="nv">body: </span><span class="s">&#39;body&#39;</span>
+    <span class="nv">content: </span><span class="s">&#39;#content&#39;</span>
+</code></pre></div>
+
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">mixconfig: </span><span class="nf">(mixinOptions, {regions} = {}) -&gt;</span>
+      <span class="nv">mixinOptions.regions = </span><span class="nx">_</span><span class="p">.</span><span class="nx">extend</span> <span class="p">{},</span> <span class="nx">mixinOptions</span><span class="p">.</span><span class="nx">regions</span><span class="p">,</span> <span class="nx">regions</span>
+
+    <span class="nv">mixinitialize: </span><span class="nf">-&gt;</span>
+      <span class="p">{</span><span class="nx">regions</span><span class="p">}</span> <span class="o">=</span> <span class="nx">@mixinOptions</span>
+      <span class="nx">@executeCallback</span> <span class="s">&#39;region:register&#39;</span><span class="p">,</span> <span class="k">this</span> <span class="k">if</span> <span class="nx">regions</span><span class="o">?</span>
+      <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;dispose&#39;</span><span class="p">,</span> <span class="nx">@unregisterAllRegions</span><span class="p">,</span> <span class="k">this</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-3" id="section-3">&#182;</a>
+</div>
+<p>Functionally register a single region.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+    <span class="nv">registerRegion: </span><span class="nf">(name, selector) -&gt;</span>
+      <span class="nx">@executeCallback</span> <span class="s">&#39;region:register&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">,</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">selector</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-4" id="section-4">&#182;</a>
+</div>
+<p>Functionally unregister a single region by name.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+    <span class="nv">unregisterRegion: </span><span class="nf">(name) -&gt;</span>
+      <span class="nx">@executeCallback</span> <span class="s">&#39;region:unregister&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">,</span> <span class="nx">name</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-5" id="section-5">&#182;</a>
+</div>
+<p>Unregister all regions; called upon view disposal.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+    <span class="nv">unregisterAllRegions: </span><span class="nf">-&gt;</span>
+      <span class="nx">@executeCallback</span> <span class="s">&#39;region:unregister&#39;</span><span class="p">,</span> <span class="k">this</span>
+
+  <span class="p">},</span> <span class="nv">mixins: </span><span class="p">[</span>
+    <span class="s">&#39;CallbackDelegate.Mixin&#39;</span>
+  <span class="p">]</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

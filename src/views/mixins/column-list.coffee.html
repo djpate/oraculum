@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>column-list.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../../doc-style.css" />
+  <script src="../../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../../", thisFile = "src/views/mixins/column-list.coffee", defaultSidebar = true;
+  </script>
+  <script src="../../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+      <div class="heading h1">
+        <a href="#columnlist.viewmixin">ColumnList.ViewMixin</a>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>column-list.coffee</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="nx">define</span> <span class="p">[</span>
+  <span class="s">&#39;oraculum&#39;</span>
+  <span class="s">&#39;oraculum/libs&#39;</span>
+  <span class="s">&#39;oraculum/views/mixins/list&#39;</span>
+<span class="p">],</span> <span class="nf">(Oraculum) -&gt;</span>
+  <span class="s">&#39;use strict&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="columnlist.viewmixin">
+  <h1>
+    <a href="#columnlist.viewmixin" name="columnlist.viewmixin" class="pilcrow">&#182;</a>
+    ColumnList.ViewMixin
+  </h1>
+</div>
+
+  </div>
+  <div class="body">
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-3" id="section-3">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><p>This definition is part of Oraculum's tabular interface.
+For more information see:</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">views/cell/text.coffee</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">views/cell/header.coffee</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">views/cell/checkbox.coffee</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">views/mixins/cell.coffee</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">views/mixins/column-list.coffee</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">models/mixins/sortable-column.coffee
+</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+  <span class="nx">Oraculum</span><span class="p">.</span><span class="nx">defineMixin</span> <span class="s">&#39;ColumnList.ViewMixin&#39;</span><span class="p">,</span> <span class="p">{</span>
+
+    <span class="nv">initModelView: </span><span class="nf">(column) -&gt;</span>
+      <span class="p">{</span><span class="nx">modelView</span><span class="p">,</span> <span class="nx">viewOptions</span><span class="p">}</span> <span class="o">=</span> <span class="nx">@mixinOptions</span><span class="p">.</span><span class="nx">list</span>
+
+      <span class="nv">modelView = </span><span class="nx">column</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&#39;modelView&#39;</span><span class="p">)</span> <span class="o">or</span> <span class="nx">modelView</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nx">TypeError</span> <span class="s">&#39;&#39;&#39;</span>
+<span class="s">        ColumList.ViewMixin modelView option must be defined.</span>
+<span class="s">      &#39;&#39;&#39;</span> <span class="k">unless</span> <span class="nx">modelView</span>
+
+      <span class="nv">model = </span><span class="nx">@model</span> <span class="o">or</span> <span class="nx">column</span>
+      <span class="nv">viewOptions = </span><span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span> <span class="nx">viewOptions</span>
+      <span class="k">then</span> <span class="nx">viewOptions</span><span class="p">.</span><span class="nx">call</span> <span class="k">this</span><span class="p">,</span> <span class="p">{</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">column</span> <span class="p">}</span>
+      <span class="k">else</span> <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span> <span class="p">{</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">column</span> <span class="p">},</span> <span class="nx">viewOptions</span>
+
+      <span class="nv">attribute = </span><span class="nx">column</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;attribute&#39;</span>
+      <span class="nv">viewOptions = </span><span class="nx">_</span><span class="p">.</span><span class="nx">extend</span> <span class="p">{},</span> <span class="nx">viewOptions</span><span class="p">,</span> <span class="nx">column</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;viewOptions&#39;</span>
+
+      <span class="nv">view = </span><span class="nx">@createView</span> <span class="p">{</span> <span class="nv">view: </span><span class="nx">modelView</span> <span class="p">,</span> <span class="nx">viewOptions</span> <span class="p">}</span>
+      <span class="k">return</span> <span class="nx">view</span>
+
+  <span class="p">},</span> <span class="nv">mixins: </span><span class="p">[</span>
+    <span class="s">&#39;List.ViewMixin&#39;</span>
+  <span class="p">]</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

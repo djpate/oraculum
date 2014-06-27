@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>composer.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../doc-style.css" />
+  <script src="../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../", thisFile = "src/application/composer.coffee", defaultSidebar = true;
+  </script>
+  <script src="../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+      <div class="heading h1">
+        <a href="#composer">Composer</a>
+      </div>
+      <div class="heading h2">
+        <a href="#compositions">Compositions</a>
+      </div>
+      <div class="heading h2">
+        <a href="#constructor">Constructor</a>
+      </div>
+      <div class="heading h2">
+        <a href="#mixin%20options">Mixin Options</a>
+      </div>
+      <div class="heading h2">
+        <a href="#retrieve">Retrieve</a>
+      </div>
+      <div class="heading h2">
+        <a href="#compose">Compose</a>
+      </div>
+      <div class="heading h3">
+        <a href="#compose%20with%20composition">Compose With Composition</a>
+      </div>
+      <div class="heading h3">
+        <a href="#compose%20with%20definition">Compose With Definition</a>
+      </div>
+      <div class="heading h3">
+        <a href="#compose%20with%20function">Compose With Function</a>
+      </div>
+      <div class="heading h3">
+        <a href="#compose%20with%20function%20and%20options">Compose With Function and Options</a>
+      </div>
+      <div class="heading h3">
+        <a href="#compose%20with%20options">Compose With Options</a>
+      </div>
+      <div class="heading h3">
+        <a href="#compose">Compose</a>
+      </div>
+      <div class="heading h2">
+        <a href="#cleanup">Cleanup</a>
+      </div>
+      <div class="heading h2">
+        <a href="#dispose%20compositions">Dispose Compositions</a>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>composer.coffee</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="nx">define</span> <span class="p">[</span>
+  <span class="s">&#39;oraculum&#39;</span>
+  <span class="s">&#39;oraculum/libs&#39;</span>
+  <span class="s">&#39;oraculum/mixins/pub-sub&#39;</span>
+  <span class="s">&#39;oraculum/mixins/listener&#39;</span>
+  <span class="s">&#39;oraculum/mixins/disposable&#39;</span>
+  <span class="s">&#39;oraculum/mixins/callback-provider&#39;</span>
+  <span class="s">&#39;oraculum/application/composition&#39;</span>
+<span class="p">],</span> <span class="nf">(Oraculum) -&gt;</span>
+  <span class="s">&#39;use strict&#39;</span>
+
+  <span class="nv">_ = </span><span class="nx">Oraculum</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;underscore&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="composer">
+  <h1>
+    <a href="#composer" name="composer" class="pilcrow">&#182;</a>
+    Composer
+  </h1>
+</div>
+
+
+<p>The sole job of the composer is to manage the lifecycle of <code>View</code>s across
+<code>Controller</code> actions. If a <code>View</code> has already been composed by a previous
+action then nothing apart from registering the <code>View</code> as in-use happens.
+Otherwise, the <code>View</code> is constructed with the specified <code>options</code>.
+If the application is routed to an action where the <code>View</code> was not composed,
+the <code>View</code> will disposed.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">application/controller.coffee</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <a href="http://backbonejs.org/#View
+">http://backbonejs.org/#View
+</a>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+  <span class="nx">Oraculum</span><span class="p">.</span><span class="nx">define</span> <span class="s">&#39;Composer&#39;</span><span class="p">,</span> <span class="p">(</span><span class="k">class</span> <span class="nx">Composer</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="compositions">
+  <h2>
+    <a href="#compositions" name="compositions" class="pilcrow">&#182;</a>
+    Compositions
+  </h2>
+</div>
+
+
+<p>This is the collection of composed compositions.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">application/composition.coffee
+</span>
+    </div>
+    <div class="dox_tag_title">Type</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">Object
+</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">compositions: </span><span class="kc">null</span>
+
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="constructor_NaN">
+  <h2>
+    <a href="#constructor_NaN" name="constructor_NaN" class="pilcrow">&#182;</a>
+    Constructor
+  </h2>
+</div>
+
+
+<p>Initialize <code>@compositions</code> as a new blank object, and allow custom
+initialization via the standard <code>initialize</code> method.</p>
+  </div>
+  <div class="body">
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">constructor: </span><span class="nf">-&gt;</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-5" id="section-5">&#182;</a>
+</div>
+<p>Set <code>@compositions</code> to a bare object.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="vi">@compositions = </span><span class="p">{}</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-6" id="section-6">&#182;</a>
+</div>
+<p>Invoke <code>@initialize</code> if it's available.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nx">@initialize</span><span class="o">?</span> <span class="nx">arguments</span><span class="p">...</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="mixin%20options">
+  <h2>
+    <a href="#mixin%20options" name="mixin%20options" class="pilcrow">&#182;</a>
+    Mixin Options
+  </h2>
+</div>
+
+
+<p>Set up our event listeners and named callbacks.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">mixins/listener.coffee</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">mixins/callback-provider.coffee
+</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">mixinOptions:</span>
+      <span class="nv">listen:</span>
+        <span class="s">&#39;dispose this&#39;</span><span class="o">:</span> <span class="s">&#39;_disposeCompositions&#39;</span>
+        <span class="s">&#39;dispatcher:dispatch mediator&#39;</span><span class="o">:</span> <span class="s">&#39;_cleanup&#39;</span>
+      <span class="nv">provideCallbacks:</span>
+        <span class="s">&#39;composer:compose&#39;</span><span class="o">:</span> <span class="s">&#39;compose&#39;</span>
+        <span class="s">&#39;composer:retrieve&#39;</span><span class="o">:</span> <span class="s">&#39;retrieve&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="retrieve">
+  <h2>
+    <a href="#retrieve" name="retrieve" class="pilcrow">&#182;</a>
+    Retrieve
+  </h2>
+</div>
+
+
+<p>Retrieve an active <code>composition</code>'s <code>item</code> from our <code>compositions</code> collector.
+Will return <code>undefined</code> if the named composition doesn't exist, or is stale.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">name</span>
+      <span class="dox_type">String</span>
+      <span>Name of the composition to be retrieved</span>
+    </div>
+    <div class="dox_tag_title">Returns</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span class="dox_type">Composition</span>
+      <span>If composition <code>name</code> exists and is not stale.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">retrieve: </span><span class="nf">(name) -&gt;</span>
+      <span class="nv">active = </span><span class="nx">@compositions</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span>
+      <span class="k">return</span> <span class="k">unless</span> <span class="nx">active</span>
+      <span class="k">return</span> <span class="k">if</span> <span class="nx">active</span><span class="p">.</span><span class="nx">stale</span><span class="p">()</span>
+      <span class="k">return</span> <span class="nx">active</span><span class="p">.</span><span class="nx">item</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="compose">
+  <h2>
+    <a href="#compose" name="compose" class="pilcrow">&#182;</a>
+    Compose
+  </h2>
+</div>
+
+
+<p>Constructs a composition and adds it into the active compositions.
+This function permits numerous fingerprints. See comments for details.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">@_composeWithComposition</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">@_composeWithDefinition</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">@_composeWithFunction</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">@_composeWithFunctionAndOptions</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">@_composeWithOptions
+</span>
+    </div>
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">name</span>
+      <span class="dox_type">String</span>
+      <span>The name of the composition to compose.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">second?</span>
+      <span class="dox_type">Function</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">second?</span>
+      <span class="dox_type">Object</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">third?</span>
+      <span class="dox_type">Function</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">third?
+</span>
+      <span class="dox_type">Object</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">compose: </span><span class="nf">(name, second, third) -&gt;</span>
+      <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span><span class="p">(</span><span class="nx">second</span><span class="p">)</span> <span class="o">or</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isString</span><span class="p">(</span><span class="nx">second</span><span class="p">)</span>
+
+        <span class="nv">Composition = </span><span class="nx">@__factory</span><span class="p">().</span><span class="nx">getConstructor</span> <span class="s">&#39;Composition&#39;</span>
+        <span class="k">if</span> <span class="nx">second</span><span class="p">.</span><span class="nx">prototype</span> <span class="k">instanceof</span> <span class="nx">Composition</span>
+          <span class="k">return</span> <span class="nx">@_composeWithComposition</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">second</span><span class="p">,</span> <span class="nx">third</span>
+
+        <span class="k">if</span> <span class="nx">third</span> <span class="o">or</span>
+        <span class="nx">_</span><span class="p">.</span><span class="nx">isString</span><span class="p">(</span><span class="nx">second</span><span class="p">)</span> <span class="o">or</span>
+        <span class="nx">second</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">isnt</span> <span class="nb">Function</span><span class="p">.</span><span class="nx">prototype</span>
+          <span class="k">return</span> <span class="nx">@_composeWithDefinition</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">second</span><span class="p">,</span> <span class="nx">third</span>
+
+        <span class="k">return</span> <span class="nx">@_composeWithFunction</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">second</span>
+
+      <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span> <span class="nx">third</span>
+        <span class="k">return</span> <span class="nx">@_composeWithFunctionAndOptions</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">third</span><span class="p">,</span> <span class="nx">second</span>
+
+      <span class="k">return</span> <span class="nx">@_composeWithOptions</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">second</span>
+
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="compose%20with%20composition">
+  <h3>
+    <a href="#compose%20with%20composition" name="compose%20with%20composition" class="pilcrow">&#182;</a>
+    Compose With Composition
+  </h3>
+</div>
+
+
+<div class="dox">
+  <div class="summary"><p>Composes with a <code>Composition</code> object.
+This method gives complete control over the composition process.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">name</span>
+      <span class="dox_type">String</span>
+      <span>The name of the composition to compose.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">composition</span>
+      <span class="dox_type">Composition</span>
+      <span>The constructed composition to register.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">options</span>
+      <span class="dox_type">Object</span>
+      <span>The options to be passed to the <code>composition</code>.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">_composeWithComposition: </span><span class="nf">(name, composition, options) -&gt;</span>
+      <span class="nx">@_compose</span> <span class="nx">name</span><span class="p">,</span> <span class="p">{</span> <span class="nx">composition</span><span class="p">,</span> <span class="nx">options</span> <span class="p">}</span>
+
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="compose%20with%20definition">
+  <h3>
+    <a href="#compose%20with%20definition" name="compose%20with%20definition" class="pilcrow">&#182;</a>
+    Compose With Definition
+  </h3>
+</div>
+
+
+<div class="dox">
+  <div class="summary"><p>Composes a <code>View</code> or a factory definition name.
+The options are passed to the instance when it is constructed and are
+further used to test if the <code>composition</code> should be re-composed.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">name</span>
+      <span class="dox_type">String</span>
+      <span>The name of the composition to compose.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">definition</span>
+      <span class="dox_type">Constructor</span>
+      <span>Constructor that the <code>composition</code> should create.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">definition</span>
+      <span class="dox_type">String</span>
+      <span>Factory definition that the <code>composition</code> should create.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">options</span>
+      <span class="dox_type">Object</span>
+      <span>The options to be passed to the <code>composition</code>.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">_composeWithDefinition: </span><span class="nf">(name, definition, options = {}) -&gt;</span>
+      <span class="nx">@_compose</span> <span class="nx">name</span><span class="p">,</span>
+        <span class="nv">options: </span><span class="nx">options</span>
+        <span class="nv">compose: </span><span class="nf">-&gt;</span>
+          <span class="vi">@item = </span><span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isString</span> <span class="nx">definition</span>
+          <span class="k">then</span> <span class="nx">@__factory</span><span class="p">().</span><span class="nx">get</span> <span class="nx">definition</span><span class="p">,</span> <span class="nx">@options</span>
+          <span class="k">else</span> <span class="k">new</span> <span class="nx">definition</span> <span class="nx">@options</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="compose%20with%20function">
+  <h3>
+    <a href="#compose%20with%20function" name="compose%20with%20function" class="pilcrow">&#182;</a>
+    Compose With Function
+  </h3>
+</div>
+
+
+<div class="dox">
+  <div class="summary"><p>Composes a function that executes in the context of the <code>Controller</code>.
+It <strong>does not</strong> bind the function context.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">name</span>
+      <span class="dox_type">String</span>
+      <span>The name of the composition to compose.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">compose</span>
+      <span class="dox_type">Function</span>
+      <span>The function to use to compose the <code>View</code>.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">_composeWithFunction: </span><span class="nf">(name, compose) -&gt;</span>
+      <span class="nx">@_compose</span> <span class="nx">name</span><span class="p">,</span> <span class="p">{</span> <span class="nx">compose</span> <span class="p">}</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="compose%20with%20function%20and%20options">
+  <h3>
+    <a href="#compose%20with%20function%20and%20options" name="compose%20with%20function%20and%20options" class="pilcrow">&#182;</a>
+    Compose With Function and Options
+  </h3>
+</div>
+
+
+<div class="dox">
+  <div class="summary"><p>Composes using the <code>compose</code> function in the context of the <code>Controller</code>.
+It <strong>does not</strong> bind the function context, and is passed the <code>options</code> as
+a parameter. The <code>options</code> are further used to test if the <code>composition</code>
+should be re-composed.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">name</span>
+      <span class="dox_type">String</span>
+      <span>The name of the composition to compose.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">compose</span>
+      <span class="dox_type">Function</span>
+      <span>The function to use to compose the <code>composition</code>.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">options</span>
+      <span class="dox_type">Object</span>
+      <span>The options to be passed to the <code>composition</code>.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">_composeWithFunctionAndOptions: </span><span class="nf">(name, compose, options) -&gt;</span>
+      <span class="nx">@_compose</span> <span class="nx">name</span><span class="p">,</span> <span class="p">{</span> <span class="nx">options</span><span class="p">,</span> <span class="nx">compose</span> <span class="p">}</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="compose%20with%20options">
+  <h3>
+    <a href="#compose%20with%20options" name="compose%20with%20options" class="pilcrow">&#182;</a>
+    Compose With Options
+  </h3>
+</div>
+
+
+<div class="dox">
+  <div class="summary"><p>Calls the <code>compose</code> method of the <code>options</code> hash in place of a function.
+If present, the <code>check</code> method of the <code>options</code> hash is called to determine
+if re-composition is necessary.
+If not present, this method is functionally identical to
+<code>_composeWithFunctionAndOptions</code>.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">@_composeWithFunctionAndOptions
+</span>
+    </div>
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">name</span>
+      <span class="dox_type">String</span>
+      <span>The name of the composition to compose.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">options</span>
+      <span class="dox_type">Object</span>
+      <span>The options to be passed to the <code>composition</code>.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">_composeWithOptions: </span><span class="nf">(name, options) -&gt;</span>
+      <span class="nx">@_compose</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">options</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="compose">
+  <h3>
+    <a href="#compose" name="compose" class="pilcrow">&#182;</a>
+    Compose
+  </h3>
+</div>
+
+
+<div class="dox">
+  <div class="summary"><p>Performs the actual composition after everything else gets "normalized".</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">name</span>
+      <span class="dox_type">String</span>
+      <span>The name of the composition to compose.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">options</span>
+      <span class="dox_type">Object</span>
+      <span>The composition specification.</span>
+    </div>
+    <div class="dox_tag_title">Returns</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span class="dox_type">Promise?</span>
+      <span>May return a promise if the composition returns one.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">_compose: </span><span class="nf">(name, options) -&gt;</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-16" id="section-16">&#182;</a>
+</div>
+<p>Ensure that we're not trying to compose a previous composed composition.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span> <span class="s">&#39;&#39;&#39;</span>
+<span class="s">        Composer#compose was used incorrectly</span>
+<span class="s">      &#39;&#39;&#39;</span> <span class="k">if</span> <span class="k">typeof</span> <span class="nx">options</span><span class="p">.</span><span class="nx">compose</span> <span class="o">isnt</span> <span class="s">&#39;function&#39;</span> <span class="o">and</span> <span class="o">not</span> <span class="nx">options</span><span class="p">.</span><span class="nx">composition</span><span class="o">?</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-17" id="section-17">&#182;</a>
+</div>
+<p>Use the passed composition directly if we have it.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="k">if</span> <span class="nx">options</span><span class="p">.</span><span class="nx">composition</span><span class="o">?</span>
+        <span class="nv">composition = </span><span class="k">new</span> <span class="nx">options</span><span class="p">.</span><span class="nx">composition</span> <span class="nx">options</span><span class="p">.</span><span class="nx">options</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-18" id="section-18">&#182;</a>
+</div>
+<p>Otherwise, create the composition and apply the methods (if available)</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="k">else</span>
+        <span class="nv">composition = </span><span class="nx">@__factory</span><span class="p">().</span><span class="nx">get</span> <span class="s">&#39;Composition&#39;</span><span class="p">,</span> <span class="nx">options</span><span class="p">.</span><span class="nx">options</span>
+        <span class="nv">composition.compose = </span><span class="nx">options</span><span class="p">.</span><span class="nx">compose</span>
+        <span class="nv">composition.check = </span><span class="nx">options</span><span class="p">.</span><span class="nx">check</span> <span class="k">if</span> <span class="nx">options</span><span class="p">.</span><span class="nx">check</span><span class="o">?</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-19" id="section-19">&#182;</a>
+</div>
+<p>Check for an existing composition</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nv">current = </span><span class="nx">@compositions</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-20" id="section-20">&#182;</a>
+</div>
+<p>Apply the <code>check</code> method if available</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="k">if</span> <span class="nx">current</span> <span class="o">and</span> <span class="nx">current</span><span class="p">.</span><span class="nx">check</span> <span class="nx">composition</span><span class="p">.</span><span class="nx">options</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-21" id="section-21">&#182;</a>
+</div>
+<p>Mark the current composition as not stale</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+        <span class="nx">current</span><span class="p">.</span><span class="nx">stale</span> <span class="kc">false</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-22" id="section-22">&#182;</a>
+</div>
+<p>Otherwise, remove the current composition and apply the new one.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="k">else</span>
+        <span class="nx">current</span><span class="p">.</span><span class="nx">dispose</span><span class="p">()</span> <span class="k">if</span> <span class="nx">current</span>
+        <span class="nv">returned = </span><span class="nx">composition</span><span class="p">.</span><span class="nx">compose</span> <span class="nx">composition</span><span class="p">.</span><span class="nx">options</span>
+        <span class="nv">isPromise = </span><span class="nx">returned</span> <span class="o">and</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span> <span class="nx">returned</span><span class="p">.</span><span class="nx">then</span>
+        <span class="nx">composition</span><span class="p">.</span><span class="nx">stale</span> <span class="kc">false</span>
+        <span class="nx">@compositions</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="nx">composition</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-23" id="section-23">&#182;</a>
+</div>
+<p>Return the active composition</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="k">return</span> <span class="k">if</span> <span class="nx">isPromise</span> <span class="k">then</span> <span class="nx">returned</span> <span class="k">else</span> <span class="nx">@compositions</span><span class="p">[</span><span class="nx">name</span><span class="p">].</span><span class="nx">item</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="cleanup">
+  <h2>
+    <a href="#cleanup" name="cleanup" class="pilcrow">&#182;</a>
+    Cleanup
+  </h2>
+</div>
+
+
+<p>Any dispatched <code>Controller</code> action should be complete.
+Perform post-action disposal and delete all inactive compositions.
+Declare all active compositions as stale for the next dispatch cycle.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">application/composition.coffee</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">mixins/disposable.coffee
+</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">_cleanup: </span><span class="nf">-&gt;</span>
+      <span class="nx">_</span><span class="p">.</span><span class="nx">each</span> <span class="nx">@compositions</span><span class="p">,</span> <span class="nf">(composition, name) =&gt;</span>
+        <span class="k">if</span> <span class="nx">composition</span><span class="p">.</span><span class="nx">stale</span><span class="p">()</span>
+          <span class="nx">composition</span><span class="p">.</span><span class="nx">dispose</span><span class="p">()</span>
+          <span class="k">delete</span> <span class="nx">@compositions</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span>
+        <span class="k">else</span>
+          <span class="nx">composition</span><span class="p">.</span><span class="nx">stale</span> <span class="kc">true</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="dispose%20compositions">
+  <h2>
+    <a href="#dispose%20compositions" name="dispose%20compositions" class="pilcrow">&#182;</a>
+    Dispose Compositions
+  </h2>
+</div>
+
+
+<p>Invoke dispose on all of our compositions for memory-mamagement.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">mixins/disposable.coffee
+</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">_disposeCompositions: </span><span class="nf">-&gt;</span>
+      <span class="nx">_</span><span class="p">.</span><span class="nx">invoke</span> <span class="nx">@compositions</span><span class="p">,</span> <span class="s">&#39;dispose&#39;</span>
+
+  <span class="p">),</span> <span class="nv">mixins: </span><span class="p">[</span>
+    <span class="s">&#39;PubSub.Mixin&#39;</span>
+    <span class="s">&#39;Listener.Mixin&#39;</span>
+    <span class="s">&#39;Disposable.Mixin&#39;</span>
+    <span class="s">&#39;CallbackProvider.Mixin&#39;</span>
+  <span class="p">]</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

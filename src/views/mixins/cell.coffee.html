@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>cell.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../../doc-style.css" />
+  <script src="../../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../../", thisFile = "src/views/mixins/cell.coffee", defaultSidebar = true;
+  </script>
+  <script src="../../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+      <div class="heading h1">
+        <a href="#cell.viewmixin">Cell.ViewMixin</a>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>cell.coffee</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="nx">define</span> <span class="p">[</span>
+  <span class="s">&#39;oraculum&#39;</span>
+  <span class="s">&#39;oraculum/mixins/evented&#39;</span>
+  <span class="s">&#39;oraculum/views/mixins/static-classes&#39;</span>
+<span class="p">],</span> <span class="nf">(Oraculum) -&gt;</span>
+  <span class="s">&#39;use strict&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="cell.viewmixin">
+  <h1>
+    <a href="#cell.viewmixin" name="cell.viewmixin" class="pilcrow">&#182;</a>
+    Cell.ViewMixin
+  </h1>
+</div>
+
+
+<p>A "cell" is the intersection of a "column" and a "row".
+In a common tabular view, a "row" may represent a data model,
+and a "column" may represent a rendering specification for the data.
+E.g. what attribute of the data model the cell should render.
+This mixin aims to cover the most common use cases for tabular view cells.</p>
+  </div>
+  <div class="body">
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-3" id="section-3">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><p>This definition is part of Oraculum's tabular interface.
+For more information see:</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">views/cell/text.coffee</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">views/cell/header.coffee</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">views/cell/checkbox.coffee</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">views/mixins/cell.coffee</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">views/mixins/column-list.coffee</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">models/mixins/sortable-column.coffee
+</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+  <span class="nx">Oraculum</span><span class="p">.</span><span class="nx">defineMixin</span> <span class="s">&#39;Cell.ViewMixin&#39;</span><span class="p">,</span> <span class="p">{</span>
+
+    <span class="nv">mixinOptions:</span>
+      <span class="nv">staticClasses: </span><span class="p">[</span><span class="s">&#39;cell&#39;</span><span class="p">]</span>
+      <span class="nv">cell: column: </span><span class="kc">null</span>
+
+    <span class="nv">mixconfig: </span><span class="nf">({cell}, {model, column} = {}) -&gt;</span>
+      <span class="nv">cell.column = </span><span class="nx">column</span> <span class="k">if</span> <span class="nx">column</span><span class="o">?</span>
+      <span class="nx">cell</span><span class="p">.</span><span class="nx">column</span> <span class="o">?=</span> <span class="nx">model</span> <span class="k">if</span> <span class="nx">model</span><span class="o">?</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span> <span class="s">&#39;&#39;&#39;</span>
+<span class="s">        Cell.ViewMixin#mixconfig: requires a column</span>
+<span class="s">      &#39;&#39;&#39;</span> <span class="k">unless</span> <span class="nx">cell</span><span class="p">.</span><span class="nx">column</span>
+
+    <span class="nv">mixinitialize: </span><span class="nf">-&gt;</span>
+      <span class="vi">@column = </span><span class="nx">@mixinOptions</span><span class="p">.</span><span class="nx">cell</span><span class="p">.</span><span class="nx">column</span>
+      <span class="nx">@listenTo</span> <span class="nx">@column</span><span class="p">,</span> <span class="s">&#39;change:sortable&#39;</span><span class="p">,</span> <span class="nx">@_updateSortableClass</span>
+      <span class="nx">@listenTo</span> <span class="nx">@column</span><span class="p">,</span> <span class="s">&#39;change:attribute&#39;</span><span class="p">,</span> <span class="nx">@_updateAttributeClass</span>
+      <span class="nx">@listenTo</span> <span class="nx">@column</span><span class="p">,</span> <span class="s">&#39;change:sortDirection&#39;</span><span class="p">,</span> <span class="nx">@_updateDirectionClass</span>
+      <span class="nx">@listenTo</span> <span class="nx">@column</span><span class="p">,</span> <span class="s">&#39;change:hidden&#39;</span><span class="p">,</span> <span class="nx">@_updateHiddenState</span>
+      <span class="nx">@_updateSortableClass</span><span class="p">()</span>
+      <span class="nx">@_updateAttributeClass</span><span class="p">()</span>
+      <span class="nx">@_updateDirectionClass</span><span class="p">()</span>
+      <span class="nx">@_updateHiddenState</span><span class="p">()</span>
+    <span class="nv">_updateAttributeClass: </span><span class="nf">-&gt;</span>
+      <span class="nv">previous = </span><span class="nx">@column</span><span class="p">.</span><span class="nx">previous</span> <span class="s">&#39;attribute&#39;</span>
+      <span class="nx">@$el</span><span class="p">.</span><span class="nx">removeClass</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">previous</span><span class="si">}</span><span class="s">-cell&quot;</span>
+      <span class="nv">current = </span><span class="nx">@column</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;attribute&#39;</span>
+      <span class="nx">@$el</span><span class="p">.</span><span class="nx">addClass</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">current</span><span class="si">}</span><span class="s">-cell&quot;</span>
+
+    <span class="nv">_updateSortableClass: </span><span class="nf">-&gt;</span>
+      <span class="nv">sortable = </span><span class="nb">Boolean</span> <span class="nx">@column</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;sortable&#39;</span>
+      <span class="nx">@$el</span><span class="p">.</span><span class="nx">toggleClass</span> <span class="s">&#39;sortable&#39;</span><span class="p">,</span> <span class="nx">sortable</span>
+
+    <span class="nv">_updateDirectionClass: </span><span class="nf">-&gt;</span>
+      <span class="nv">direction = </span><span class="nx">@column</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;sortDirection&#39;</span>
+      <span class="nx">@$el</span><span class="p">.</span><span class="nx">toggleClass</span> <span class="s">&#39;sorted&#39;</span><span class="p">,</span> <span class="nb">Boolean</span> <span class="nx">direction</span>
+      <span class="nx">@$el</span><span class="p">.</span><span class="nx">toggleClass</span> <span class="s">&#39;ascending&#39;</span><span class="p">,</span> <span class="nx">direction</span> <span class="o">is</span> <span class="o">-</span><span class="mi">1</span>
+      <span class="nx">@$el</span><span class="p">.</span><span class="nx">toggleClass</span> <span class="s">&#39;descending&#39;</span><span class="p">,</span> <span class="nx">direction</span> <span class="o">is</span> <span class="mi">1</span>
+
+    <span class="nv">_updateHiddenState: </span><span class="nf">-&gt;</span>
+      <span class="nv">hidden = </span><span class="nx">@column</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;hidden&#39;</span>
+      <span class="k">return</span> <span class="k">unless</span> <span class="nx">hidden</span><span class="o">?</span>
+      <span class="nx">@$el</span><span class="p">.</span><span class="nx">toggle</span><span class="p">(</span><span class="o">not</span> <span class="nx">hidden</span><span class="p">)</span>
+  <span class="p">},</span> <span class="nv">mixins: </span><span class="p">[</span>
+    <span class="s">&#39;Evented.Mixin&#39;</span>
+    <span class="s">&#39;StaticClasses.ViewMixin&#39;</span>
+  <span class="p">]</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

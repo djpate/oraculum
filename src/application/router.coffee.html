@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>router.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../doc-style.css" />
+  <script src="../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../", thisFile = "src/application/router.coffee", defaultSidebar = true;
+  </script>
+  <script src="../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+      <div class="heading h1">
+        <a href="#router">Router</a>
+      </div>
+      <div class="heading h2">
+        <a href="#constructor">Constructor</a>
+      </div>
+      <div class="heading h2">
+        <a href="#mixin%20options">Mixin Options</a>
+      </div>
+      <div class="heading h2">
+        <a href="#create%20history">Create History</a>
+      </div>
+      <div class="heading h2">
+        <a href="#start%20history">Start History</a>
+      </div>
+      <div class="heading h2">
+        <a href="#stop%20history">Stop History</a>
+      </div>
+      <div class="heading h2">
+        <a href="#find%20handler">Find Handler</a>
+      </div>
+      <div class="heading h2">
+        <a href="#match">Match</a>
+      </div>
+      <div class="heading h3">
+        <a href="#match%20with%20pattern%20and%20string">Match With Pattern and String</a>
+      </div>
+      <div class="heading h3">
+        <a href="#match%20with%20pattern%20and%20options">Match With Pattern and Options</a>
+      </div>
+      <div class="heading h2">
+        <a href="#add%20handler">Add Handler</a>
+      </div>
+      <div class="heading h2">
+        <a href="#route">Route</a>
+      </div>
+      <div class="heading h3">
+        <a href="#route%20with%20path">Route With Path</a>
+      </div>
+      <div class="heading h3">
+        <a href="#route%20with%20path%20spec">Route With Path Spec</a>
+      </div>
+      <div class="heading h3">
+        <a href="#handle%20route">Handle Route</a>
+      </div>
+      <div class="heading h2">
+        <a href="#reverse">Reverse</a>
+      </div>
+      <div class="heading h2">
+        <a href="#change%20url">Change URL</a>
+      </div>
+      <div class="heading h2">
+        <a href="#delete%20history">Delete History</a>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>router.coffee</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="nx">define</span> <span class="p">[</span>
+  <span class="s">&#39;oraculum&#39;</span>
+  <span class="s">&#39;oraculum/libs&#39;</span>
+
+  <span class="s">&#39;oraculum/application/route&#39;</span>
+  <span class="s">&#39;oraculum/application/history&#39;</span>
+
+  <span class="s">&#39;oraculum/mixins/pub-sub&#39;</span>
+  <span class="s">&#39;oraculum/mixins/evented&#39;</span>
+  <span class="s">&#39;oraculum/mixins/listener&#39;</span>
+  <span class="s">&#39;oraculum/mixins/disposable&#39;</span>
+  <span class="s">&#39;oraculum/mixins/callback-provider&#39;</span>
+<span class="p">],</span> <span class="nf">(Oraculum) -&gt;</span>
+  <span class="s">&#39;use strict&#39;</span>
+
+  <span class="nv">_ = </span><span class="nx">Oraculum</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;underscore&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-2" id="section-2">&#182;</a>
+</div>
+<p>Escapes a string to use in a regex.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+  <span class="nv">escapeRegExp = </span><span class="nf">(str) -&gt;</span>
+    <span class="k">return</span> <span class="nb">String</span><span class="p">(</span><span class="nx">str</span> <span class="o">or</span> <span class="s">&#39;&#39;</span><span class="p">).</span><span class="nx">replace</span> <span class="sr">/([.*+?^=!:${}()|[\]\/\\])/g</span><span class="p">,</span> <span class="s">&#39;\\$1&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="router">
+  <h1>
+    <a href="#router" name="router" class="pilcrow">&#182;</a>
+    Router
+  </h1>
+</div>
+
+
+<p>The router which is a replacement for <code>Backbone.Router</code>.
+Like the standard router, it creates a <code>Backbone.History</code> instance and
+registers routes on it.
+It does not extend <code>Backbone.Router</code>, it instead replaces it.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">application/route.coffee</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">application/history.coffee</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">application/controller.coffee</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">application/dispatcher.coffee</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <a href="http://backbonejs.org/#Router">http://backbonejs.org/#Router</a>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <a href="http://backbonejs.org/#History
+">http://backbonejs.org/#History
+</a>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+  <span class="nx">Oraculum</span><span class="p">.</span><span class="nx">define</span> <span class="s">&#39;Router&#39;</span><span class="p">,</span> <span class="p">(</span><span class="k">class</span> <span class="nx">Router</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="constructor_NaN">
+  <h2>
+    <a href="#constructor_NaN" name="constructor_NaN" class="pilcrow">&#182;</a>
+    Constructor
+  </h2>
+</div>
+
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">options?</span>
+      <span class="dox_type">Object</span>
+      <span>Any options to be cached or passed to our initializers.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">constructor: </span><span class="nf">(options = {}) -&gt;</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-5" id="section-5">&#182;</a>
+</div>
+<p>Enable pushState by default for HTTP(s).
+Disable it for file:// schema.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nv">isWeb = </span><span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">protocol</span> <span class="k">in</span> <span class="p">[</span><span class="s">&#39;http:&#39;</span><span class="p">,</span> <span class="s">&#39;https:&#39;</span><span class="p">]</span>
+      <span class="vi">@options = </span><span class="nx">_</span><span class="p">.</span><span class="nx">extend</span> <span class="p">{</span>
+        <span class="nv">root: </span><span class="s">&#39;/&#39;</span>
+        <span class="nv">trailing: </span><span class="kc">false</span>
+        <span class="nv">pushState: </span><span class="nx">isWeb</span>
+      <span class="p">},</span> <span class="nx">options</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-6" id="section-6">&#182;</a>
+</div>
+<p>Cached regex for stripping a leading subdir and hash/slash.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nv">rootRegex = </span><span class="nx">escapeRegExp</span> <span class="nx">@options</span><span class="p">.</span><span class="nx">root</span>
+      <span class="vi">@removeRoot = </span><span class="k">new</span> <span class="nb">RegExp</span> <span class="s">&quot;^</span><span class="si">#{</span><span class="nx">rootRegex</span><span class="si">}</span><span class="s">(</span><span class="err">#</span><span class="s">)?&quot;</span>
+
+      <span class="nx">@createHistory</span><span class="p">()</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="mixin%20options">
+  <h2>
+    <a href="#mixin%20options" name="mixin%20options" class="pilcrow">&#182;</a>
+    Mixin Options
+  </h2>
+</div>
+
+
+<p>Set up our event listeners and named callbacks.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">mixins/listener.coffee</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">mixins/callback-provider.coffee
+</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">mixinOptions:</span>
+      <span class="nv">listen:</span>
+        <span class="s">&#39;dispose this&#39;</span><span class="o">:</span> <span class="s">&#39;_deleteHistory&#39;</span>
+        <span class="s">&#39;dispatcher:dispatch mediator&#39;</span><span class="o">:</span> <span class="s">&#39;changeURL&#39;</span>
+      <span class="nv">provideCallbacks:</span>
+        <span class="s">&#39;router:route&#39;</span><span class="o">:</span> <span class="s">&#39;route&#39;</span>
+        <span class="s">&#39;router:reverse&#39;</span><span class="o">:</span> <span class="s">&#39;reverse&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="create%20history">
+  <h2>
+    <a href="#create%20history" name="create%20history" class="pilcrow">&#182;</a>
+    Create History
+  </h2>
+</div>
+
+
+<p>Create a Backbone.History instance.</p>
+  </div>
+  <div class="body">
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">createHistory: </span><span class="nf">-&gt;</span>
+      <span class="nv">Backbone.history = </span><span class="nx">@__factory</span><span class="p">().</span><span class="nx">get</span> <span class="s">&#39;History&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="start%20history">
+  <h2>
+    <a href="#start%20history" name="start%20history" class="pilcrow">&#182;</a>
+    Start History
+  </h2>
+</div>
+
+
+<p>Start the Backbone.History instance to start routing.
+This should be called after all routes have been registered.</p>
+  </div>
+  <div class="body">
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">startHistory: </span><span class="nf">-&gt;</span>
+      <span class="nx">Backbone</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">start</span> <span class="nx">@options</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="stop%20history">
+  <h2>
+    <a href="#stop%20history" name="stop%20history" class="pilcrow">&#182;</a>
+    Stop History
+  </h2>
+</div>
+
+
+<p>Stop the current Backbone.History instance from observing URL changes.</p>
+  </div>
+  <div class="body">
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">stopHistory: </span><span class="nf">-&gt;</span>
+      <span class="k">return</span> <span class="k">unless</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">History</span><span class="p">.</span><span class="nx">started</span>
+      <span class="nx">Backbone</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">stop</span><span class="p">()</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="find%20handler">
+  <h2>
+    <a href="#find%20handler" name="find%20handler" class="pilcrow">&#182;</a>
+    Find Handler
+  </h2>
+</div>
+
+
+<p>Search through backbone history handlers.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">predicate</span>
+      <span class="dox_type">Function</span>
+      <span>Matching function used to identify the desired handler.</span>
+    </div>
+    <div class="dox_tag_title">Returns</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span class="dox_type">Function</span>
+      <span>The desired handler or <code>undefined</code>.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">findHandler: </span><span class="nf">(predicate) -&gt;</span>
+      <span class="k">return</span> <span class="nx">_</span><span class="p">.</span><span class="nx">find</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">handlers</span><span class="p">,</span> <span class="nf">(handler) -&gt;</span>
+        <span class="k">return</span> <span class="nx">predicate</span> <span class="nx">handler</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="match">
+  <h2>
+    <a href="#match" name="match" class="pilcrow">&#182;</a>
+    Match
+  </h2>
+</div>
+
+
+<p>Connect an address with a controller action.
+Creates a route on the Backbone.History instance.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">pattern</span>
+      <span class="dox_type">String</span>
+      <span>A <code>Route</code> path spec.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">target</span>
+      <span class="dox_type">String</span>
+      <span>A <code>Route</code> spec as a string.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">target</span>
+      <span class="dox_type">Object</span>
+      <span>A <code>Route</code> spec as an object.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">options?</span>
+      <span class="dox_type">Object</span>
+      <span>Any options to pass to the <code>Route</code>.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">match: </span><span class="nf">(pattern, target, options = {}) =&gt;</span>
+      <span class="k">return</span> <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isString</span> <span class="nx">target</span>
+      <span class="k">then</span> <span class="nx">@matchWithPatternAndString</span> <span class="nx">pattern</span><span class="p">,</span> <span class="nx">target</span><span class="p">,</span> <span class="nx">options</span>
+      <span class="k">else</span> <span class="nx">@matchWithPatternAndOptions</span> <span class="nx">pattern</span><span class="p">,</span> <span class="nx">target</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="match%20with%20pattern%20and%20string">
+  <h3>
+    <a href="#match%20with%20pattern%20and%20string" name="match%20with%20pattern%20and%20string" class="pilcrow">&#182;</a>
+    Match With Pattern and String
+  </h3>
+</div>
+
+
+<div class="dox">
+  <div class="summary"><p>Match a <code>Route</code> path spec with a <code>Route</code> spec as a string.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">pattern</span>
+      <span class="dox_type">String</span>
+      <span>A <code>Route</code> path spec.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">target</span>
+      <span class="dox_type">Object</span>
+      <span>A <code>Route</code> spec as an object.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">options?</span>
+      <span class="dox_type">Object</span>
+      <span>Any options to pass to the <code>Route</code>.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">matchWithPatternAndString: </span><span class="nf">(pattern, string, options) -&gt;</span>
+      <span class="p">{</span><span class="nx">controller</span><span class="p">,</span> <span class="nx">action</span><span class="p">}</span> <span class="o">=</span> <span class="nx">options</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span> <span class="s">&#39;&#39;&#39;</span>
+<span class="s">        Router#matchWithPatternAndString cannot use both string</span>
+<span class="s">        and controller/action</span>
+<span class="s">      &#39;&#39;&#39;</span> <span class="k">if</span> <span class="nx">controller</span> <span class="o">and</span> <span class="nx">action</span>
+      <span class="p">[</span><span class="nx">controller</span><span class="p">,</span> <span class="nx">action</span><span class="p">]</span> <span class="o">=</span> <span class="nx">string</span><span class="p">.</span><span class="nx">split</span> <span class="s">&#39;#&#39;</span>
+      <span class="nx">@addHandler</span> <span class="nx">pattern</span><span class="p">,</span> <span class="nx">controller</span><span class="p">,</span> <span class="nx">action</span><span class="p">,</span> <span class="nx">options</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="match%20with%20pattern%20and%20options">
+  <h3>
+    <a href="#match%20with%20pattern%20and%20options" name="match%20with%20pattern%20and%20options" class="pilcrow">&#182;</a>
+    Match With Pattern and Options
+  </h3>
+</div>
+
+
+<div class="dox">
+  <div class="summary"><p>Match a <code>Route</code> path spec with a <code>Route</code> spec as an object.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">pattern</span>
+      <span class="dox_type">String</span>
+      <span>A <code>Route</code> path spec.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">target</span>
+      <span class="dox_type">Object</span>
+      <span>A <code>Route</code> spec as an object.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">matchWithPatternAndOptions: </span><span class="nf">(pattern, options) -&gt;</span>
+      <span class="p">{</span><span class="nx">controller</span><span class="p">,</span> <span class="nx">action</span><span class="p">}</span> <span class="o">=</span> <span class="nx">options</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span> <span class="s">&#39;&#39;&#39;</span>
+<span class="s">        Router#matchWithPatternAndOptions must receive controller and action</span>
+<span class="s">      &#39;&#39;&#39;</span> <span class="k">unless</span> <span class="nx">controller</span> <span class="o">and</span> <span class="nx">action</span>
+      <span class="nx">@addHandler</span> <span class="nx">pattern</span><span class="p">,</span> <span class="nx">controller</span><span class="p">,</span> <span class="nx">action</span><span class="p">,</span> <span class="nx">options</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="add%20handler">
+  <h2>
+    <a href="#add%20handler" name="add%20handler" class="pilcrow">&#182;</a>
+    Add Handler
+  </h2>
+</div>
+
+
+<p>Create a <code>Route</code> object and add it to the <code>History</code>'s handlers.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">pattern</span>
+      <span class="dox_type">String</span>
+      <span>A <code>Route</code> path spec.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">controller</span>
+      <span class="dox_type">String</span>
+      <span>A <code>Controller</code> name.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">action</span>
+      <span class="dox_type">String</span>
+      <span>The <code>Controller</code>'s targeted <code>action</code></span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">options?</span>
+      <span class="dox_type">Object</span>
+      <span>Any options to pass to the <code>Route</code>.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">addHandler: </span><span class="nf">(pattern, controller, action, options) -&gt;</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-16" id="section-16">&#182;</a>
+</div>
+<p>Let each match provide its own trailing option to appropriate Route.
+Pass trailing value from the Router by default.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nx">_</span><span class="p">.</span><span class="nx">defaults</span> <span class="nx">options</span><span class="p">,</span> <span class="nv">trailing: </span><span class="nx">@options</span><span class="p">.</span><span class="nx">trailing</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-17" id="section-17">&#182;</a>
+</div>
+<p>Create the route.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nv">route = </span><span class="nx">@__factory</span><span class="p">().</span><span class="nx">get</span> <span class="s">&#39;Route&#39;</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">...</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-18" id="section-18">&#182;</a>
+</div>
+<p>Register the route at the Backbone.History instance.
+Don’t use Backbone.history.route here because it calls
+handlers.unshift, inserting the handler at the top of the list.
+Since we want routes to match in the order they were specified,
+we’re appending the route at the end.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nx">Backbone</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">handlers</span><span class="p">.</span><span class="nx">push</span> <span class="p">{</span><span class="nx">route</span><span class="p">,</span> <span class="nv">callback: </span><span class="nx">route</span><span class="p">.</span><span class="nx">handler</span><span class="p">}</span>
+      <span class="k">return</span> <span class="nx">route</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="route">
+  <h2>
+    <a href="#route" name="route" class="pilcrow">&#182;</a>
+    Route
+  </h2>
+</div>
+
+
+<p>Route a given URL path manually.
+This looks quite like Backbone.History::loadUrl but it accepts an absolute
+URL with a leading slash (e.g. /foo) and passes the routing options to the
+callback function.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">pathSpec</span>
+      <span class="dox_type">String</span>
+      <span>The spec for the target <code>Route</code> as a string.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">pathSpec</span>
+      <span class="dox_type">Object</span>
+      <span>The spec for the target <code>Route</code> as an object.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">params</span>
+      <span class="dox_type">Object</span>
+      <span>Any params to pass to the <code>Route</code>.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">options?</span>
+      <span class="dox_type">Object</span>
+      <span>Any options to pass to the handler.</span>
+    </div>
+    <div class="dox_tag_title">Returns</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span class="dox_type">Boolean</span>
+      <span>Whether a route matched.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">route: </span><span class="nf">(pathSpec, params, options) -&gt;</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-20" id="section-20">&#182;</a>
+</div>
+<p>Try to extract an URL from the pathSpec if it's a hash.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isObject</span> <span class="nx">pathSpec</span>
+        <span class="nv">path = </span><span class="nx">pathSpec</span><span class="p">.</span><span class="nx">url</span>
+        <span class="nx">params</span> <span class="o">?=</span> <span class="nx">pathSpec</span><span class="p">.</span><span class="nx">params</span>
+
+      <span class="nv">params = </span><span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isArray</span> <span class="nx">params</span>
+      <span class="k">then</span> <span class="nx">params</span><span class="p">.</span><span class="nx">slice</span><span class="p">()</span>
+      <span class="k">else</span> <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span> <span class="p">{},</span> <span class="nx">params</span>
+
+      <span class="k">return</span> <span class="k">if</span> <span class="nx">path</span><span class="o">?</span>
+      <span class="k">then</span> <span class="nx">@routeWithPath</span> <span class="nx">path</span><span class="p">,</span> <span class="nx">params</span>
+      <span class="k">else</span> <span class="nx">@routeWithPathSpec</span> <span class="nx">pathSpec</span><span class="p">,</span> <span class="nx">params</span><span class="p">,</span> <span class="nx">options</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="route%20with%20path">
+  <h3>
+    <a href="#route%20with%20path" name="route%20with%20path" class="pilcrow">&#182;</a>
+    Route With Path
+  </h3>
+</div>
+
+
+<div class="dox">
+  <div class="summary"><p>Find and execute a <code>Route</code> handler by path.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">path</span>
+      <span class="dox_type">String</span>
+      <span>The path to use to lookup the <code>Route</code> handler.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">options?</span>
+      <span class="dox_type">Object</span>
+      <span>Any options to pass to the handler.</span>
+    </div>
+    <div class="dox_tag_title">Returns</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span class="dox_type">Boolean</span>
+      <span>Whether a route matched.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">routeWithPath: </span><span class="nf">(path, options) -&gt;</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-22" id="section-22">&#182;</a>
+</div>
+<p>Remove leading subdir and hash or slash.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nv">path = </span><span class="nx">path</span><span class="p">.</span><span class="nx">replace</span> <span class="nx">@removeRoot</span><span class="p">,</span> <span class="s">&#39;&#39;</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-23" id="section-23">&#182;</a>
+</div>
+<p>Find a matching route.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nv">handler = </span><span class="nx">@findHandler</span> <span class="nf">(handler) -&gt;</span> <span class="nx">handler</span><span class="p">.</span><span class="nx">route</span><span class="p">.</span><span class="nx">test</span> <span class="nx">path</span>
+      <span class="k">return</span> <span class="nx">@handleRoute</span> <span class="nx">handler</span><span class="p">,</span> <span class="nx">path</span><span class="p">,</span> <span class="nx">options</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="route%20with%20path%20spec">
+  <h3>
+    <a href="#route%20with%20path%20spec" name="route%20with%20path%20spec" class="pilcrow">&#182;</a>
+    Route With Path Spec
+  </h3>
+</div>
+
+
+<div class="dox">
+  <div class="summary"><p>Find and execute a <code>Route</code> handler by path spec.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">path</span>
+      <span class="dox_type">String</span>
+      <span>The path spec to use to lookup the <code>Route</code> handler.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">params</span>
+      <span class="dox_type">Object</span>
+      <span>The <code>Route</code>'s params.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">options?</span>
+      <span class="dox_type">Object</span>
+      <span>Any options to pass to the handler.</span>
+    </div>
+    <div class="dox_tag_title">Returns</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span class="dox_type">Boolean</span>
+      <span>Whether a route matched.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">routeWithPathSpec: </span><span class="nf">(pathSpec, params, options = {}) -&gt;</span>
+      <span class="nv">handler = </span><span class="nx">@findHandler</span> <span class="nf">(handler) -&gt;</span>
+        <span class="nv">matches = </span><span class="nx">handler</span><span class="p">.</span><span class="nx">route</span><span class="p">.</span><span class="nx">matches</span> <span class="nx">pathSpec</span>
+        <span class="nv">normalizedParams = </span><span class="nx">handler</span><span class="p">.</span><span class="nx">route</span><span class="p">.</span><span class="nx">normalizeParams</span> <span class="nx">params</span>
+        <span class="k">return</span> <span class="nb">Boolean</span> <span class="p">(</span><span class="nx">matches</span> <span class="o">and</span> <span class="nx">normalizedParams</span><span class="p">)</span>
+      <span class="k">return</span> <span class="nx">@handleRoute</span> <span class="nx">handler</span><span class="p">,</span> <span class="nx">params</span><span class="p">,</span> <span class="nx">options</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="handle%20route">
+  <h3>
+    <a href="#handle%20route" name="handle%20route" class="pilcrow">&#182;</a>
+    Handle Route
+  </h3>
+</div>
+
+
+<div class="dox">
+  <div class="summary"><p>Invoke a matched <code>Route</code>'s handler callback.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">handler</span>
+      <span class="dox_type">Function</span>
+      <span>The matched handler callback.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">params</span>
+      <span class="dox_type">Object</span>
+      <span>The <code>Route</code>'s params.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">options?</span>
+      <span class="dox_type">Object</span>
+      <span>Any options to pass to the handler.</span>
+    </div>
+    <div class="dox_tag_title">Returns</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span class="dox_type">Boolean</span>
+      <span><code>true</code>.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">handleRoute: </span><span class="nf">(handler, params, options) -&gt;</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span> <span class="s">&#39;&#39;&#39;</span>
+<span class="s">        Router#route: request was not routed</span>
+<span class="s">      &#39;&#39;&#39;</span> <span class="k">unless</span> <span class="nx">handler</span>
+      <span class="nx">handler</span><span class="p">.</span><span class="nx">callback</span> <span class="nx">params</span><span class="p">,</span> <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span> <span class="p">{</span><span class="nv">changeURL: </span><span class="kc">true</span><span class="p">},</span> <span class="nx">options</span>
+      <span class="k">return</span> <span class="kc">true</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="reverse">
+  <h2>
+    <a href="#reverse" name="reverse" class="pilcrow">&#182;</a>
+    Reverse
+  </h2>
+</div>
+
+
+<p>Find the URL for given pathSpec using the registered routes and provided
+parameters. The pathSpec may be just the name of a route or an object
+containing the name, controller, and/or action.</p>
+  </div>
+  <div class="body"><p>Warning: this is usually <strong>hot</strong> code in terms of performance.</p>
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">pathSpec</span>
+      <span class="dox_type">String</span>
+      <span>The spec for the target <code>Route</code> as a string.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">pathSpec</span>
+      <span class="dox_type">Object</span>
+      <span>The spec for the target <code>Route</code> as an object.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">params</span>
+      <span class="dox_type">Object</span>
+      <span>The <code>Route</code>'s params.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">query?</span>
+      <span class="dox_type">Object</span>
+      <span>An optional query hash.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">query?</span>
+      <span class="dox_type">String</span>
+      <span>An optional querystring.</span>
+    </div>
+    <div class="dox_tag_title">Returns</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span class="dox_type">String</span>
+      <span>The URL string if it is found.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span class="dox_type">Boolean</span>
+      <span><code>false</code> if the string is not found.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">reverse: </span><span class="nf">(pathSpec, params, query) -&gt;</span>
+      <span class="nv">root = </span><span class="nx">@options</span><span class="p">.</span><span class="nx">root</span>
+
+      <span class="k">throw</span> <span class="k">new</span> <span class="nx">TypeError</span> <span class="s">&#39;&#39;&#39;</span>
+<span class="s">        Router#reverse: params must be an array or an object</span>
+<span class="s">      &#39;&#39;&#39;</span> <span class="k">if</span> <span class="nx">params</span><span class="o">?</span> <span class="o">and</span> <span class="o">not</span> <span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">isObject</span><span class="p">(</span><span class="nx">params</span><span class="p">)</span> <span class="o">or</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">params</span><span class="p">))</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-27" id="section-27">&#182;</a>
+</div>
+<p>First filter the route handlers to those that are of the same name.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="p">{</span><span class="nx">handlers</span><span class="p">}</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">history</span>
+      <span class="k">for</span> <span class="nx">handler</span> <span class="k">in</span> <span class="nx">handlers</span> <span class="k">when</span> <span class="nx">handler</span><span class="p">.</span><span class="nx">route</span><span class="p">.</span><span class="nx">matches</span> <span class="nx">pathSpec</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-28" id="section-28">&#182;</a>
+</div>
+<p>Attempt to reverse using the provided parameter hash.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+        <span class="nv">reversed = </span><span class="nx">handler</span><span class="p">.</span><span class="nx">route</span><span class="p">.</span><span class="nx">reverse</span> <span class="nx">params</span><span class="p">,</span> <span class="nx">query</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-29" id="section-29">&#182;</a>
+</div>
+<p>Return the url if we got a valid one; else we continue on.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+        <span class="k">if</span> <span class="nx">reversed</span> <span class="o">isnt</span> <span class="kc">false</span>
+          <span class="k">return</span> <span class="k">if</span> <span class="nx">root</span>
+          <span class="k">then</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">root</span><span class="si">}#{</span><span class="nx">reversed</span><span class="si">}</span><span class="s">&quot;</span>
+          <span class="k">else</span> <span class="nx">reversed</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-30" id="section-30">&#182;</a>
+</div>
+<p>We didn't get anything.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span> <span class="s">&#39;&#39;&#39;</span>
+<span class="s">        Router#reverse: invalid route specified</span>
+<span class="s">      &#39;&#39;&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="change%20url">
+  <h2>
+    <a href="#change%20url" name="change%20url" class="pilcrow">&#182;</a>
+    Change URL
+  </h2>
+</div>
+
+
+<p>Change the current URL, add a history entry. Invoked upon dispatch.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">controller</span>
+      <span class="dox_type">Controller</span>
+      <span>The current <code>Controller</code>.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">params</span>
+      <span class="dox_type">Object</span>
+      <span>The <code>Route</code>'s params.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">route</span>
+      <span class="dox_type">Object</span>
+      <span>The current <code>Route</code> spec.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">options?</span>
+      <span class="dox_type">Object</span>
+      <span>Any options present when dispatch occured.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">changeURL: </span><span class="nf">(controller, params, route, options) -&gt;</span>
+      <span class="p">{</span><span class="nx">path</span><span class="p">,</span> <span class="nx">query</span><span class="p">}</span> <span class="o">=</span> <span class="nx">route</span>
+      <span class="p">{</span><span class="nx">changeURL</span><span class="p">,</span> <span class="nx">trigger</span><span class="p">,</span> <span class="nx">replace</span><span class="p">}</span> <span class="o">=</span> <span class="nx">options</span>
+      <span class="k">return</span> <span class="k">unless</span> <span class="nx">path</span><span class="o">?</span> <span class="o">and</span> <span class="nx">changeURL</span>
+
+      <span class="nv">url = </span><span class="nx">path</span>
+      <span class="nx">url</span> <span class="o">+=</span> <span class="k">if</span> <span class="nx">query</span> <span class="k">then</span> <span class="s">&quot;?</span><span class="si">#{</span><span class="nx">query</span><span class="si">}</span><span class="s">&quot;</span> <span class="k">else</span> <span class="s">&#39;&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-32" id="section-32">&#182;</a>
+</div>
+<p>Do not trigger or replace per default.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nv">navigateOptions =</span>
+        <span class="nv">trigger: </span><span class="nx">trigger</span> <span class="o">is</span> <span class="kc">true</span>
+        <span class="nv">replace: </span><span class="nx">replace</span> <span class="o">is</span> <span class="kc">true</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-33" id="section-33">&#182;</a>
+</div>
+<p>Navigate to the passed URL and forward options to Backbone.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nx">Backbone</span><span class="p">.</span><span class="nx">history</span><span class="p">.</span><span class="nx">navigate</span> <span class="nx">url</span><span class="p">,</span> <span class="nx">navigateOptions</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="delete%20history">
+  <h2>
+    <a href="#delete%20history" name="delete%20history" class="pilcrow">&#182;</a>
+    Delete History
+  </h2>
+</div>
+
+
+<p>Invoked upon disposal of this <code>Router</code>.</p>
+  </div>
+  <div class="body">
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">_deleteHistory: </span><span class="nf">-&gt;</span>
+      <span class="nx">@stopHistory</span><span class="p">()</span>
+      <span class="k">delete</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">history</span>
+
+  <span class="p">),</span> <span class="p">{</span>
+    <span class="nv">override: </span><span class="kc">true</span>
+    <span class="nv">mixins: </span><span class="p">[</span>
+      <span class="s">&#39;PubSub.Mixin&#39;</span>
+      <span class="s">&#39;Evented.Mixin&#39;</span>
+      <span class="s">&#39;Listener.Mixin&#39;</span>
+      <span class="s">&#39;Disposable.Mixin&#39;</span>
+      <span class="s">&#39;CallbackProvider.Mixin&#39;</span>
+    <span class="p">]</span>
+  <span class="p">}</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

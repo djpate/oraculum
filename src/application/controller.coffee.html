@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>controller.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../doc-style.css" />
+  <script src="../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../", thisFile = "src/application/controller.coffee", defaultSidebar = true;
+  </script>
+  <script src="../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+      <div class="heading h1">
+        <a href="#controller">Controller</a>
+      </div>
+      <div class="heading h2">
+        <a href="#constructor">Constructor</a>
+      </div>
+      <div class="heading h2">
+        <a href="#initialize">Initialize</a>
+      </div>
+      <div class="heading h2">
+        <a href="#mixin%20options">Mixin Options</a>
+      </div>
+      <div class="heading h2">
+        <a href="#before%20action">Before Action</a>
+      </div>
+      <div class="heading h2">
+        <a href="#adjust%20title">Adjust Title</a>
+      </div>
+      <div class="heading h2">
+        <a href="#reuse">Reuse</a>
+      </div>
+      <div class="heading h2">
+        <a href="#redirect%20to">Redirect To</a>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>controller.coffee</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="nx">define</span> <span class="p">[</span>
+  <span class="s">&#39;oraculum&#39;</span>
+  <span class="s">&#39;oraculum/mixins/pub-sub&#39;</span>
+  <span class="s">&#39;oraculum/mixins/disposable&#39;</span>
+  <span class="s">&#39;oraculum/mixins/callback-provider&#39;</span>
+<span class="p">],</span> <span class="nf">(Oraculum) -&gt;</span>
+  <span class="s">&#39;use strict&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="controller">
+  <h1>
+    <a href="#controller" name="controller" class="pilcrow">&#182;</a>
+    Controller
+  </h1>
+</div>
+
+
+<p>The job of the <code>Controller</code> is to serve as the top-level configuration for
+sub-applications within our global <code>Application</code>.
+The <code>Controller</code> provides actions to be mapped to <code>Route</code>s, and subsequently
+receives <code>Route</code> parameters with which it can use to create <code>Model</code>s,
+<code>Collection</code>s, and <code>View</code>s to display the requested resources.
+The <code>Controller</code>'s lifecycle is managed by the <code>Dispatcher</code></p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">application/index.coffee</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">application/route.coffee</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">application/router.coffee</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">application/dispatcher.coffee</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <a href="http://backbonejs.org/#View">http://backbonejs.org/#View</a>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <a href="http://backbonejs.org/#Model">http://backbonejs.org/#Model</a>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <a href="http://backbonejs.org/#Collection
+">http://backbonejs.org/#Collection
+</a>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+  <span class="nx">Oraculum</span><span class="p">.</span><span class="nx">define</span> <span class="s">&#39;Controller&#39;</span><span class="p">,</span> <span class="p">(</span><span class="k">class</span> <span class="nx">Controller</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-3" id="section-3">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><p>Internal flag which stores whether <code>redirectTo</code> was called.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Type</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">Boolean
+</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">redirected: </span><span class="kc">false</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="constructor_NaN">
+  <h2>
+    <a href="#constructor_NaN" name="constructor_NaN" class="pilcrow">&#182;</a>
+    Constructor
+  </h2>
+</div>
+
+
+<p>Allow custom initialization via the standard <code>initialize</code> method.</p>
+  </div>
+  <div class="body">
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">constructor: </span><span class="nf">-&gt;</span>
+      <span class="nx">@initialize</span> <span class="nx">arguments</span><span class="p">...</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="initialize">
+  <h2>
+    <a href="#initialize" name="initialize" class="pilcrow">&#182;</a>
+    Initialize
+  </h2>
+</div>
+
+
+<p>We provide an empty <code>initialize</code> method to enforce that <code>initialize</code> is a
+reserved method name and should not be used for a <code>Controller</code> action.</p>
+  </div>
+  <div class="body">
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">initialize: </span><span class="nf">-&gt;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="mixin%20options">
+  <h2>
+    <a href="#mixin%20options" name="mixin%20options" class="pilcrow">&#182;</a>
+    Mixin Options
+  </h2>
+</div>
+
+
+<p>Instruct the <code>Disposable.Mixin</code> to dispose all of our properties upon
+disposal.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">mixins/disposable.coffee
+</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">mixinOptions:</span>
+      <span class="nv">disposable:</span>
+        <span class="nv">disposeAll: </span><span class="kc">true</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="before%20action">
+  <h2>
+    <a href="#before%20action" name="before%20action" class="pilcrow">&#182;</a>
+    Before Action
+  </h2>
+</div>
+
+
+<p>We provide an empty <code>beforeAction</code> method to allow the method to be hooked
+by <code>makeEventedMethod</code> or <code>makeMiddlewareMethod</code> even if the implementing
+<code>Controller</code> fails to define it's own implementation.
+This method is invoked by the <code>Dispatcher</code>'s <code>executeBeforeAction</code> method.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">application/route.coffee</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">application/router.coffee</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">application/dispatcher.coffee
+</span>
+    </div>
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">params</span>
+      <span class="dox_type">Object</span>
+      <span>Any parameters defined in the <code>Route</code>'s specification.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">route</span>
+      <span class="dox_type">Object</span>
+      <span>The current <code>Route</code> specification.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">options</span>
+      <span class="dox_type">Object</span>
+      <span>The current <code>Route</code> options.</span>
+    </div>
+    <div class="dox_tag_title">Returns</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span class="dox_type">Promise?</span>
+      <span>May return a promise interface to defer invocation of the action prescribed by the current <code>Route</code> specification.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">beforeAction: </span><span class="nf">-&gt;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="adjust%20title">
+  <h2>
+    <a href="#adjust%20title" name="adjust%20title" class="pilcrow">&#182;</a>
+    Adjust Title
+  </h2>
+</div>
+
+
+<p>Fires an event through the global mediator indicating that the page's title
+should change.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">subtitle</span>
+      <span class="dox_type">String</span>
+      <span>A string representing the scope of the current action.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">adjustTitle: </span><span class="nf">(subtitle) -&gt;</span>
+      <span class="nx">@publishEvent</span> <span class="s">&#39;!adjustTitle&#39;</span><span class="p">,</span> <span class="nx">subtitle</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="reuse">
+  <h2>
+    <a href="#reuse" name="reuse" class="pilcrow">&#182;</a>
+    Reuse
+  </h2>
+</div>
+
+
+<p>Invokes callbacks registered by the <code>Composer</code>.
+Will compose a <code>View</code> if <code>view</code> is specified, else it will attempt to lookup
+and return the composed <code>View</code> matching <code>name</code>.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">application/composer.coffee
+</span>
+    </div>
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">name</span>
+      <span class="dox_type">String</span>
+      <span>The composition to be composed/retrieved.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">view?</span>
+      <span class="dox_type">Constructor</span>
+      <span>The <code>View</code> constructor to be composed.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">view?</span>
+      <span class="dox_type">String</span>
+      <span>The factory definition to be composed.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">options?</span>
+      <span class="dox_type">Object</span>
+      <span>The options to pass to the <code>View</code> constructor.</span>
+    </div>
+    <div class="dox_tag_title">Returns</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span class="dox_type">View?</span>
+      <span>The <code>View</code> that was retrieved/composed, if it exists.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">reuse: </span><span class="nf">-&gt;</span>
+      <span class="nv">method = </span><span class="k">if</span> <span class="nx">arguments</span><span class="p">.</span><span class="nx">length</span> <span class="o">is</span> <span class="mi">1</span> <span class="k">then</span> <span class="s">&#39;retrieve&#39;</span> <span class="k">else</span> <span class="s">&#39;compose&#39;</span>
+      <span class="k">return</span> <span class="nx">@executeCallback</span> <span class="s">&quot;composer:</span><span class="si">#{</span><span class="nx">method</span><span class="si">}</span><span class="s">&quot;</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">...</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="redirect%20to">
+  <h2>
+    <a href="#redirect%20to" name="redirect%20to" class="pilcrow">&#182;</a>
+    Redirect To
+  </h2>
+</div>
+
+
+<p>Redirects to another <code>Route</code>.
+Sets the <code>@redirected</code> flag to <code>true</code> to prevent the <code>Dispatcher</code> from
+firing an additional <code>dispatcher:dispatch</code> event.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">application/route.coffee</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">application/router.coffee</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">application/dispatcher.coffee
+</span>
+    </div>
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">pathDesc</span>
+      <span class="dox_type">String</span>
+      <span>The <code>Route</code>'s path descriptor.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">params</span>
+      <span class="dox_type">Object</span>
+      <span>Any parameters defined in the <code>Route</code>'s specification.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">options</span>
+      <span class="dox_type">Object</span>
+      <span>Any <code>Route</code> options.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">redirectTo: </span><span class="nf">-&gt;</span>
+      <span class="vi">@redirected = </span><span class="kc">true</span>
+      <span class="nx">@executeCallback</span> <span class="s">&#39;router:route&#39;</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">...</span>
+
+  <span class="p">),</span> <span class="nv">mixins: </span><span class="p">[</span>
+    <span class="s">&#39;PubSub.Mixin&#39;</span>
+    <span class="s">&#39;Evented.Mixin&#39;</span>
+    <span class="s">&#39;Disposable.Mixin&#39;</span>
+    <span class="s">&#39;CallbackDelegate.Mixin&#39;</span>
+  <span class="p">]</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

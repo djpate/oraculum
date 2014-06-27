@@ -1,0 +1,1601 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>route.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../doc-style.css" />
+  <script src="../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../", thisFile = "src/application/route.coffee", defaultSidebar = true;
+  </script>
+  <script src="../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+      <div class="heading h1">
+        <a href="#route">Route</a>
+      </div>
+      <div class="heading h2">
+        <a href="#static%20methods">Static Methods</a>
+      </div>
+      <div class="heading h3">
+        <a href="#process%20trailing%20slash">Process Trailing Slash</a>
+      </div>
+      <div class="heading h3">
+        <a href="#stringify%20key%20value">Stringify Key Value</a>
+      </div>
+      <div class="heading h3">
+        <a href="#stringify%20query%20params">Stringify Query Params</a>
+      </div>
+      <div class="heading h3">
+        <a href="#parse%20query%20string">Parse Query String</a>
+      </div>
+      <div class="heading h2">
+        <a href="#constructor">Constructor</a>
+      </div>
+      <div class="heading h2">
+        <a href="#mixin%20options">Mixin Options</a>
+      </div>
+      <div class="heading h2">
+        <a href="#matches">Matches</a>
+      </div>
+      <div class="heading h2">
+        <a href="#reverse">Reverse</a>
+      </div>
+      <div class="heading h2">
+        <a href="#normalize%20params">Normalize Params</a>
+      </div>
+      <div class="heading h2">
+        <a href="#test%20params">Test Params</a>
+      </div>
+      <div class="heading h2">
+        <a href="#test%20constraints">Test Constraints</a>
+      </div>
+      <div class="heading h2">
+        <a href="#create%20regexp">Create RegExp</a>
+      </div>
+      <div class="heading h2">
+        <a href="#parse%20optional%20portion">Parse Optional Portion</a>
+      </div>
+      <div class="heading h2">
+        <a href="#replace%20params">Replace Params</a>
+      </div>
+      <div class="heading h2">
+        <a href="#param%20capture%20pattern">Param Capture Pattern</a>
+      </div>
+      <div class="heading h2">
+        <a href="#test">Test</a>
+      </div>
+      <div class="heading h2">
+        <a href="#handler">Handler</a>
+      </div>
+      <div class="heading h2">
+        <a href="#extract%20params">Extract Params</a>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>route.coffee</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="nx">define</span> <span class="p">[</span>
+  <span class="s">&#39;oraculum&#39;</span>
+  <span class="s">&#39;oraculum/libs&#39;</span>
+  <span class="s">&#39;oraculum/mixins/pub-sub&#39;</span>
+  <span class="s">&#39;oraculum/mixins/freezable&#39;</span>
+  <span class="s">&#39;oraculum/application/controller&#39;</span>
+<span class="p">],</span> <span class="nf">(Oraculum) -&gt;</span>
+  <span class="s">&#39;use strict&#39;</span>
+
+  <span class="nv">_ = </span><span class="nx">Oraculum</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;underscore&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-2" id="section-2">&#182;</a>
+</div>
+<p>Cached regex for capturing required parameters from a <code>fragment</code>.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+  <span class="nv">paramRegExp = </span><span class="sr">/(?::|\*)(\w+)/g</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-3" id="section-3">&#182;</a>
+</div>
+<p>Cached regex for capturing optional parameters from a <code>fragment</code>.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+  <span class="nv">optionalRegExp = </span><span class="sr">/\((.*?)\)/g</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-4" id="section-4">&#182;</a>
+</div>
+<p>Cached regex for escaping special url characters.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+  <span class="nv">escapeRegExp = </span><span class="sr">/[\-{}\[\]+?.,\\\^$|#\s]/g</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="route">
+  <h1>
+    <a href="#route" name="route" class="pilcrow">&#182;</a>
+    Route
+  </h1>
+</div>
+
+
+<p>The <code>Route</code> represents a mapping between a url <code>fragment</code> and a method of a
+<code>Controller</code>, colloquially referred to as its <code>action</code>.
+A route's <code>fragment</code> can carry information about a particular <code>resource</code> that
+that the <code>Controller</code>'s <code>action</code> represents, such as the id of a particular
+<code>Model</code>, or other metadata.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">application/router.coffee</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">application/history.coffee</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">application/controller.coffee</span>
+    </div>
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">application/dispatcher.coffee
+</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+  <span class="nx">Oraculum</span><span class="p">.</span><span class="nx">define</span> <span class="s">&#39;Route&#39;</span><span class="p">,</span> <span class="p">(</span><span class="k">class</span> <span class="nx">Route</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="static%20methods">
+  <h2>
+    <a href="#static%20methods" name="static%20methods" class="pilcrow">&#182;</a>
+    Static Methods
+  </h2>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="process%20trailing%20slash">
+  <h3>
+    <a href="#process%20trailing%20slash" name="process%20trailing%20slash" class="pilcrow">&#182;</a>
+    Process Trailing Slash
+  </h3>
+</div>
+
+
+<div class="dox">
+  <div class="summary"><p>Add or remove trailing slash from path according to trailing option.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">path</span>
+      <span class="dox_type">String</span>
+      <span>The path to process.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">trailing</span>
+      <span class="dox_type">Boolean</span>
+      <span>Wether to add or strip the trailing slash.</span>
+    </div>
+    <div class="dox_tag_title">Returns</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span class="dox_type">String</span>
+      <span>The processed path.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="vi">@processTrailingSlash = </span><span class="nf">(path, trailing) -&gt;</span>
+      <span class="k">switch</span> <span class="nx">trailing</span>
+        <span class="k">when</span> <span class="kc">true</span> <span class="k">then</span> <span class="nx">path</span> <span class="o">+=</span> <span class="s">&#39;/&#39;</span> <span class="k">unless</span> <span class="nx">path</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">..]</span> <span class="o">is</span> <span class="s">&#39;/&#39;</span>
+        <span class="k">when</span> <span class="kc">false</span> <span class="k">then</span> <span class="nv">path = </span><span class="nx">path</span><span class="p">[...</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nx">path</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">..]</span> <span class="o">is</span> <span class="s">&#39;/&#39;</span>
+      <span class="k">return</span> <span class="nx">path</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="stringify%20key%20value">
+  <h3>
+    <a href="#stringify%20key%20value" name="stringify%20key%20value" class="pilcrow">&#182;</a>
+    Stringify Key Value
+  </h3>
+</div>
+
+
+<div class="dox">
+  <div class="summary"><p>Encode a key/val pair into a querystring component.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">key</span>
+      <span class="dox_type">String</span>
+      <span>The key for the url parameter.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">value</span>
+      <span class="dox_type">Mixed</span>
+      <span>The value to encode for the url parameter.</span>
+    </div>
+    <div class="dox_tag_title">Returns</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span class="dox_type">String</span>
+      <span>The resulting querystring component.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="vi">@stringifyKeyValue = </span><span class="nf">(key, value) -&gt;</span>
+      <span class="k">return</span> <span class="s">&#39;&#39;</span> <span class="k">unless</span> <span class="nx">value</span><span class="o">?</span>
+      <span class="k">return</span> <span class="s">&quot;&amp;</span><span class="si">#{</span><span class="nx">key</span><span class="si">}</span><span class="s">=</span><span class="si">#{</span><span class="nb">encodeURIComponent</span> <span class="nx">value</span><span class="si">}</span><span class="s">&quot;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="stringify%20query%20params">
+  <h3>
+    <a href="#stringify%20query%20params" name="stringify%20query%20params" class="pilcrow">&#182;</a>
+    Stringify Query Params
+  </h3>
+</div>
+
+
+<div class="dox">
+  <div class="summary"><p>Returns a query string from a hash.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">queryParams</span>
+      <span class="dox_type">Object</span>
+      <span>The object to be serialized to a querystring.</span>
+    </div>
+    <div class="dox_tag_title">Returns</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span class="dox_type">String</span>
+      <span>The resulting querystring.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="vi">@stringifyQueryParams = </span><span class="nf">(queryParams) -&gt;</span>
+      <span class="nv">query = </span><span class="s">&#39;&#39;</span>
+      <span class="nx">_</span><span class="p">.</span><span class="nx">each</span> <span class="nx">queryParams</span><span class="p">,</span> <span class="nf">(value, key) -&gt;</span>
+        <span class="nv">encodedKey = </span><span class="nb">encodeURIComponent</span> <span class="nx">key</span>
+        <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isArray</span> <span class="nx">value</span> <span class="k">then</span> <span class="nx">_</span><span class="p">.</span><span class="nx">each</span> <span class="nx">value</span><span class="p">,</span> <span class="nf">(arrParam) -&gt;</span>
+          <span class="nx">query</span> <span class="o">+=</span> <span class="nx">Route</span><span class="p">.</span><span class="nx">stringifyKeyValue</span> <span class="nx">encodedKey</span><span class="p">,</span> <span class="nx">arrParam</span>
+        <span class="k">else</span> <span class="nx">query</span> <span class="o">+=</span> <span class="nx">Route</span><span class="p">.</span><span class="nx">stringifyKeyValue</span> <span class="nx">encodedKey</span><span class="p">,</span> <span class="nx">value</span>
+      <span class="k">return</span> <span class="nx">query</span> <span class="o">and</span> <span class="nx">query</span><span class="p">.</span><span class="nx">substring</span> <span class="mi">1</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="parse%20query%20string">
+  <h3>
+    <a href="#parse%20query%20string" name="parse%20query%20string" class="pilcrow">&#182;</a>
+    Parse Query String
+  </h3>
+</div>
+
+
+<div class="dox">
+  <div class="summary"><p>Deserialize a querystring to an object.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">queryString</span>
+      <span class="dox_type">String</span>
+      <span>The querystring to deserialized.</span>
+    </div>
+    <div class="dox_tag_title">Returns</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span class="dox_type">Object</span>
+      <span>The resulting object.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="vi">@parseQueryString = </span><span class="nf">(queryString) -&gt;</span>
+      <span class="nv">params = </span><span class="p">{}</span>
+      <span class="k">return</span> <span class="nx">params</span> <span class="k">unless</span> <span class="nx">queryString</span>
+
+      <span class="nv">pairs = </span><span class="nx">queryString</span><span class="p">.</span><span class="nx">split</span> <span class="s">&#39;&amp;&#39;</span>
+      <span class="nx">_</span><span class="p">.</span><span class="nx">each</span> <span class="nx">pairs</span><span class="p">,</span> <span class="nf">(pair) -&gt;</span>
+        <span class="k">return</span> <span class="k">unless</span> <span class="nx">pair</span><span class="p">.</span><span class="nx">length</span>
+        <span class="p">[</span><span class="nx">field</span><span class="p">,</span> <span class="nx">value</span><span class="p">]</span> <span class="o">=</span> <span class="nx">pair</span><span class="p">.</span><span class="nx">split</span> <span class="s">&#39;=&#39;</span>
+        <span class="k">return</span> <span class="k">unless</span> <span class="nx">field</span><span class="p">.</span><span class="nx">length</span>
+        <span class="nv">field = </span><span class="nb">decodeURIComponent</span> <span class="nx">field</span>
+        <span class="nv">value = </span><span class="nb">decodeURIComponent</span> <span class="nx">value</span>
+        <span class="nv">current = </span><span class="nx">params</span><span class="p">[</span><span class="nx">field</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nx">current</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-11" id="section-11">&#182;</a>
+</div>
+<p>Handle multiple params with same name:
+Aggregate them in an array.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+          <span class="k">if</span> <span class="nx">current</span><span class="p">.</span><span class="nx">push</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-12" id="section-12">&#182;</a>
+</div>
+<p>Add the existing array.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+          <span class="k">then</span> <span class="nx">current</span><span class="p">.</span><span class="nx">push</span> <span class="nx">value</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-13" id="section-13">&#182;</a>
+</div>
+<p>Create a new array.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+          <span class="k">else</span> <span class="nx">params</span><span class="p">[</span><span class="nx">field</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nx">current</span><span class="p">,</span> <span class="nx">value</span><span class="p">]</span>
+        <span class="k">else</span> <span class="nx">params</span><span class="p">[</span><span class="nx">field</span><span class="p">]</span> <span class="o">=</span> <span class="nx">value</span>
+
+      <span class="k">return</span> <span class="nx">params</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="constructor_NaN">
+  <h2>
+    <a href="#constructor_NaN" name="constructor_NaN" class="pilcrow">&#182;</a>
+    Constructor
+  </h2>
+</div>
+
+
+<p>Create a route for a URL pattern and a controller action
+e.g. new Route '/users/:id', 'users', 'show', { some: 'options' }</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">pattern</span>
+      <span class="dox_type">String</span>
+      <span>The <code>fragment</code> that represents this route.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">controller</span>
+      <span class="dox_type">String</span>
+      <span>The <code>Controller</code> name this route should use.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">action</span>
+      <span class="dox_type">String</span>
+      <span>The <code>Controller</code>'s targeted <code>action</code>.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">options?</span>
+      <span class="dox_type">Object</span>
+      <span>Any options to be cached.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">constructor: </span><span class="nf">(@pattern, @controller, @action, options) -&gt;</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-15" id="section-15">&#182;</a>
+</div>
+<p>Disallow regexp routes.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span> <span class="s">&#39;&#39;&#39;</span>
+<span class="s">        Route: RegExps are not supported.</span>
+<span class="s">        Use strings with :names and `constraints` option of route</span>
+<span class="s">      &#39;&#39;&#39;</span> <span class="k">unless</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isString</span> <span class="nx">@pattern</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-16" id="section-16">&#182;</a>
+</div>
+<p>Clone options.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="vi">@options = </span><span class="nx">_</span><span class="p">.</span><span class="nx">extend</span> <span class="p">{},</span> <span class="nx">options</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-17" id="section-17">&#182;</a>
+</div>
+<p>Store the name on the route if given</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="vi">@name = </span><span class="nx">@options</span><span class="p">.</span><span class="nx">name</span> <span class="k">if</span> <span class="nx">@options</span><span class="p">.</span><span class="nx">name</span><span class="o">?</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-18" id="section-18">&#182;</a>
+</div>
+<p>Don’t allow ambiguity with controller#action.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span> <span class="s">&#39;&#39;&#39;</span>
+<span class="s">        Route: &quot;#&quot; cannot be used in name</span>
+<span class="s">      &#39;&#39;&#39;</span> <span class="k">if</span> <span class="nx">@name</span> <span class="o">and</span> <span class="nx">@name</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s">&quot;</span><span class="err">#</span><span class="s">&quot;</span><span class="p">)</span> <span class="o">isnt</span> <span class="o">-</span><span class="mi">1</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-19" id="section-19">&#182;</a>
+</div>
+<p>Set default route name.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nx">@name</span> <span class="o">?=</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">@controller</span><span class="si">}</span><span class="err">#</span><span class="si">#{</span><span class="nx">@action</span><span class="si">}</span><span class="s">&quot;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-20" id="section-20">&#182;</a>
+</div>
+<p>Initialize list of :params which the route will use.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="vi">@allParams = </span><span class="p">[]</span>
+      <span class="vi">@requiredParams = </span><span class="p">[]</span>
+      <span class="vi">@optionalParams = </span><span class="p">[]</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-21" id="section-21">&#182;</a>
+</div>
+<p>Check if the action is a reserved name</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span> <span class="s">&#39;&#39;&#39;</span>
+<span class="s">        Route: You should not use existing controller properties as actions</span>
+<span class="s">      &#39;&#39;&#39;</span> <span class="k">if</span> <span class="nx">@action</span> <span class="k">of</span> <span class="nx">@__factory</span><span class="p">().</span><span class="nx">getConstructor</span><span class="p">(</span><span class="s">&#39;Controller&#39;</span><span class="p">).</span><span class="nx">prototype</span>
+
+      <span class="nx">@createRegExp</span><span class="p">()</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="mixin%20options">
+  <h2>
+    <a href="#mixin%20options" name="mixin%20options" class="pilcrow">&#182;</a>
+    Mixin Options
+  </h2>
+</div>
+
+
+<p>Automatically freeze this object after its construction.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">mixins/freezable.coffee
+</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">mixinOptions:</span>
+      <span class="nv">freeze: </span><span class="kc">true</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="matches">
+  <h2>
+    <a href="#matches" name="matches" class="pilcrow">&#182;</a>
+    Matches
+  </h2>
+</div>
+
+
+<p>Tests if route params are equal to pathSpec.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">pathSpec</span>
+      <span class="dox_type">String</span>
+      <span>The <code>fragment</code> to test as a string.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">pathSpec</span>
+      <span class="dox_type">Object</span>
+      <span>The <code>fragment</code> to test as an object.</span>
+    </div>
+    <div class="dox_tag_title">Returns</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span class="dox_type">Boolean</span>
+      <span>Whether or not the provided <code>fragment</code> is a match for this <code>Route</code>.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">matches: </span><span class="nf">(pathSpec) -&gt;</span>
+      <span class="k">return</span> <span class="nx">pathSpec</span> <span class="o">is</span> <span class="nx">@name</span> <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isString</span> <span class="nx">pathSpec</span>
+      <span class="nv">propCount = </span><span class="mi">0</span>
+      <span class="k">for</span> <span class="nx">name</span> <span class="k">in</span> <span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="s">&#39;action&#39;</span><span class="p">,</span> <span class="s">&#39;controller&#39;</span><span class="p">]</span>
+        <span class="nx">propCount</span><span class="o">++</span>
+        <span class="nv">property = </span><span class="nx">pathSpec</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span>
+        <span class="k">return</span> <span class="kc">false</span> <span class="k">if</span> <span class="nx">property</span> <span class="o">and</span> <span class="nx">property</span> <span class="o">isnt</span> <span class="k">this</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span>
+      <span class="nv">invalidParamsCount = </span><span class="nx">propCount</span> <span class="o">is</span> <span class="mi">1</span> <span class="o">and</span> <span class="nx">name</span> <span class="k">in</span> <span class="p">[</span><span class="s">&#39;action&#39;</span><span class="p">,</span> <span class="s">&#39;controller&#39;</span><span class="p">]</span>
+      <span class="k">return</span> <span class="o">not</span> <span class="nx">invalidParamsCount</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="reverse">
+  <h2>
+    <a href="#reverse" name="reverse" class="pilcrow">&#182;</a>
+    Reverse
+  </h2>
+</div>
+
+
+<p>Generates <code>fragment</code> for this <code>Route</code> from params and optional querystring.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">params</span>
+      <span class="dox_type">Object</span>
+      <span>The params for this <code>Route</code>.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">query?</span>
+      <span class="dox_type">Object</span>
+      <span>An optional query hash.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">query?</span>
+      <span class="dox_type">String</span>
+      <span>An optional querystring.</span>
+    </div>
+    <div class="dox_tag_title">Returns</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span class="dox_type">String</span>
+      <span>The resulting <code>fragment</code>.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">reverse: </span><span class="nf">(params, query) -&gt;</span>
+      <span class="nv">params = </span><span class="nx">@normalizeParams</span> <span class="nx">params</span>
+      <span class="k">return</span> <span class="kc">false</span> <span class="k">if</span> <span class="nx">params</span> <span class="o">is</span> <span class="kc">false</span>
+
+      <span class="nv">url = </span><span class="nx">@pattern</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-25" id="section-25">&#182;</a>
+</div>
+<p>From a params hash; we need to be able to return
+the actual URL this route represents.
+Iterate and replace params in pattern.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nx">_</span><span class="p">.</span><span class="nx">each</span> <span class="nx">@requiredParams</span><span class="p">,</span> <span class="nf">(param) -&gt;</span>
+        <span class="nv">value = </span><span class="nx">params</span><span class="p">[</span><span class="nx">param</span><span class="p">]</span>
+        <span class="nv">url = </span><span class="nx">url</span><span class="p">.</span><span class="nx">replace</span> <span class="sr">///[:*]</span><span class="si">#{</span><span class="nx">param</span><span class="si">}</span><span class="sr">///g</span><span class="p">,</span> <span class="nx">value</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-26" id="section-26">&#182;</a>
+</div>
+<p>Replace optional params.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nx">_</span><span class="p">.</span><span class="nx">each</span> <span class="nx">@optionalParams</span><span class="p">,</span> <span class="nf">(param) -&gt;</span>
+        <span class="k">return</span> <span class="k">unless</span> <span class="nv">value = </span><span class="nx">params</span><span class="p">[</span><span class="nx">param</span><span class="p">]</span>
+        <span class="nv">url = </span><span class="nx">url</span><span class="p">.</span><span class="nx">replace</span> <span class="sr">///[:*]</span><span class="si">#{</span><span class="nx">param</span><span class="si">}</span><span class="sr">///g</span><span class="p">,</span> <span class="nx">value</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-27" id="section-27">&#182;</a>
+</div>
+<p>Kill unfulfilled optional portions.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nv">raw = </span><span class="nx">url</span><span class="p">.</span><span class="nx">replace</span> <span class="nx">optionalRegExp</span><span class="p">,</span> <span class="nf">(match, portion) -&gt;</span>
+        <span class="k">return</span> <span class="k">unless</span> <span class="nx">portion</span><span class="p">.</span><span class="nx">match</span> <span class="sr">/[:*]/g</span>
+        <span class="k">then</span> <span class="nx">portion</span>
+        <span class="k">else</span> <span class="s">&#39;&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-28" id="section-28">&#182;</a>
+</div>
+<p>Add or remove trailing slash according to the Route options.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nv">url = </span><span class="nx">Route</span><span class="p">.</span><span class="nx">processTrailingSlash</span> <span class="nx">raw</span><span class="p">,</span> <span class="nx">@options</span><span class="p">.</span><span class="nx">trailing</span>
+
+      <span class="k">return</span> <span class="nx">url</span> <span class="k">unless</span> <span class="nx">query</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-29" id="section-29">&#182;</a>
+</div>
+<p>Stringify query params if needed.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="k">return</span> <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isObject</span> <span class="nx">query</span>
+        <span class="nv">queryString = </span><span class="nx">Route</span><span class="p">.</span><span class="nx">stringifyQueryParams</span> <span class="nx">query</span>
+        <span class="nx">url</span> <span class="o">+=</span> <span class="k">if</span> <span class="nx">queryString</span> <span class="k">then</span> <span class="s">&#39;?&#39;</span> <span class="o">+</span> <span class="nx">queryString</span> <span class="k">else</span> <span class="s">&#39;&#39;</span>
+      <span class="k">else</span>
+        <span class="nx">url</span> <span class="o">+=</span> <span class="p">(</span><span class="k">if</span> <span class="nx">query</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">is</span> <span class="s">&#39;?&#39;</span> <span class="k">then</span> <span class="s">&#39;&#39;</span> <span class="k">else</span> <span class="s">&#39;?&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="nx">query</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="normalize%20params">
+  <h2>
+    <a href="#normalize%20params" name="normalize%20params" class="pilcrow">&#182;</a>
+    Normalize Params
+  </h2>
+</div>
+
+
+<p>Validates incoming params and returns them in a unified form - hash.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">params</span>
+      <span class="dox_type">Object</span>
+      <span>The params to normalize.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">params</span>
+      <span class="dox_type">Array</span>
+      <span>The params to normalize.</span>
+    </div>
+    <div class="dox_tag_title">Returns</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span class="dox_type">Object</span>
+      <span>The normalized params.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span class="dox_type">Boolean</span>
+      <span><code>false</code> if <code>params</code> doesn't pass <code>testParams</code>.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">normalizeParams: </span><span class="nf">(params) -&gt;</span>
+      <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isArray</span> <span class="nx">params</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-31" id="section-31">&#182;</a>
+</div>
+<p>Ensure we have enough parameters.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+        <span class="k">return</span> <span class="kc">false</span> <span class="k">if</span> <span class="nx">params</span><span class="p">.</span><span class="nx">length</span> <span class="o">&lt;</span> <span class="nx">@requiredParams</span><span class="p">.</span><span class="nx">length</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-32" id="section-32">&#182;</a>
+</div>
+<p>Convert params from array into object.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+        <span class="nv">paramsHash = </span><span class="p">{}</span>
+        <span class="nx">_</span><span class="p">.</span><span class="nx">each</span> <span class="nx">@requiredParams</span><span class="p">,</span> <span class="nf">(paramName, paramIndex) -&gt;</span>
+          <span class="nx">paramsHash</span><span class="p">[</span><span class="nx">paramName</span><span class="p">]</span> <span class="o">=</span> <span class="nx">params</span><span class="p">[</span><span class="nx">paramIndex</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="kc">false</span> <span class="k">unless</span> <span class="nx">@testConstraints</span> <span class="nx">paramsHash</span>
+
+        <span class="nv">params = </span><span class="nx">paramsHash</span>
+      <span class="k">else</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-33" id="section-33">&#182;</a>
+</div>
+<p>null or undefined params are equivalent to an empty hash</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+        <span class="nx">params</span> <span class="o">?=</span> <span class="p">{}</span>
+        <span class="k">return</span> <span class="kc">false</span> <span class="k">unless</span> <span class="nx">@testParams</span> <span class="nx">params</span>
+
+      <span class="k">return</span> <span class="nx">params</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="test%20params">
+  <h2>
+    <a href="#test%20params" name="test%20params" class="pilcrow">&#182;</a>
+    Test Params
+  </h2>
+</div>
+
+
+<p>Test if passed params hash matches current route.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">params</span>
+      <span class="dox_type">Object</span>
+      <span>The params to test.</span>
+    </div>
+    <div class="dox_tag_title">Returns</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span class="dox_type">Boolean</span>
+      <span>Whether <code>params</code> match this <code>Route</code>.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">testParams: </span><span class="nf">(params) -&gt;</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-35" id="section-35">&#182;</a>
+</div>
+<p>Ensure that params contains all the parameters needed.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="k">for</span> <span class="nx">paramName</span> <span class="k">in</span> <span class="nx">@requiredParams</span>
+        <span class="k">return</span> <span class="kc">false</span> <span class="k">if</span> <span class="nx">params</span><span class="p">[</span><span class="nx">paramName</span><span class="p">]</span> <span class="o">is</span> <span class="kc">undefined</span>
+
+      <span class="k">return</span> <span class="nx">@testConstraints</span> <span class="nx">params</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="test%20constraints">
+  <h2>
+    <a href="#test%20constraints" name="test%20constraints" class="pilcrow">&#182;</a>
+    Test Constraints
+  </h2>
+</div>
+
+
+<p>Test if passed params hash matches current constraints.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">params</span>
+      <span class="dox_type">Object</span>
+      <span>The params to test.</span>
+    </div>
+    <div class="dox_tag_title">Returns</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span class="dox_type">Boolean</span>
+      <span>Whether <code>params</code> match our constraints.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">testConstraints: </span><span class="nf">(params) -&gt;</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-37" id="section-37">&#182;</a>
+</div>
+<p>Apply the parameter constraints.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nv">constraints = </span><span class="nx">@options</span><span class="p">.</span><span class="nx">constraints</span>
+      <span class="k">if</span> <span class="nx">constraints</span>
+        <span class="k">for</span> <span class="k">own</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">constraint</span> <span class="k">of</span> <span class="nx">constraints</span>
+          <span class="k">return</span> <span class="kc">false</span> <span class="k">unless</span> <span class="nx">constraint</span><span class="p">.</span><span class="nx">test</span> <span class="nx">params</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span>
+
+      <span class="k">return</span> <span class="kc">true</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="create%20regexp">
+  <h2>
+    <a href="#create%20regexp" name="create%20regexp" class="pilcrow">&#182;</a>
+    Create RegExp
+  </h2>
+</div>
+
+
+<p>Creates the actual regular expression that Backbone.History#loadUrl
+uses to determine if the current url is a match.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Returns</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span class="dox_type">RegExp</span>
+      <span>The generated regular expression.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">createRegExp: </span><span class="nf">-&gt;</span>
+      <span class="nv">pattern = </span><span class="nx">@pattern</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-39" id="section-39">&#182;</a>
+</div>
+<p>Escape magic characters.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nv">pattern = </span><span class="nx">pattern</span><span class="p">.</span><span class="nx">replace</span> <span class="nx">escapeRegExp</span><span class="p">,</span> <span class="s">&#39;\\$&amp;&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-40" id="section-40">&#182;</a>
+</div>
+<p>Keep accurate back-reference indices in allParams.
+Eg. Matching the regex returns arrays like [a, undefined, c]
+ and each item needs to be matched to the correct
+ named parameter via its position in the array.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nx">@replaceParams</span> <span class="nx">pattern</span><span class="p">,</span> <span class="nf">(match, param) =&gt;</span>
+        <span class="nx">@allParams</span><span class="p">.</span><span class="nx">push</span> <span class="nx">param</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-41" id="section-41">&#182;</a>
+</div>
+<p>Process optional route portions.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nv">pattern = </span><span class="nx">pattern</span><span class="p">.</span><span class="nx">replace</span> <span class="nx">optionalRegExp</span><span class="p">,</span> <span class="o">=&gt;</span>
+        <span class="nx">@parseOptionalPortion</span><span class="p">.</span><span class="nx">apply</span> <span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-42" id="section-42">&#182;</a>
+</div>
+<p>Process remaining required params.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nv">pattern = </span><span class="nx">@replaceParams</span> <span class="nx">pattern</span><span class="p">,</span> <span class="nf">(match, param) =&gt;</span>
+        <span class="nx">@requiredParams</span><span class="p">.</span><span class="nx">push</span> <span class="nx">param</span>
+        <span class="k">return</span> <span class="nx">@paramCapturePattern</span> <span class="nx">match</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-43" id="section-43">&#182;</a>
+</div>
+<p>Create the actual regular expression, match until the end of the URL,
+trailing slash or the begin of query string.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="k">return</span> <span class="vi">@regExp = </span><span class="sr">///^</span><span class="si">#{</span><span class="nx">pattern</span><span class="si">}</span><span class="sr">(?=\/?(?=\?|$))///</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="parse%20optional%20portion">
+  <h2>
+    <a href="#parse%20optional%20portion" name="parse%20optional%20portion" class="pilcrow">&#182;</a>
+    Parse Optional Portion
+  </h2>
+</div>
+
+
+<p>Extract optional parameters from a <code>fragment</code>, caching them in
+<code>optionalParams</code>.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">match</span>
+      <span class="dox_type">String</span>
+      <span>The optional matched portion of the <code>fragment</code>.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">optionalPortion</span>
+      <span class="dox_type">String</span>
+      <span>The extracted optional matched parameter.</span>
+    </div>
+    <div class="dox_tag_title">Returns</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span class="dox_type">String</span>
+      <span>The optional matched portion of the <code>fragment</code> wrapped in a non-capturing group.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">parseOptionalPortion: </span><span class="nf">(match, optionalPortion) -&gt;</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-45" id="section-45">&#182;</a>
+</div>
+<p>Extract and replace params.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nv">portion = </span><span class="nx">@replaceParams</span> <span class="nx">optionalPortion</span><span class="p">,</span> <span class="nf">(match, param) =&gt;</span>
+        <span class="nx">@optionalParams</span><span class="p">.</span><span class="nx">push</span> <span class="nx">param</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-46" id="section-46">&#182;</a>
+</div>
+<p>Replace the match (eg. :foo) with capturing groups.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+        <span class="k">return</span> <span class="nx">@paramCapturePattern</span> <span class="nx">match</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-47" id="section-47">&#182;</a>
+</div>
+<p>Replace the optional portion with a non-capturing and optional group.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="k">return</span> <span class="s">&quot;(?:</span><span class="si">#{</span><span class="nx">portion</span><span class="si">}</span><span class="s">)?&quot;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="replace%20params">
+  <h2>
+    <a href="#replace%20params" name="replace%20params" class="pilcrow">&#182;</a>
+    Replace Params
+  </h2>
+</div>
+
+
+<p>A convenience method for processing parameter portions of a <code>fragment</code>.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">s,</span>
+      <span class="dox_type">String</span>
+      <span><code>fragment</code> to be processed.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">callback</span>
+      <span class="dox_type">Function</span>
+      <span>Method used to process the process any matched parameters.</span>
+    </div>
+    <div class="dox_tag_title">Returns</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span class="dox_type">String</span>
+      <span>The processed <code>fragment</code>.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">replaceParams: </span><span class="nf">(s, callback) -&gt;</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-49" id="section-49">&#182;</a>
+</div>
+<p>Parse :foo and *bar, replacing via callback.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="k">return</span> <span class="nx">s</span><span class="p">.</span><span class="nx">replace</span> <span class="nx">paramRegExp</span><span class="p">,</span> <span class="nx">callback</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="param%20capture%20pattern">
+  <h2>
+    <a href="#param%20capture%20pattern" name="param%20capture%20pattern" class="pilcrow">&#182;</a>
+    Param Capture Pattern
+  </h2>
+</div>
+
+
+<p>Extract the param name from a parameter spec in a <code>fragment</code></p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">param</span>
+      <span class="dox_type">String</span>
+      <span>The <code>fragment</code> to process.</span>
+    </div>
+    <div class="dox_tag_title">Returns</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span class="dox_type">String</span>
+      <span>The extracted parameter name.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">paramCapturePattern: </span><span class="nf">(param) -&gt;</span>
+      <span class="k">return</span> <span class="k">if</span> <span class="nx">param</span><span class="p">.</span><span class="nx">charAt</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">is</span> <span class="s">&#39;:&#39;</span>
+      <span class="k">then</span> <span class="s">&#39;([^\/\\?]+)&#39;</span> <span class="c1"># Regexp for :foo.</span>
+      <span class="k">else</span> <span class="s">&#39;(.*?)&#39;</span> <span class="c1"># Regexp for *foo.</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="test">
+  <h2>
+    <a href="#test" name="test" class="pilcrow">&#182;</a>
+    Test
+  </h2>
+</div>
+
+
+<p>Test if the route matches to a path (called by Backbone.History#loadUrl).</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">path</span>
+      <span class="dox_type">String</span>
+      <span>The <code>fragment</code> to test.</span>
+    </div>
+    <div class="dox_tag_title">Returns</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span class="dox_type">Boolean</span>
+      <span>Whether the <code>fragment</code> matches this <code>Route</code>'s specification.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">test: </span><span class="nf">(path) -&gt;</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-52" id="section-52">&#182;</a>
+</div>
+<p>Test the main RegExp.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="k">return</span> <span class="kc">false</span> <span class="k">unless</span> <span class="nv">matched = </span><span class="nx">@regExp</span><span class="p">.</span><span class="nx">test</span> <span class="nx">path</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-53" id="section-53">&#182;</a>
+</div>
+<p>Apply the parameter constraints.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nv">constraints = </span><span class="nx">@options</span><span class="p">.</span><span class="nx">constraints</span>
+      <span class="k">return</span> <span class="nx">@testConstraints</span> <span class="nx">@extractParams</span> <span class="nx">path</span> <span class="k">if</span> <span class="nx">constraints</span>
+
+      <span class="k">return</span> <span class="kc">true</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="handler">
+  <h2>
+    <a href="#handler" name="handler" class="pilcrow">&#182;</a>
+    Handler
+  </h2>
+</div>
+
+
+<p>The handler called by Backbone.History when the route matches.
+It is also called by Router#route which might pass options.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">application/router.coffee
+</span>
+    </div>
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">pathSpec</span>
+      <span class="dox_type">String</span>
+      <span>The path spec for this <code>Route</code> as a url.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">pathSpec</span>
+      <span class="dox_type">Object</span>
+      <span>The path spec for this <code>Route</code> as an object.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">options?</span>
+      <span class="dox_type">Object</span>
+      <span>Any options tfor this <code>Route</code>.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">handler: </span><span class="nf">(pathSpec, options) =&gt;</span>
+      <span class="nv">options = </span><span class="nx">_</span><span class="p">.</span><span class="nx">extend</span> <span class="p">{},</span> <span class="nx">options</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-55" id="section-55">&#182;</a>
+</div>
+<p>pathDesc may be either an object with params for reversing
+or a simple URL.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isObject</span> <span class="nx">pathSpec</span>
+        <span class="nv">query = </span><span class="nx">Route</span><span class="p">.</span><span class="nx">stringifyQueryParams</span> <span class="nx">options</span><span class="p">.</span><span class="nx">query</span>
+        <span class="nv">params = </span><span class="nx">pathSpec</span>
+        <span class="nv">path = </span><span class="nx">@reverse</span> <span class="nx">params</span>
+      <span class="k">else</span>
+        <span class="p">[</span><span class="nx">path</span><span class="p">,</span> <span class="nx">query</span><span class="p">]</span> <span class="o">=</span> <span class="nx">pathSpec</span><span class="p">.</span><span class="nx">split</span> <span class="s">&#39;?&#39;</span>
+        <span class="k">if</span> <span class="o">not</span> <span class="nx">query</span><span class="o">?</span>
+        <span class="k">then</span> <span class="nv">query = </span><span class="s">&#39;&#39;</span>
+        <span class="k">else</span> <span class="nv">options.query = </span><span class="nx">Route</span><span class="p">.</span><span class="nx">parseQueryString</span> <span class="nx">query</span>
+        <span class="nv">params = </span><span class="nx">@extractParams</span> <span class="nx">path</span>
+        <span class="nv">path = </span><span class="nx">Route</span><span class="p">.</span><span class="nx">processTrailingSlash</span> <span class="nx">path</span><span class="p">,</span> <span class="nx">@options</span><span class="p">.</span><span class="nx">trailing</span>
+
+      <span class="nv">actionParams = </span><span class="nx">_</span><span class="p">.</span><span class="nx">extend</span> <span class="p">{},</span> <span class="nx">params</span><span class="p">,</span> <span class="nx">@options</span><span class="p">.</span><span class="nx">params</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-56" id="section-56">&#182;</a>
+</div>
+<p>Construct a route object to forward to the match event.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nv">route = </span><span class="p">{</span><span class="nx">path</span><span class="p">,</span> <span class="nx">@action</span><span class="p">,</span> <span class="nx">@controller</span><span class="p">,</span> <span class="nx">@name</span><span class="p">,</span> <span class="nx">query</span><span class="p">}</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-57" id="section-57">&#182;</a>
+</div>
+<p>Publish a global event passing the route and the params.
+Original options hash forwarded to allow further forwarding to backbone.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nx">@publishEvent</span> <span class="s">&#39;router:match&#39;</span><span class="p">,</span> <span class="nx">route</span><span class="p">,</span> <span class="nx">actionParams</span><span class="p">,</span> <span class="nx">options</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="extract%20params">
+  <h2>
+    <a href="#extract%20params" name="extract%20params" class="pilcrow">&#182;</a>
+    Extract Params
+  </h2>
+</div>
+
+
+<p>Extract named parameters from a URL path.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">path</span>
+      <span class="dox_type">String</span>
+      <span>Path spec as a url.</span>
+    </div>
+    <div class="dox_tag_title">Returns</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span class="dox_type">Object</span>
+      <span>Path spec as an object.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">extractParams: </span><span class="nf">(path) -&gt;</span>
+      <span class="nv">params = </span><span class="p">{}</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-59" id="section-59">&#182;</a>
+</div>
+<p>Apply the regular expression.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nv">matches = </span><span class="nx">@regExp</span><span class="p">.</span><span class="nx">exec</span> <span class="nx">path</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-60" id="section-60">&#182;</a>
+</div>
+<p>Fill the hash using param names and the matches.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nx">_</span><span class="p">.</span><span class="nx">each</span> <span class="nx">matches</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="nf">(match, index) =&gt;</span>
+        <span class="nv">paramName = </span><span class="k">if</span> <span class="nx">@allParams</span><span class="p">.</span><span class="nx">length</span>
+        <span class="k">then</span> <span class="nx">@allParams</span><span class="p">[</span><span class="nx">index</span><span class="p">]</span>
+        <span class="k">else</span> <span class="nx">index</span>
+        <span class="nx">params</span><span class="p">[</span><span class="nx">paramName</span><span class="p">]</span> <span class="o">=</span> <span class="nx">match</span>
+
+      <span class="k">return</span> <span class="nx">params</span>
+
+  <span class="p">),</span> <span class="nv">mixins: </span><span class="p">[</span>
+    <span class="s">&#39;PubSub.Mixin&#39;</span>
+    <span class="s">&#39;Freezable.Mixin&#39;</span>
+  <span class="p">]</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

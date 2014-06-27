@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>sort-by-attribute-direction.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../../doc-style.css" />
+  <script src="../../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../../", thisFile = "src/models/mixins/sort-by-attribute-direction.coffee", defaultSidebar = true;
+  </script>
+  <script src="../../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>sort-by-attribute-direction.coffee</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="nx">define</span> <span class="p">[</span>
+  <span class="s">&#39;oraculum&#39;</span>
+  <span class="s">&#39;oraculum/mixins/evented&#39;</span>
+  <span class="s">&#39;oraculum/models/mixins/sort-by-attribute-direction-interface&#39;</span>
+<span class="p">],</span> <span class="nf">(Oraculum) -&gt;</span>
+  <span class="s">&#39;use strict&#39;</span>
+
+  <span class="nx">Oraculum</span><span class="p">.</span><span class="nx">defineMixin</span> <span class="s">&#39;SortByAttributeDirection.CollectionMixin&#39;</span><span class="p">,</span> <span class="p">{</span>
+
+    <span class="nv">mixinitialize: </span><span class="nf">-&gt;</span>
+      <span class="nx">@listenTo</span> <span class="nx">@sortState</span><span class="p">,</span> <span class="s">&#39;change&#39;</span><span class="p">,</span> <span class="nx">_</span><span class="p">.</span><span class="nx">debounce</span> <span class="nx">@sort</span><span class="p">,</span> <span class="mi">10</span>
+
+    <span class="nv">comparator: </span><span class="nf">(a, b) -&gt;</span>
+      <span class="nv">attribute = </span><span class="nx">@sortState</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;attribute&#39;</span>
+      <span class="nv">direction = </span><span class="nx">@sortState</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;direction&#39;</span>
+
+      <span class="k">if</span> <span class="o">not</span> <span class="nx">attribute</span> <span class="o">or</span> <span class="o">not</span> <span class="nx">direction</span> <span class="o">or</span>
+      <span class="o">not</span> <span class="p">(</span><span class="nv">valueA = </span><span class="nx">a</span><span class="p">.</span><span class="nx">get</span> <span class="nx">attribute</span><span class="p">)</span><span class="o">?</span> <span class="o">or</span>
+      <span class="o">not</span> <span class="p">(</span><span class="nv">valueB = </span><span class="nx">b</span><span class="p">.</span><span class="nx">get</span> <span class="nx">attribute</span><span class="p">)</span><span class="o">?</span>
+        <span class="k">return</span> <span class="nx">a</span><span class="p">.</span><span class="nx">cid</span> <span class="o">&gt;</span> <span class="nx">b</span><span class="p">.</span><span class="nx">cid</span>
+
+      <span class="nv">valueA = </span><span class="nx">valueA</span><span class="p">.</span><span class="nx">toString</span><span class="p">()</span> <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span> <span class="nx">valueA</span><span class="p">.</span><span class="nx">toString</span>
+      <span class="nv">valueB = </span><span class="nx">valueB</span><span class="p">.</span><span class="nx">toString</span><span class="p">()</span> <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span> <span class="nx">valueB</span><span class="p">.</span><span class="nx">toString</span>
+      <span class="nv">valueA = </span><span class="nx">valueA</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">()</span> <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span> <span class="nx">valueA</span><span class="p">.</span><span class="nx">toLowerCase</span>
+      <span class="nv">valueB = </span><span class="nx">valueB</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">()</span> <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span> <span class="nx">valueB</span><span class="p">.</span><span class="nx">toLowerCase</span>
+
+      <span class="k">return</span> <span class="nx">a</span><span class="p">.</span><span class="nx">cid</span> <span class="o">&gt;</span> <span class="nx">b</span><span class="p">.</span><span class="nx">cid</span> <span class="k">if</span> <span class="nx">valueA</span> <span class="o">is</span> <span class="nx">valueB</span>
+
+      <span class="nv">delta = </span><span class="o">-</span><span class="mi">1</span> <span class="k">if</span> <span class="nx">valueA</span> <span class="o">&gt;</span> <span class="nx">valueB</span>
+      <span class="nv">delta = </span><span class="mi">1</span> <span class="k">if</span> <span class="nx">valueA</span> <span class="o">&lt;</span> <span class="nx">valueB</span>
+      <span class="k">return</span> <span class="nx">delta</span> <span class="o">*</span> <span class="nx">direction</span>
+
+  <span class="p">},</span> <span class="nv">mixins: </span><span class="p">[</span>
+    <span class="s">&#39;Evented.Mixin&#39;</span>
+    <span class="s">&#39;SortByAttributeDirectionInterface.CollectionMixin&#39;</span>
+  <span class="p">]</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

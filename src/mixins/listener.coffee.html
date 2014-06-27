@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>listener.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../doc-style.css" />
+  <script src="../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../", thisFile = "src/mixins/listener.coffee", defaultSidebar = true;
+  </script>
+  <script src="../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+      <div class="heading h1">
+        <a href="#listener.mixin">Listener.Mixin</a>
+      </div>
+      <div class="heading h2">
+        <a href="#mixin%20options">Mixin Options</a>
+      </div>
+      <div class="heading h3">
+        <a href="#example%20configuration">Example configuration</a>
+      </div>
+      <div class="heading h2">
+        <a href="#minitialize">Minitialize</a>
+      </div>
+      <div class="heading h2">
+        <a href="#make%20evented%20methods">Make Evented Methods</a>
+      </div>
+      <div class="heading h2">
+        <a href="#delegate%20listener">Delegate Listener</a>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>listener.coffee</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="nx">define</span> <span class="p">[</span>
+  <span class="s">&#39;oraculum&#39;</span>
+  <span class="s">&#39;oraculum/libs&#39;</span>
+  <span class="s">&#39;oraculum/mixins/evented&#39;</span>
+<span class="p">],</span> <span class="nf">(Oraculum) -&gt;</span>
+
+  <span class="nv">_ = </span><span class="nx">Oraculum</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;underscore&#39;</span>
+  <span class="nv">Backbone = </span><span class="nx">Oraculum</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;Backbone&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="listener.mixin">
+  <h1>
+    <a href="#listener.mixin" name="listener.mixin" class="pilcrow">&#182;</a>
+    Listener.Mixin
+  </h1>
+</div>
+
+
+<p>Allow objects to automnatically setup event listeners via configuration.
+This uses a syntax similar to <code>Backbone.View</code>'s <code>events</code> configuration.</p>
+  </div>
+  <div class="body">
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+  <span class="nx">Oraculum</span><span class="p">.</span><span class="nx">defineMixin</span> <span class="s">&#39;Listener.Mixin&#39;</span><span class="p">,</span> <span class="p">{</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="mixin%20options">
+  <h2>
+    <a href="#mixin%20options" name="mixin%20options" class="pilcrow">&#182;</a>
+    Mixin Options
+  </h2>
+</div>
+
+
+<p>Allow the event configuration to be defined using a mapping of event specs
+and methods as described in the examples below.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">listen</span>
+      <span class="dox_type">Object</span>
+      <span>Object containing an event map.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">listen</span>
+      <span class="dox_type">Function</span>
+      <span>Function that returns an object containing an event map.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="example%20configuration">
+  <h3>
+    <a href="#example%20configuration" name="example%20configuration" class="pilcrow">&#182;</a>
+    Example configuration
+  </h3>
+</div>
+
+
+
+<div class="highlight"><pre><code><span class="nv">mixinOptions:</span>
+  <span class="nv">listen: </span><span class="c1"># -&gt; # Can also be a function</span>
+    <span class="c1"># Bind `@update` to `render:after` events on `this`.</span>
+    <span class="s">&#39;render:after this&#39;</span><span class="o">:</span> <span class="s">&#39;update&#39;</span>
+    <span class="s">&#39;render:after self&#39;</span><span class="o">:</span> <span class="s">&#39;update&#39;</span>
+
+    <span class="c1"># Bind `@render` to `change` events on `@model`.</span>
+    <span class="s">&#39;change model&#39;</span><span class="o">:</span> <span class="s">&#39;render&#39;</span>
+
+    <span class="c1"># Bind an anonymous function to `add`, `remove`, and</span>
+    <span class="c1"># `reset` events on `@collection`</span>
+    <span class="s">&#39;add remove reset collection&#39;</span><span class="o">:</span> <span class="nf">-&gt;</span> <span class="nx">doSomething</span><span class="p">()</span>
+
+    <span class="c1"># Bind `@someMethod` to `!someEvent` events on the</span>
+    <span class="c1"># mediator. (Backbone)</span>
+    <span class="s">&#39;!someEvent pubsub&#39;</span><span class="o">:</span> <span class="s">&#39;someMethod&#39;</span>
+    <span class="s">&#39;!someEvent mediator&#39;</span><span class="o">:</span> <span class="s">&#39;someMethod&#39;</span>
+</code></pre></div>
+
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="minitialize">
+  <h2>
+    <a href="#minitialize" name="minitialize" class="pilcrow">&#182;</a>
+    Minitialize
+  </h2>
+</div>
+
+
+<p>Invoke <code>@delegateListeners</code>.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">@delegateListeners
+</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">mixinitialize: </span><span class="nf">-&gt;</span>
+      <span class="nx">@delegateListeners</span><span class="p">()</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="make%20evented%20methods">
+  <h2>
+    <a href="#make%20evented%20methods" name="make%20evented%20methods" class="pilcrow">&#182;</a>
+    Make Evented Methods
+  </h2>
+</div>
+
+
+<p>Iterate over an event map, passing an event spec and its mapped callback
+through to <code>@delegateListener</code>.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">See</div>
+    <div class="dox_tag_detail">
+      <span class="dox_type">@delegateListener
+</span>
+    </div>
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">eventMap?</span>
+      <span class="dox_type">Object</span>
+      <span>An event map. Defaults to the configured event map.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">eventMap?</span>
+      <span class="dox_type">Function</span>
+      <span>A function that returns an event map. Defaults to the configured event map.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">delegateListeners: </span><span class="nf">(eventMap) -&gt;</span>
+      <span class="k">return</span> <span class="k">unless</span> <span class="nx">eventMap</span> <span class="o">?=</span> <span class="nx">@mixinOptions</span><span class="p">.</span><span class="nx">listen</span>
+      <span class="nv">eventMap = </span><span class="nx">eventMap</span><span class="p">.</span><span class="nx">call</span> <span class="k">this</span> <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span> <span class="nx">eventMap</span>
+      <span class="nx">_</span><span class="p">.</span><span class="nx">each</span> <span class="nx">eventMap</span><span class="p">,</span> <span class="nf">(callback, spec) =&gt;</span>
+        <span class="nx">@delegateListener</span> <span class="nx">spec</span><span class="p">,</span> <span class="nx">callback</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="delegate%20listener">
+  <h2>
+    <a href="#delegate%20listener" name="delegate%20listener" class="pilcrow">&#182;</a>
+    Delegate Listener
+  </h2>
+</div>
+
+
+<p>Delegates events for a single event spec which can describe multiple
+listeners.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">spec</span>
+      <span class="dox_type">String</span>
+      <span>The event spec to delegate events for.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">method</span>
+      <span class="dox_type">String</span>
+      <span>A method on the current instance to bind.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">method</span>
+      <span class="dox_type">Function</span>
+      <span>A function to bind.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">delegateListener: </span><span class="nf">(spec, method) -&gt;</span>
+      <span class="nv">events = </span><span class="nx">spec</span><span class="p">.</span><span class="nx">split</span> <span class="s">&#39; &#39;</span>
+      <span class="nv">target = </span><span class="nx">events</span><span class="p">.</span><span class="nx">splice</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+      <span class="nv">events = </span><span class="nx">events</span><span class="p">.</span><span class="nx">join</span> <span class="s">&#39; &#39;</span>
+      <span class="nv">callback = </span><span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isString</span><span class="p">(</span><span class="nx">method</span><span class="p">)</span> <span class="k">then</span> <span class="nx">@</span><span class="p">[</span><span class="nx">method</span><span class="p">]</span> <span class="k">else</span> <span class="nx">method</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nx">TypeError</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">        Listener.Mixin </span><span class="si">#{</span><span class="nx">callback</span><span class="si">}</span><span class="s"> is not a function</span>
+<span class="s">      &quot;&quot;&quot;</span> <span class="k">unless</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span> <span class="nx">callback</span>
+      <span class="nv">target = </span><span class="k">this</span> <span class="k">if</span> <span class="nx">target</span> <span class="k">in</span> <span class="p">[</span><span class="s">&#39;this&#39;</span><span class="p">,</span> <span class="s">&#39;self&#39;</span><span class="p">]</span>
+      <span class="nv">target = </span><span class="nx">Backbone</span> <span class="k">if</span> <span class="nx">target</span> <span class="k">in</span> <span class="p">[</span><span class="s">&#39;pubsub&#39;</span><span class="p">,</span> <span class="s">&#39;mediator&#39;</span><span class="p">]</span>
+      <span class="nv">target = </span><span class="nx">@</span><span class="p">[</span><span class="nx">target</span><span class="p">]</span> <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isString</span> <span class="nx">target</span>
+      <span class="nx">@listenTo</span> <span class="nx">target</span><span class="p">,</span> <span class="nx">events</span><span class="p">,</span> <span class="nx">callback</span> <span class="k">if</span> <span class="nx">target</span><span class="o">?</span>
+
+  <span class="p">},</span> <span class="nv">mixins: </span><span class="p">[</span>
+    <span class="s">&#39;Evented.Mixin&#39;</span>
+  <span class="p">]</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

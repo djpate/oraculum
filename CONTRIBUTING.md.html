@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CONTRIBUTING.md</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="doc-style.css" />
+  <script src="doc-filelist.js"></script>
+  <script>
+    var relativeDir = "", thisFile = "CONTRIBUTING.md", defaultSidebar = true;
+  </script>
+  <script src="doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+      <div class="heading h2">
+        <a href="#coding%20conventions">Coding Conventions</a>
+      </div>
+      <div class="heading h4">
+        <a href="#general%20principles">General Principles</a>
+      </div>
+      <div class="heading h4">
+        <a href="#style%20guidelines">Style Guidelines</a>
+      </div>
+      <div class="heading h2">
+        <a href="#unit%20tests">Unit Tests</a>
+      </div>
+      <div class="heading h4">
+        <a href="#general%20guidelines">General Guidelines</a>
+      </div>
+      <div class="heading h2">
+        <a href="#documentation">Documentation</a>
+      </div>
+      <div class="heading h2">
+        <a href="#legal">Legal</a>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="docs markdown">
+<div class="pilwrap" id="coding%20conventions">
+  <h2>
+    <a href="#coding%20conventions" name="coding%20conventions" class="pilcrow">&#182;</a>
+    Coding Conventions
+  </h2>
+</div>
+
+
+<p>This list is not exhaustive and aims to serve as a guideline for getting your pull requests accepted. Please consider the following guidelines before submitting a pull request.</p>
+
+
+<div class="pilwrap" id="general%20principles">
+  <h4>
+    <a href="#general%20principles" name="general%20principles" class="pilcrow">&#182;</a>
+    General Principles
+  </h4>
+</div>
+
+
+<p>Guidelines in this section should be considered <strong>strong suggestions</strong>, and are likely to be cited upon reviewing pull requests as blocking.</p>
+
+<ol>
+<li><code>return</code> early.</li>
+<li>Use custom events sparingly.</li>
+<li>Favor composition over inheritance.</li>
+<li>Don't try/catch. Please, just don't.</li>
+<li>Favor iterators for complex cyclomatics.</li>
+<li>Favor multi-line strings when the length of the line would exceed 80 characters.</li>
+<li>Consider possible namespace collisions when choosing method names, especially for mixins.</li>
+<li>Allow constructors to be passed directly and referenced via factory definitions where possible.</li>
+<li>Use <code>@__factory()</code> instead of referencing <code>Oraculum</code> directly within a component's implemenation.</li>
+</ol>
+
+
+<div class="pilwrap" id="style%20guidelines">
+  <h4>
+    <a href="#style%20guidelines" name="style%20guidelines" class="pilcrow">&#182;</a>
+    Style Guidelines
+  </h4>
+</div>
+
+
+<p>Guidelines in this section should be considered <strong>suggestions</strong>, and are less likely to be cited upon reviewing pull requests as blocking.</p>
+
+<ol>
+<li>Denote "protected" members by prefixing them with an underscore.</li>
+<li>Stash "private" methods in a closure to make them inaccessible outside of the local lexical scope.</li>
+</ol>
+
+
+<div class="pilwrap" id="unit%20tests">
+  <h2>
+    <a href="#unit%20tests" name="unit%20tests" class="pilcrow">&#182;</a>
+    Unit Tests
+  </h2>
+</div>
+
+
+<p>This project aims to maintain > 90% unit test coverage. Please ensure that any contributions are thoroughly tested. Pull requests without unit tests will be rejected.</p>
+
+
+<div class="pilwrap" id="general%20guidelines">
+  <h4>
+    <a href="#general%20guidelines" name="general%20guidelines" class="pilcrow">&#182;</a>
+    General Guidelines
+  </h4>
+</div>
+
+
+<p>Guidelines in this section should be considered <strong>strong suggestions</strong>, and are likely to be cited upon reviewing pull requests as blocking.</p>
+
+<ol>
+<li>Test the interface, not the implementation.</li>
+<li>Unit tests should maintain the same quality and readability as the code it describes.</li>
+<li>When in doubt, use the existing unit tests as an example.</li>
+</ol>
+
+
+<div class="pilwrap" id="documentation">
+  <h2>
+    <a href="#documentation" name="documentation" class="pilcrow">&#182;</a>
+    Documentation
+  </h2>
+</div>
+
+
+<p>This project uses the grunt-docker module to generate its documentation. Docker supports the following js-doc style comment tags. Please use them.</p>
+
+<ul>
+<li><code>@see</code>: <a href='http://usejsdoc.org/tags-see.html'>http://usejsdoc.org/tags-see.html</a></li>
+<li><code>@type</code>: <a href='http://usejsdoc.org/tags-type.html'>http://usejsdoc.org/tags-type.html</a></li>
+<li><code>@param</code>: <a href='http://usejsdoc.org/tags-param.html'>http://usejsdoc.org/tags-param.html</a></li>
+<li><code>@return</code>: <a href='http://usejsdoc.org/tags-returns.html'>http://usejsdoc.org/tags-returns.html</a></li>
+</ul>
+
+<p>No documentation tool is not without its flaws. Please keep the following guidelines in mind when authoring your documentation.</p>
+
+<ol>
+<li>Don't start any line of a multi-line string with <code>#</code>.</li>
+<li>Use H1 (<code>#</code>, <code>===</code>) at the top of a file to denote the component's name.</li>
+<li>Use H2 (<code>##</code>, <code>---</code>) above first-level component properties to denote these properties.</li>
+<li>Use H3... above subcomponent properties (internal/protected properties) to denote these properties, and situate them beneath their related interface.</li>
+</ol>
+
+
+<div class="pilwrap" id="legal">
+  <h2>
+    <a href="#legal" name="legal" class="pilcrow">&#182;</a>
+    Legal
+  </h2>
+</div>
+
+
+<p>Thanks for your interest in the Oraculum project.  When you make a contribution to the project (e.g. any modifications, additions to existing work, pull requests or any other work intentionally submitted by you for inclusion in the project) (collectively, a "Contribution"), Lookout wants to be able to use your Contribution to improve this project and other Lookout products.</p>
+
+<p>As a condition of providing a Contribution, you agree to the following terms and conditions (“Terms”):</p>
+
+<ol>
+<li><p>Copyright License: Subject to these Terms, you grant Lookout and to recipients of software distributed by Lookout a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable license to make, use, sell, reproduce, modify, distribute (directly and indirectly), and publicly display and perform the Contribution, and any derivative works that Lookout may make from the Contribution.</p></li>
+<li><p>Patent License: Subject to these Terms, you grant Lookout and to recipients of software distributed by Lookout a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable (except as stated in this section) patent license to make, have made, use, offer to sell, sell, import, or otherwise transfer the Contribution, where such license applies only to those patent claims licensable by you that are necessarily infringed by your Contribution(s) alone or by combination of your Contribution(s) with any works or projects to which such Contribution(s) was submitted. If any entity institutes patent litigation against you or any other entity (including a cross-claim or counterclaim in a lawsuit) alleging that your Contribution(s) or the projects to which you have contributed, constitutes direct or contributory patent infringement, then any patent licenses granted to that entity under this agreement for that Contribution, work or other project shall terminate as of the date such litigation is filed.</p></li>
+<li><p>You warrant and represent that the Contribution(s) is your original creation, that you have the authority and are legally entitled to grant these licenses to Lookout, and that these licenses do not require the permission of any third party.</p></li>
+<li><p>Except for the warranties in Section 3, you provide any Contribution(s) on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied, including, without limitation, any warranties or conditions of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE.</p></li>
+<li><p>You agree to notify Lookout of any facts or circumstances of which you become aware of that would make any representations made by you inaccurate in any respect.</p></li>
+</ol>
+
+<p>Should you wish to submit a suggestion or work that is not your original creation, you may submit it to Lookout separate from any Contribution, explicitly identifying it as sourced from a third party, stating the complete details of its source, and informing Lookout of any license or other restriction (including but not limited to related patents, trademarks, and license agreement) of which you are personally aware, and conspicuously marking the work as “Submitted on behalf of a third party: [named here].”</p></div>
+  </div>
+</body>
+</html>

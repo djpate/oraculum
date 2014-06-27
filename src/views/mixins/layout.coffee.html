@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>layout.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../../doc-style.css" />
+  <script src="../../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../../", thisFile = "src/views/mixins/layout.coffee", defaultSidebar = true;
+  </script>
+  <script src="../../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+      <div class="heading h2">
+        <a href="#controller%20startup%20and%20disposal">Controller startup and disposal</a>
+      </div>
+      <div class="heading h2">
+        <a href="#automatic%20routing%20of%20internal%20links">Automatic routing of internal links</a>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>layout.coffee</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="nx">define</span> <span class="p">[</span>
+  <span class="s">&#39;oraculum&#39;</span>
+  <span class="s">&#39;oraculum/mixins/pub-sub&#39;</span>
+  <span class="s">&#39;oraculum/mixins/callback-provider&#39;</span>
+  <span class="s">&#39;oraculum/views/mixins/region-publisher&#39;</span>
+  <span class="s">&#39;oraculum/views/mixins/region-subscriber&#39;</span>
+<span class="p">],</span> <span class="nf">(Oraculum) -&gt;</span>
+  <span class="s">&#39;use strict&#39;</span>
+
+  <span class="nv">modifierKeyPressed = </span><span class="nf">(event) -&gt;</span>
+    <span class="k">return</span> <span class="nx">event</span><span class="p">.</span><span class="nx">altKey</span> <span class="o">or</span>
+    <span class="nx">event</span><span class="p">.</span><span class="nx">ctrlKey</span> <span class="o">or</span>
+    <span class="nx">event</span><span class="p">.</span><span class="nx">metaKey</span> <span class="o">or</span>
+    <span class="nx">event</span><span class="p">.</span><span class="nx">shiftKey</span> <span class="o">or</span>
+    <span class="nx">event</span><span class="p">.</span><span class="nx">button</span> <span class="o">is</span> <span class="mi">1</span>
+
+  <span class="nx">Oraculum</span><span class="p">.</span><span class="nx">defineMixin</span> <span class="s">&#39;Layout.ViewMixin&#39;</span><span class="p">,</span> <span class="p">{</span>
+
+    <span class="nv">mixinOptions:</span>
+      <span class="nv">layout:</span>
+        <span class="nv">title: </span><span class="s">&#39;&#39;</span>
+        <span class="nv">scrollTo: </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+        <span class="nv">routeLinks: </span><span class="s">&#39;a, .go-to&#39;</span>
+        <span class="nv">skipRouting: </span><span class="s">&#39;.noscript&#39;</span>
+        <span class="nv">openExternalToBlank: </span><span class="kc">false</span>
+        <span class="nv">titleTemplate: </span><span class="nf">(data) -&gt;</span>
+          <span class="k">return</span> <span class="k">if</span> <span class="nx">data</span><span class="p">.</span><span class="nx">subtitle</span>
+          <span class="k">then</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">data</span><span class="p">.</span><span class="nx">subtitle</span><span class="si">}</span><span class="s"> - </span><span class="si">#{</span><span class="nx">data</span><span class="p">.</span><span class="nx">title</span><span class="si">}</span><span class="s">&quot;</span>
+          <span class="k">else</span> <span class="nx">data</span><span class="p">.</span><span class="nx">title</span>
+      <span class="nv">disposable:</span>
+        <span class="nv">disposeAll: </span><span class="kc">true</span>
+
+    <span class="nv">mixconfig: </span><span class="nf">({layout}, options = {}) -&gt;</span>
+      <span class="p">{</span><span class="nx">title</span><span class="p">,</span> <span class="nx">scrollTo</span><span class="p">,</span> <span class="nx">routeLinks</span><span class="p">}</span> <span class="o">=</span> <span class="nx">options</span>
+      <span class="nv">layout.title = </span><span class="nx">title</span> <span class="k">if</span> <span class="nx">title</span><span class="o">?</span>
+      <span class="nv">layout.scrollTo = </span><span class="nx">scrollTo</span> <span class="k">if</span> <span class="nx">scrollTo</span><span class="o">?</span>
+      <span class="nv">layout.routeLinks = </span><span class="nx">routeLinks</span> <span class="k">if</span> <span class="nx">routeLinks</span><span class="o">?</span>
+
+      <span class="p">{</span><span class="nx">skipRouting</span><span class="p">,</span> <span class="nx">titleTemplate</span><span class="p">,</span> <span class="nx">openExternalToBlank</span><span class="p">}</span> <span class="o">=</span> <span class="nx">options</span>
+      <span class="nv">layout.skipRouting = </span><span class="nx">skipRouting</span> <span class="k">if</span> <span class="nx">skipRouting</span><span class="o">?</span>
+      <span class="nv">layout.titleTemplate = </span><span class="nx">titleTemplate</span> <span class="k">if</span> <span class="nx">titleTemplate</span><span class="o">?</span>
+      <span class="nv">layout.openExternalToBlank = </span><span class="nx">openExternalToBlank</span> <span class="k">if</span> <span class="nx">openExternalToBlank</span><span class="o">?</span>
+
+    <span class="nv">mixinitialize: </span><span class="nf">-&gt;</span>
+      <span class="nx">@subscribeEvent</span> <span class="s">&#39;!adjustTitle&#39;</span><span class="p">,</span> <span class="nx">@adjustTitle</span>
+      <span class="nx">@subscribeEvent</span> <span class="s">&#39;beforeControllerDispose&#39;</span><span class="p">,</span> <span class="nx">@scroll</span>
+      <span class="nx">@startLinkRouting</span><span class="p">()</span> <span class="k">if</span> <span class="nx">@mixinOptions</span><span class="p">.</span><span class="nx">layout</span><span class="p">.</span><span class="nx">routeLinks</span>
+      <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;dispose&#39;</span><span class="p">,</span> <span class="nx">@stopLinkRouting</span><span class="p">,</span> <span class="k">this</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="controller%20startup%20and%20disposal">
+  <h2>
+    <a href="#controller%20startup%20and%20disposal" name="controller%20startup%20and%20disposal" class="pilcrow">&#182;</a>
+    Controller startup and disposal
+  </h2>
+</div>
+
+
+<p>Handler for the global beforeControllerDispose event.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+    <span class="nv">scroll: </span><span class="nf">-&gt;</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-3" id="section-3">&#182;</a>
+</div>
+<p>Reset the scroll position.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="k">return</span> <span class="k">unless</span> <span class="p">{</span><span class="nx">scrollTo</span><span class="p">}</span> <span class="o">=</span> <span class="nx">@mixinOptions</span><span class="p">.</span><span class="nx">layout</span>
+      <span class="p">[</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">]</span> <span class="o">=</span> <span class="nx">scrollTo</span>
+      <span class="nb">window</span><span class="p">.</span><span class="nx">scrollTo</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">y</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-4" id="section-4">&#182;</a>
+</div>
+<p>Handler for the global dispatcher:dispatch event.
+Change the document title to match the new controller.
+Get the title from the title property of the current controller.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+    <span class="nv">adjustTitle: </span><span class="nf">(subtitle = &#39;&#39;) -&gt;</span>
+      <span class="nv">title = </span><span class="nx">@mixinOptions</span><span class="p">.</span><span class="nx">layout</span><span class="p">.</span><span class="nx">title</span>
+      <span class="nv">titleTemplate = </span><span class="nx">@mixinOptions</span><span class="p">.</span><span class="nx">layout</span><span class="p">.</span><span class="nx">titleTemplate</span>
+      <span class="nb">document</span><span class="p">.</span><span class="nv">title = </span><span class="nx">titleTemplate</span> <span class="p">{</span> <span class="nx">title</span><span class="p">,</span> <span class="nx">subtitle</span> <span class="p">}</span>
+      <span class="k">return</span> <span class="nx">title</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="automatic%20routing%20of%20internal%20links">
+  <h2>
+    <a href="#automatic%20routing%20of%20internal%20links" name="automatic%20routing%20of%20internal%20links" class="pilcrow">&#182;</a>
+    Automatic routing of internal links
+  </h2>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+    <span class="nv">startLinkRouting: </span><span class="nf">-&gt;</span>
+      <span class="k">return</span> <span class="k">unless</span> <span class="nv">routeLinks = </span><span class="nx">@mixinOptions</span><span class="p">.</span><span class="nx">layout</span><span class="p">.</span><span class="nx">routeLinks</span>
+      <span class="nx">@$el</span><span class="p">.</span><span class="nx">on</span> <span class="s">&#39;click&#39;</span><span class="p">,</span> <span class="nx">routeLinks</span><span class="p">,</span> <span class="nf">(event) =&gt;</span> <span class="nx">@openLink</span> <span class="nx">event</span>
+
+    <span class="nv">stopLinkRouting: </span><span class="nf">-&gt;</span>
+      <span class="k">return</span> <span class="k">unless</span> <span class="p">{</span><span class="nx">routeLinks</span><span class="p">}</span> <span class="o">=</span> <span class="nx">@mixinOptions</span><span class="p">.</span><span class="nx">layout</span>
+      <span class="nx">@$el</span><span class="p">.</span><span class="nx">off</span> <span class="s">&#39;click&#39;</span><span class="p">,</span> <span class="nx">routeLinks</span>
+
+    <span class="nv">isExternalLink: </span><span class="nf">(link) -&gt;</span>
+      <span class="k">return</span> <span class="nx">link</span><span class="p">.</span><span class="nx">rel</span> <span class="o">is</span> <span class="s">&#39;external&#39;</span> <span class="o">or</span>
+        <span class="nx">link</span><span class="p">.</span><span class="nx">target</span> <span class="o">is</span> <span class="s">&#39;_blank&#39;</span> <span class="o">or</span>
+        <span class="nx">link</span><span class="p">.</span><span class="nx">hostname</span> <span class="o">not</span> <span class="k">in</span> <span class="p">[</span><span class="nx">location</span><span class="p">.</span><span class="nx">hostname</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">]</span> <span class="o">or</span>
+        <span class="nx">link</span><span class="p">.</span><span class="nx">protocol</span> <span class="o">not</span> <span class="k">in</span> <span class="p">[</span><span class="s">&#39;http:&#39;</span><span class="p">,</span> <span class="s">&#39;https:&#39;</span><span class="p">,</span> <span class="s">&#39;file:&#39;</span><span class="p">]</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-6" id="section-6">&#182;</a>
+</div>
+<p>Handle all clicks on A elements and try to route them internally.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+    <span class="nv">openLink: </span><span class="nf">(event) -&gt;</span>
+      <span class="k">return</span> <span class="k">if</span> <span class="nx">modifierKeyPressed</span> <span class="nx">event</span>
+      <span class="nv">el = </span><span class="nx">event</span><span class="p">.</span><span class="nx">currentTarget</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-7" id="section-7">&#182;</a>
+</div>
+<p>Get the href and perform checks on it.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nv">href = </span><span class="nx">el</span><span class="p">.</span><span class="nx">getAttribute</span><span class="p">(</span><span class="s">&#39;href&#39;</span><span class="p">)</span> <span class="o">or</span> <span class="nx">el</span><span class="p">.</span><span class="nx">getAttribute</span><span class="p">(</span><span class="s">&#39;data-href&#39;</span><span class="p">)</span> <span class="o">or</span> <span class="kc">null</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-8" id="section-8">&#182;</a>
+</div>
+<p>Basic href checks.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="k">return</span> <span class="k">if</span> <span class="o">not</span> <span class="nx">href</span><span class="o">?</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-9" id="section-9">&#182;</a>
+</div>
+<p>Technically an empty string is a valid relative URL
+but it doesn’t make sense to route it.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="k">return</span> <span class="k">if</span> <span class="nx">href</span> <span class="o">is</span> <span class="s">&#39;&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-10" id="section-10">&#182;</a>
+</div>
+<p>Exclude fragment links.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="k">return</span> <span class="k">if</span> <span class="nx">href</span><span class="p">.</span><span class="nx">charAt</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">is</span> <span class="s">&#39;#&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-11" id="section-11">&#182;</a>
+</div>
+<p>Exclude javascript:void(0); (common no-op paradigm)</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="k">return</span> <span class="k">if</span> <span class="sr">/^javascript:\s*void\(.*\);?$/</span><span class="p">.</span><span class="nx">test</span> <span class="nx">href</span>
+
+      <span class="p">{</span><span class="nx">skipRouting</span><span class="p">,</span> <span class="nx">openExternalToBlank</span><span class="p">}</span> <span class="o">=</span> <span class="nx">@mixinOptions</span><span class="p">.</span><span class="nx">layout</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-12" id="section-12">&#182;</a>
+</div>
+<p>Apply skipRouting option.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nv">type = </span><span class="k">typeof</span> <span class="nx">skipRouting</span>
+      <span class="k">return</span> <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isString</span><span class="p">(</span><span class="nx">skipRouting</span><span class="p">)</span> <span class="o">and</span> <span class="nx">$</span><span class="p">(</span><span class="nx">el</span><span class="p">).</span><span class="o">is</span> <span class="nx">skipRouting</span>
+      <span class="k">return</span> <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span><span class="p">(</span><span class="nx">skipRouting</span><span class="p">)</span> <span class="o">and</span> <span class="o">not</span> <span class="nx">skipRouting</span> <span class="nx">href</span><span class="p">,</span> <span class="nx">el</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-13" id="section-13">&#182;</a>
+</div>
+<p>Handle external links.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nv">isAnchor = </span><span class="nx">el</span><span class="p">.</span><span class="nx">nodeName</span> <span class="o">is</span> <span class="s">&#39;A&#39;</span>
+      <span class="nv">isExternalLink = </span><span class="nx">isAnchor</span> <span class="o">and</span> <span class="nx">@isExternalLink</span> <span class="nx">el</span>
+      <span class="k">if</span> <span class="nx">isExternalLink</span>
+        <span class="k">if</span> <span class="nx">openExternalToBlank</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-14" id="section-14">&#182;</a>
+</div>
+<p>Open external links normally in a new tab.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+          <span class="nx">event</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">()</span>
+          <span class="nb">window</span><span class="p">.</span><span class="nx">open</span> <span class="nx">href</span>
+        <span class="k">return</span> <span class="c1"># void 0</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-15" id="section-15">&#182;</a>
+</div>
+<p>Pass to the router, try to route the path internally.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nx">@executeCallback</span> <span class="s">&#39;router:route&#39;</span><span class="p">,</span> <span class="nv">url: </span><span class="nx">href</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-16" id="section-16">&#182;</a>
+</div>
+<p>Prevent default handling if the URL could be routed.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nx">event</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">()</span>
+      <span class="k">return</span> <span class="kc">false</span>
+
+  <span class="p">},</span> <span class="nv">mixins: </span><span class="p">[</span>
+    <span class="s">&#39;PubSub.Mixin&#39;</span>
+    <span class="s">&#39;CallbackDelegate.Mixin&#39;</span>
+    <span class="s">&#39;RegionSubscriber.ViewMixin&#39;</span>
+    <span class="s">&#39;RegionPublisher.ViewMixin&#39;</span>
+  <span class="p">]</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

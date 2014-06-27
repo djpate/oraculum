@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>libs.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../doc-style.css" />
+  <script src="../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../", thisFile = "src/libs.coffee", defaultSidebar = true;
+  </script>
+  <script src="../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+      <div class="heading h1">
+        <a href="#libs">Libs</a>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>libs.coffee</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="nx">define</span> <span class="p">[</span>
+  <span class="s">&#39;oraculum&#39;</span>
+<span class="p">],</span> <span class="nf">(Oraculum) -&gt;</span>
+  <span class="s">&#39;use strict&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="libs">
+  <h1>
+    <a href="#libs" name="libs" class="pilcrow">&#182;</a>
+    Libs
+  </h1>
+</div>
+
+
+<p>By packing all of our libs into the Oraculum container, we can skirt around
+the nuisance of requiring each of them explicitly in our define[] blocks
+and simply request a reference to the library from Oraculum.
+It lends itself well to more readable code.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+  <span class="nx">Oraculum</span><span class="p">.</span><span class="nx">define</span> <span class="s">&#39;jQuery&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nf">-&gt;</span> <span class="nx">require</span> <span class="s">&#39;jquery&#39;</span><span class="p">),</span> <span class="nv">singleton: </span><span class="kc">true</span>
+  <span class="nx">Oraculum</span><span class="p">.</span><span class="nx">define</span> <span class="s">&#39;Backbone&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nf">-&gt;</span> <span class="nx">require</span> <span class="s">&#39;backbone&#39;</span><span class="p">),</span> <span class="nv">singleton: </span><span class="kc">true</span>
+  <span class="nx">Oraculum</span><span class="p">.</span><span class="nx">define</span> <span class="s">&#39;underscore&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nf">-&gt;</span> <span class="nx">require</span> <span class="s">&#39;underscore&#39;</span><span class="p">),</span> <span class="nv">singleton: </span><span class="kc">true</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>xhr-debounce.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../../doc-style.css" />
+  <script src="../../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../../", thisFile = "src/models/mixins/xhr-debounce.coffee", defaultSidebar = true;
+  </script>
+  <script src="../../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>xhr-debounce.coffee</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="nx">define</span> <span class="p">[</span>
+  <span class="s">&#39;oraculum&#39;</span>
+<span class="p">],</span> <span class="nf">(Oraculum) -&gt;</span>
+  <span class="s">&#39;use strict&#39;</span>
+
+  <span class="nx">Oraculum</span><span class="p">.</span><span class="nx">defineMixin</span> <span class="s">&#39;XHRDebounce.ModelMixin&#39;</span><span class="p">,</span>
+
+    <span class="nv">mixinitialize: </span><span class="nf">-&gt;</span>
+      <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;sync&#39;</span><span class="p">,</span> <span class="nx">@abortDebouncedXHR</span><span class="p">,</span> <span class="k">this</span>
+      <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;dispose&#39;</span><span class="p">,</span> <span class="nx">@abortDebouncedXHR</span><span class="p">,</span> <span class="k">this</span>
+      <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;request&#39;</span><span class="p">,</span> <span class="nf">(model, newRequest) =&gt;</span>
+        <span class="k">return</span> <span class="k">unless</span> <span class="nx">model</span> <span class="o">is</span> <span class="k">this</span>
+        <span class="nx">@abortDebouncedXHR</span> <span class="k">this</span>
+        <span class="vi">@_debouncedXHR = </span><span class="nx">newRequest</span>
+
+    <span class="nv">abortDebouncedXHR: </span><span class="nf">(model) -&gt;</span>
+      <span class="k">return</span> <span class="k">unless</span> <span class="nx">model</span> <span class="o">is</span> <span class="k">this</span>
+      <span class="nx">@_debouncedXHR</span><span class="o">?</span><span class="p">.</span><span class="nx">abort</span><span class="p">()</span>
+      <span class="k">delete</span> <span class="nx">@_debouncedXHR</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

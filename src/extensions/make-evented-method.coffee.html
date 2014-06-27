@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>make-evented-method.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../doc-style.css" />
+  <script src="../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../", thisFile = "src/extensions/make-evented-method.coffee", defaultSidebar = true;
+  </script>
+  <script src="../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+      <div class="heading h1">
+        <a href="#make%20evented%20method">Make Evented Method</a>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>make-evented-method.coffee</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="nx">define</span> <span class="p">[</span>
+  <span class="s">&#39;oraculum&#39;</span>
+<span class="p">],</span> <span class="nf">(Oraculum) -&gt;</span>
+  <span class="s">&#39;use strict&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="make%20evented%20method">
+  <h1>
+    <a href="#make%20evented%20method" name="make%20evented%20method" class="pilcrow">&#182;</a>
+    Make Evented Method
+  </h1>
+</div>
+
+
+<p>This function is the heart and soul of our dynamic AOP-based decoupling.
+This function will override any method of any object, replacing it with a
+method that executes a callback both before and after executing the original
+implementaion, and finally returning the result of the implementation
+back to the caller.</p>
+  </div>
+  <div class="body"><p>It theoretically supports any eventing mechanism through the <code>emitter</code> and
+<code>trigger</code> options, as well as supporting the ability to <code>abort</code> the
+execution of the original implementation and change it's <code>result</code>.</p>
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">object</span>
+      <span class="dox_type">Object</span>
+      <span>The object that contains the targeted method.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">method</span>
+      <span class="dox_type">String</span>
+      <span>The targeted method name on <code>object</code>.</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">emitter?</span>
+      <span class="dox_type">Object</span>
+      <span>The object that contains the event firing mechanism. (defaults to <code>object</code>)</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">trigger?</span>
+      <span class="dox_type">String</span>
+      <span>The method name of the event firing method of <code>emitter</code>. (defaults to 'trigger')</span>
+    </div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">eventPrefix?</span>
+      <span class="dox_type">String</span>
+      <span>An optional string to prefix on the event name.</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+  <span class="nx">Oraculum</span><span class="p">.</span><span class="nx">define</span> <span class="s">&#39;makeEventedMethod&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nf">-&gt;</span>
+
+    <span class="k">return</span> <span class="nf">(object, methodName, emitter = object, trigger = &#39;trigger&#39;, eventPrefix = &#39;&#39;) -&gt;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-3" id="section-3">&#182;</a>
+</div>
+<p>Grab a handle to the original method.
+Return immediately if it doesn't exist.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nv">original = </span><span class="nx">object</span><span class="p">[</span><span class="nx">methodName</span><span class="p">]</span>
+      <span class="k">return</span> <span class="nx">console</span><span class="o">?</span><span class="p">.</span><span class="nx">warn</span><span class="o">?</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">        Attempted to event undefined method </span><span class="si">#{</span><span class="nx">method</span><span class="si">}</span><span class="s"> of </span><span class="si">#{</span><span class="nx">object</span><span class="si">}</span><span class="s"></span>
+<span class="s">      &quot;&quot;&quot;</span> <span class="k">unless</span> <span class="nx">original</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-4" id="section-4">&#182;</a>
+</div>
+<p>Don't do anything if the targeted method is already evented.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="k">return</span> <span class="k">if</span> <span class="nx">original</span><span class="p">.</span><span class="nx">evented</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-5" id="section-5">&#182;</a>
+</div>
+<p>Grab a handle to the emitter's "trigger" method.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nv">fireEvent = </span><span class="nx">emitter</span><span class="p">[</span><span class="nx">trigger</span><span class="p">]</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-6" id="section-6">&#182;</a>
+</div>
+<p>Do some sanity checks...</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nx">TypeError</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">        Method </span><span class="si">#{</span><span class="nx">methodName</span><span class="si">}</span><span class="s"> does not exist on object</span>
+<span class="s">      &quot;&quot;&quot;</span> <span class="k">unless</span> <span class="k">typeof</span> <span class="nx">original</span> <span class="o">is</span> <span class="s">&#39;function&#39;</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nx">TypeError</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">        Method </span><span class="si">#{</span><span class="nx">trigger</span><span class="si">}</span><span class="s"> does not exist on emitter</span>
+<span class="s">      &quot;&quot;&quot;</span> <span class="k">unless</span> <span class="k">typeof</span> <span class="nx">fireEvent</span> <span class="o">is</span> <span class="s">&#39;function&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-7" id="section-7">&#182;</a>
+</div>
+<p>Ensure the event prefix ends with ':'</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nx">eventPrefix</span> <span class="o">?=</span> <span class="s">&#39;:&#39;</span> <span class="k">if</span> <span class="nx">eventPrefix</span> <span class="o">and</span> <span class="o">not</span> <span class="sr">/:$/</span><span class="p">.</span><span class="nx">test</span> <span class="nx">eventPrefix</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-8" id="section-8">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><p>Create our new evented method.</p>
+  </div>
+  <div class="body"><p><strong>fires</strong> <code>&lt;emitter&gt;#[eventPrefix:]&lt;methodName&gt;:before</code></p>
+
+<p><strong>fires</strong> <code>&lt;emitter&gt;#[eventPrefix:]&lt;methodName&gt;:after</code></p>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+      <span class="nv">evented = </span><span class="nx">object</span><span class="p">[</span><span class="nx">methodName</span><span class="p">]</span> <span class="o">=</span> <span class="nf">-&gt;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-9" id="section-9">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><p>Create our <code>proxy</code> object. This object will be passed by reference
+through our events, allowing its properties to be mutated in memory
+by any listener that receives it.</p>
+  </div>
+  <div class="body">
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+        <span class="nv">proxy =</span>
+          <span class="nv">type: </span><span class="s">&#39;evented_proxy&#39;</span>
+          <span class="nv">abort: </span><span class="kc">false</span>
+          <span class="nv">result: </span><span class="kc">undefined</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-10" id="section-10">&#182;</a>
+</div>
+<p>Fire the <code>before</code> event, passing along our <code>proxy</code> object.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+        <span class="nx">fireEvent</span><span class="p">.</span><span class="nx">call</span> <span class="nx">emitter</span><span class="p">,</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">eventPrefix</span><span class="si">}#{</span><span class="nx">methodName</span><span class="si">}</span><span class="s">:before&quot;</span><span class="p">,</span>
+          <span class="nx">arguments</span><span class="p">...,</span> <span class="nx">proxy</span><span class="p">,</span> <span class="nx">emitter</span><span class="p">,</span> <span class="nx">object</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-11" id="section-11">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><p>Allow the implementation to be aborted, passing back whatever the
+current value of <code>proxy.result</code> is at that point.
+This allows the method's implementation to be completely bypassed and
+controlled by any arbitrary event listener.
+This can result in unexpected behavior if used ambiguously.
+Code carefully.</p>
+  </div>
+  <div class="body">
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+        <span class="k">return</span> <span class="nx">proxy</span><span class="p">.</span><span class="nx">result</span> <span class="k">if</span> <span class="nx">proxy</span><span class="p">.</span><span class="nx">abort</span> <span class="o">is</span> <span class="kc">true</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-12" id="section-12">&#182;</a>
+</div>
+<p>Invoke the original method in the scope of the original <code>object</code>,
+assigning its return value to <code>proxy.result</code>.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+        <span class="nv">proxy.result = </span><span class="nx">original</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">object</span><span class="p">,</span> <span class="nx">arguments</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-13" id="section-13">&#182;</a>
+</div>
+<p>Fire the <code>after</code> event, again passing along our <code>proxy</code> object.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+        <span class="nx">fireEvent</span><span class="p">.</span><span class="nx">call</span> <span class="nx">emitter</span><span class="p">,</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">eventPrefix</span><span class="si">}#{</span><span class="nx">methodName</span><span class="si">}</span><span class="s">:after&quot;</span><span class="p">,</span>
+          <span class="nx">arguments</span><span class="p">...,</span> <span class="nx">proxy</span><span class="p">,</span> <span class="nx">emitter</span><span class="p">,</span> <span class="nx">object</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-14" id="section-14">&#182;</a>
+</div>
+<p>Finally, return the result.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+        <span class="k">return</span> <span class="nx">proxy</span><span class="p">.</span><span class="nx">result</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-15" id="section-15">&#182;</a>
+</div>
+<p>Mark the new method as evented</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nv">evented.evented = </span><span class="kc">true</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-16" id="section-16">&#182;</a>
+</div>
+<p>And cache the original method</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nv">evented.original = </span><span class="nx">original</span>
+
+  <span class="p">),</span> <span class="nv">singleton: </span><span class="kc">true</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>
