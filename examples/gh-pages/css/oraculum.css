@@ -1,0 +1,108 @@
+body {
+  /* Needed for affix */
+  position: relative;
+}
+
+/* Generic overrides */
+.btn img {
+  width: 1.3em;
+  height: 1.3em;
+}
+.btn.btn-lg img {
+  width: 20px;
+  height: 20px;
+}
+.panel .panel-heading img {
+  width: 20px;
+  height: 20px;
+}
+.thumbnail.pull-left {
+  margin-right: 1em;
+}
+.thumbnail.pull-right {
+  margin-left: 1em;
+}
+iframe {
+  vertical-align: middle;
+}
+.panel-collapse > pre {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+.html-view > h1,
+.html-view > h2,
+.html-view > h3,
+.html-view > h4 {
+  margin: 0;
+  padding-top: 20px;
+}
+.html-view > hr {
+  margin-top: 5px;
+}
+
+/* GitHub is slow... */
+#github-is-slow {
+  top: 50%;
+  left: 50%;
+  position: fixed;
+  margin-top: -160px;
+  margin-left: -160px;
+}
+
+#github-is-slow img {
+  border: 5px solid #fff;
+  background: #fff;
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, .3);
+}
+
+/* Give our tabs some breathing room */
+#navbar {
+  margin: 0 0 2em;
+}
+
+/* Sidebar styles */
+.sidebar-view .nav {
+  padding-top: 1em;
+  margin-bottom: 1em;
+}
+.sidebar-view .nav a {
+  color: #666;
+  padding: inherit 0.7em;
+  font-weight: bold;
+  border-left: 2px solid transparent;
+  text-decoration: none;
+  -webkit-transition: border-color 300ms linear;
+  -moz-transition: border-color 300ms linear;
+  -ms-transition: border-color 300ms linear;
+  -o-transition: border-color 300ms linear;
+  transition: border-color 300ms linear;
+}
+.sidebar-view .pagination {
+  margin: auto;
+}
+
+.sidebar-view.affix {
+  top: 0;
+  width: inherit;
+  padding-right: 2em;
+}
+.sidebar-view.affix .nav li.active a {
+  color: #398439;
+  border-color: #449d44;
+}
+
+/* Emulate my editor. Because reasons. */
+code.hljs {
+  position: relative;
+  overflow-x: hidden;
+}
+code.hljs:before {
+  top: 0px;
+  left: 650px;
+  height: 100%;
+  content: ' ';
+  display: block;
+  position: absolute;
+  border-left: 1px solid rgb(102, 102, 102);
+}
