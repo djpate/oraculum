@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>text.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../../../../doc-style.css" />
+  <script src="../../../../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../../../../", thisFile = "src/plugins/tabular/views/cells/text.coffee", defaultSidebar = true;
+  </script>
+  <script src="../../../../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+      <div class="heading h1">
+        <a href="#text.cell">Text.Cell</a>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>text.coffee</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="nx">define</span> <span class="p">[</span>
+  <span class="s">&#39;oraculum&#39;</span>
+  <span class="s">&#39;oraculum/mixins/listener&#39;</span>
+  <span class="s">&#39;oraculum/mixins/disposable&#39;</span>
+  <span class="s">&#39;oraculum/views/mixins/static-classes&#39;</span>
+  <span class="s">&#39;oraculum/views/mixins/html-templating&#39;</span>
+  <span class="s">&#39;oraculum/views/mixins/dom-property-binding&#39;</span>
+  <span class="s">&#39;oraculum/plugins/tabular/views/mixins/cell&#39;</span>
+<span class="p">],</span> <span class="nf">(Oraculum) -&gt;</span>
+  <span class="s">&#39;use strict&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="text.cell">
+  <h1>
+    <a href="#text.cell" name="text.cell" class="pilcrow">&#182;</a>
+    Text.Cell
+  </h1>
+</div>
+
+
+<p>Like all other concrete implementations in Oraculum, this class exists as a
+convenience/example. Please feel free to override or simply not use this
+definition.</p>
+  </div>
+  <div class="body">
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+  <span class="nx">Oraculum</span><span class="p">.</span><span class="nx">extend</span> <span class="s">&#39;View&#39;</span><span class="p">,</span> <span class="s">&#39;Text.Cell&#39;</span><span class="p">,</span> <span class="p">{</span>
+
+    <span class="nv">mixinOptions:</span>
+      <span class="nv">staticClasses: </span><span class="p">[</span><span class="s">&#39;text-cell-view&#39;</span><span class="p">]</span>
+      <span class="nv">listen:</span>
+        <span class="s">&#39;change:attribute column&#39;</span><span class="o">:</span> <span class="s">&#39;render&#39;</span>
+        <span class="s">&#39;change:display_attribute column&#39;</span><span class="o">:</span> <span class="s">&#39;render&#39;</span>
+      <span class="nv">template: </span><span class="nf">-&gt;</span>
+        <span class="nv">attribute = </span><span class="nx">@column</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;display_attribute&#39;</span>
+        <span class="nx">attribute</span> <span class="o">?=</span> <span class="nx">@column</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;attribute&#39;</span>
+        <span class="k">return</span> <span class="s">&quot;&lt;span data-prop=&#39;model&#39; data-prop-attr=&#39;</span><span class="si">#{</span><span class="nx">attribute</span><span class="si">}</span><span class="s">&#39;/&gt;&quot;</span>
+
+  <span class="p">},</span> <span class="nv">mixins: </span><span class="p">[</span>
+    <span class="s">&#39;Cell.ViewMixin&#39;</span>
+    <span class="s">&#39;Listener.Mixin&#39;</span>
+    <span class="s">&#39;Disposable.Mixin&#39;</span>
+    <span class="s">&#39;StaticClasses.ViewMixin&#39;</span>
+    <span class="s">&#39;HTMLTemplating.ViewMixin&#39;</span>
+    <span class="s">&#39;DOMPropertyBinding.ViewMixin&#39;</span>
+  <span class="p">]</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

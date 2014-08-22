@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>checkbox.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../../../../doc-style.css" />
+  <script src="../../../../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../../../../", thisFile = "src/plugins/tabular/views/cells/checkbox.coffee", defaultSidebar = true;
+  </script>
+  <script src="../../../../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+      <div class="heading h1">
+        <a href="#checkbox.cell">Checkbox.Cell</a>
+      </div>
+      <div class="heading h2">
+        <a href="#constructed">Constructed</a>
+      </div>
+      <div class="heading h2">
+        <a href="#reset%20model%20listener">Reset Model Listener</a>
+      </div>
+      <div class="heading h2">
+        <a href="#update%20checkbox">Update Checkbox</a>
+      </div>
+      <div class="heading h2">
+        <a href="#update%20model">Update Model</a>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>checkbox.coffee</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="nx">define</span> <span class="p">[</span>
+  <span class="s">&#39;oraculum&#39;</span>
+  <span class="s">&#39;oraculum/mixins/listener&#39;</span>
+  <span class="s">&#39;oraculum/mixins/disposable&#39;</span>
+  <span class="s">&#39;oraculum/mixins/evented-method&#39;</span>
+  <span class="s">&#39;oraculum/views/mixins/static-classes&#39;</span>
+  <span class="s">&#39;oraculum/views/mixins/html-templating&#39;</span>
+  <span class="s">&#39;oraculum/plugins/tabular/views/mixins/cell&#39;</span>
+<span class="p">],</span> <span class="nf">(Oraculum) -&gt;</span>
+  <span class="s">&#39;use strict&#39;</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="checkbox.cell">
+  <h1>
+    <a href="#checkbox.cell" name="checkbox.cell" class="pilcrow">&#182;</a>
+    Checkbox.Cell
+  </h1>
+</div>
+
+
+<p>This cell provides a simple checkbox for representing the boolean state
+of an attribute on a model. It supports two-way binding to the model.</p>
+  </div>
+  <div class="body"><p>Like all other concrete implementations in Oraculum, this class exists as a
+convenience/example. Please feel free to override or simply not use this
+definition.</p>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+  <span class="nx">Oraculum</span><span class="p">.</span><span class="nx">extend</span> <span class="s">&#39;View&#39;</span><span class="p">,</span> <span class="s">&#39;Checkbox.Cell&#39;</span><span class="p">,</span> <span class="p">{</span>
+
+    <span class="nv">events:</span>
+      <span class="s">&#39;change input&#39;</span><span class="o">:</span> <span class="s">&#39;_updateModel&#39;</span>
+
+    <span class="nv">mixinOptions:</span>
+      <span class="nv">staticClasses: </span><span class="p">[</span><span class="s">&#39;checkbox-cell-view&#39;</span><span class="p">]</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-3" id="section-3">&#182;</a>
+</div>
+<p>We use the <code>EventedMethod.Mixin</code> to event the <code>render</code> method so
+that we can update the state of the checkbox as soon as it's available.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nv">eventedMethods:</span>
+        <span class="nv">render: </span><span class="p">{}</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-4" id="section-4">&#182;</a>
+</div>
+<p>We listen to the 'render:after' by providing the following configuration
+syntax provided by the <code>Listener.Mixin</code>.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nv">listen:</span>
+        <span class="s">&#39;render:after this&#39;</span><span class="o">:</span> <span class="s">&#39;_updateCheckbox&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-5" id="section-5">&#182;</a>
+</div>
+<p>We provide a simple html template for a checkbox that will be rendered
+thanks to the <code>HTMLTemplating.ViewMixin</code>.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nv">template: </span><span class="s">&#39;&#39;&#39;</span>
+<span class="s">        &lt;input type=&quot;checkbox&quot; /&gt;</span>
+<span class="s">      &#39;&#39;&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="constructed">
+  <h2>
+    <a href="#constructed" name="constructed" class="pilcrow">&#182;</a>
+    Constructed
+  </h2>
+</div>
+
+
+<p>Since our column could possibly change the attribute of the model this
+cell is rendering, we abstract our model binding logic into a separate
+method. This allows us to repeat our model binding logic without code
+duplication.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">constructed: </span><span class="nf">-&gt;</span>
+      <span class="nx">@listenTo</span> <span class="nx">@column</span><span class="p">,</span> <span class="s">&#39;change:attribute&#39;</span><span class="p">,</span> <span class="nx">@_resetModelListener</span>
+      <span class="nx">@_resetModelListener</span><span class="p">()</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="reset%20model%20listener">
+  <h2>
+    <a href="#reset%20model%20listener" name="reset%20model%20listener" class="pilcrow">&#182;</a>
+    Reset Model Listener
+  </h2>
+</div>
+
+
+<p>This is the abstraction of our model binding that allows us to change
+the attribute we're rendering without losing our binding behavior.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">_resetModelListener: </span><span class="nf">-&gt;</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-8" id="section-8">&#182;</a>
+</div>
+<p>If there was a previous attribute we were binding to, remove the binding</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="k">if</span> <span class="nv">previous = </span><span class="nx">@column</span><span class="p">.</span><span class="nx">previous</span> <span class="s">&#39;attribute&#39;</span>
+        <span class="nx">@stopListening</span> <span class="nx">@model</span><span class="p">,</span> <span class="s">&quot;change:</span><span class="si">#{</span><span class="nx">previous</span><span class="si">}</span><span class="s">&quot;</span><span class="p">,</span> <span class="nx">@_updateCheckbox</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-9" id="section-9">&#182;</a>
+</div>
+<p>Then bind to the new attribute</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nv">current = </span><span class="nx">@column</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;attribute&#39;</span>
+      <span class="nx">@listenTo</span> <span class="nx">@model</span><span class="p">,</span> <span class="s">&quot;change:</span><span class="si">#{</span><span class="nx">current</span><span class="si">}</span><span class="s">&quot;</span><span class="p">,</span> <span class="nx">@_updateCheckbox</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-10" id="section-10">&#182;</a>
+</div>
+<p>And update our view to reflect the change</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nx">@_updateCheckbox</span><span class="p">()</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="update%20checkbox">
+  <h2>
+    <a href="#update%20checkbox" name="update%20checkbox" class="pilcrow">&#182;</a>
+    Update Checkbox
+  </h2>
+</div>
+
+
+<p>This simply updates the 'checked' attibute of our checkbox input.
+It implements the design principal that is a common mantra in Backbone:</p>
+
+<blockquote>
+  <p>Render once, update often.
+  - @egeste</p>
+</blockquote>
+
+<p>If the value this node is bound to changes, make sure the node gets
+updated to reflect that. No need to re-render the whole view.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">_updateCheckbox: </span><span class="nf">-&gt;</span>
+      <span class="nv">attribute = </span><span class="nx">@column</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;attribute&#39;</span>
+      <span class="nv">checked = </span><span class="nb">Boolean</span> <span class="nx">@model</span><span class="p">.</span><span class="nx">get</span> <span class="nx">attribute</span>
+      <span class="nx">@$</span><span class="p">(</span><span class="s">&#39;input&#39;</span><span class="p">).</span><span class="nx">prop</span> <span class="s">&#39;checked&#39;</span><span class="p">,</span> <span class="nx">checked</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="update%20model">
+  <h2>
+    <a href="#update%20model" name="update%20model" class="pilcrow">&#182;</a>
+    Update Model
+  </h2>
+</div>
+
+
+<p>And of course, this is the same as <code>_updateCheckbox</code> in reverse.
+If the value of the node this model is bound to changes, update the model
+to reflect the change.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">_updateModel: </span><span class="nf">-&gt;</span>
+      <span class="nv">checked = </span><span class="nx">@$</span><span class="p">(</span><span class="s">&#39;input&#39;</span><span class="p">).</span><span class="o">is</span> <span class="s">&#39;:checked&#39;</span>
+      <span class="nv">attribute = </span><span class="nx">@column</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;attribute&#39;</span>
+      <span class="nx">@model</span><span class="p">.</span><span class="nx">set</span> <span class="nx">attribute</span><span class="p">,</span> <span class="nx">checked</span>
+
+  <span class="p">},</span> <span class="nv">mixins: </span><span class="p">[</span>
+    <span class="s">&#39;Listener.Mixin&#39;</span>
+    <span class="s">&#39;Disposable.Mixin&#39;</span>
+    <span class="s">&#39;EventedMethod.Mixin&#39;</span>
+    <span class="s">&#39;Cell.ViewMixin&#39;</span>
+    <span class="s">&#39;StaticClasses.ViewMixin&#39;</span>
+    <span class="s">&#39;HTMLTemplating.ViewMixin&#39;</span>
+  <span class="p">]</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

@@ -300,10 +300,6 @@ doesn't make sense.</p>
 <span class="s">        CallbackProvider.Mixin::provideCallback requires callback</span>
 <span class="s">      &#39;&#39;&#39;</span> <span class="k">unless</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span> <span class="nx">callback</span>
 
-      <span class="nx">console</span><span class="o">?</span><span class="p">.</span><span class="nx">warn</span><span class="o">?</span> <span class="s">&quot;&quot;&quot;</span>
-<span class="s">        CallbackProvider.Mixin: Overriding </span><span class="si">#{</span><span class="nx">name</span><span class="si">}</span><span class="s"> callback</span>
-<span class="s">      &quot;&quot;&quot;</span> <span class="k">if</span> <span class="nx">handlers</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span><span class="o">?</span>
-
       <span class="nx">handlers</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="nx">callback</span><span class="p">,</span> <span class="nx">instance</span><span class="p">}</span>
       <span class="k">return</span> <span class="c1"># void 0</span>
 

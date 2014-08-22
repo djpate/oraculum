@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>sortable-cell.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../../../../doc-style.css" />
+  <script src="../../../../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../../../../", thisFile = "src/plugins/tabular/views/mixins/sortable-cell.coffee", defaultSidebar = true;
+  </script>
+  <script src="../../../../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+      <div class="heading h1">
+        <a href="#sortable.cellmixin">Sortable.CellMixin</a>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+          <h1>sortable-cell.coffee</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1">&#182;</a>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><span class="nx">define</span> <span class="p">[</span>
+  <span class="s">&#39;oraculum&#39;</span>
+  <span class="s">&#39;oraculum/views/mixins/static-classes&#39;</span>
+<span class="p">],</span> <span class="nf">(Oraculum) -&gt;</span>
+  <span class="s">&#39;use strict&#39;</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="sortable.cellmixin">
+  <h1>
+    <a href="#sortable.cellmixin" name="sortable.cellmixin" class="pilcrow">&#182;</a>
+    Sortable.CellMixin
+  </h1>
+</div>
+
+
+<p>This mixin enhances the behavior of Cell.ViewMixin to provide sortable css
+class states on a cell based on its columns sort state.</p>
+  </div>
+  <div class="body">
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+  <span class="nx">Oraculum</span><span class="p">.</span><span class="nx">defineMixin</span> <span class="s">&#39;Sortable.CellMixin&#39;</span><span class="p">,</span> <span class="p">{</span>
+
+    <span class="nv">mixinOptions:</span>
+      <span class="nv">staticClasses: </span><span class="p">[</span><span class="s">&#39;sortable-cell-mixin&#39;</span><span class="p">]</span>
+
+    <span class="nv">mixinitialize: </span><span class="nf">-&gt;</span>
+      <span class="vi">@column = </span><span class="nx">@mixinOptions</span><span class="p">.</span><span class="nx">cell</span><span class="p">.</span><span class="nx">column</span>
+      <span class="nx">@listenTo</span> <span class="nx">@column</span><span class="p">,</span> <span class="s">&#39;change:sortable&#39;</span><span class="p">,</span> <span class="nx">@_updateSortableClass</span>
+      <span class="nx">@listenTo</span> <span class="nx">@column</span><span class="p">,</span> <span class="s">&#39;change:sortDirection&#39;</span><span class="p">,</span> <span class="nx">@_updateDirectionClass</span>
+      <span class="nx">@_updateSortableClass</span><span class="p">()</span>
+      <span class="nx">@_updateDirectionClass</span><span class="p">()</span>
+
+    <span class="nv">_updateSortableClass: </span><span class="nf">-&gt;</span>
+      <span class="nv">sortable = </span><span class="nb">Boolean</span> <span class="nx">@column</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;sortable&#39;</span>
+      <span class="nx">@$el</span><span class="p">.</span><span class="nx">toggleClass</span> <span class="s">&#39;sortable&#39;</span><span class="p">,</span> <span class="nx">sortable</span>
+
+    <span class="nv">_updateDirectionClass: </span><span class="nf">-&gt;</span>
+      <span class="nv">direction = </span><span class="nx">@column</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;sortDirection&#39;</span>
+      <span class="nx">@$el</span><span class="p">.</span><span class="nx">toggleClass</span> <span class="s">&#39;sorted&#39;</span><span class="p">,</span> <span class="nb">Boolean</span> <span class="nx">direction</span>
+      <span class="nx">@$el</span><span class="p">.</span><span class="nx">toggleClass</span> <span class="s">&#39;ascending&#39;</span><span class="p">,</span> <span class="nx">direction</span> <span class="o">is</span> <span class="o">-</span><span class="mi">1</span>
+      <span class="nx">@$el</span><span class="p">.</span><span class="nx">toggleClass</span> <span class="s">&#39;descending&#39;</span><span class="p">,</span> <span class="nx">direction</span> <span class="o">is</span> <span class="mi">1</span>
+
+  <span class="p">},</span> <span class="nv">mixins: </span><span class="p">[</span><span class="s">&#39;StaticClasses.ViewMixin&#39;</span><span class="p">]</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

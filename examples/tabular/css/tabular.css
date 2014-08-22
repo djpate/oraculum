@@ -1,0 +1,27 @@
+body {
+  /* Needed for affix */
+  position: relative;
+}
+
+/* Generic overrides */
+.btn img {
+  width: 1.3em;
+  height: 1.3em;
+}
+.btn.btn-lg img {
+  width: 20px;
+  height: 20px;
+}
+.panel .panel-heading img {
+  width: 20px;
+  height: 20px;
+}
+.thumbnail.pull-left {
+  margin-right: 1em;
+}
+.thumbnail.pull-right {
+  margin-left: 1em;
+}
+iframe {
+  vertical-align: middle;
+}

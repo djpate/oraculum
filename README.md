@@ -11,7 +11,7 @@ Readme
         \/           \/     \/                       \/
 ```
 
-[Documentation](http://hackers.lookout.com/oraculum/README.md.html)
+[Documentation](http://hackers.lookout.com/oraculum)
 
 [![Bower version](https://badge.fury.io/bo/Oraculum.svg)](http://badge.fury.io/bo/Oraculum)
 [![Build Status](https://travis-ci.org/lookout/oraculum.svg)](https://travis-ci.org/lookout/oraculum)
