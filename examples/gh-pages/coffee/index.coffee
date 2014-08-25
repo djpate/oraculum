@@ -1,16 +1,17 @@
 define [
-  'cs!app'
-  'cs!app/libs'
-  'cs!app/application/routes'
-  'cs!app/application/layout'
+  'oraculum'
+  'oraculum/libs'
   'oraculum/application/index'
-], (Dox) ->
+
+  'cs!application/routes'
+  'cs!application/layout'
+], (Oraculum) ->
   'use strict'
 
-  Dox.get 'Application',
-    layout: 'Dox.Layout'
-    routes: Dox.get 'routes'
+  Oraculum.get 'Application',
+    layout: 'Oraculum.Layout'
+    routes: Oraculum.get 'routes'
     pushState: false
 
-  $ = Dox.get 'jQuery'
+  $ = Oraculum.get 'jQuery'
   $('#github-is-slow').remove()

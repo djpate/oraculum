@@ -1,9 +1,9 @@
 define [
-  'cs!app'
-  'cs!app/libs'
+  'oraculum'
+  'cs!libs'
   'text!md/advanced-techniques.md'
   'text!md/factory-aop.md'
   'text!md/behavior-interfaces.md'
-], (Dox, stub, args...) ->
+], (Oraculum, stub, args...) ->
 
-  return Dox.get('concatTemplate') args...
+  return Oraculum.get('concatTemplate') args...

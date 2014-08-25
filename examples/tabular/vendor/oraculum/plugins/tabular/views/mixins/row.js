@@ -11,7 +11,7 @@
         staticClasses: ['row-mixin']
       },
       initModelView: function(column) {
-        var model, modelView, view, viewOptions, _ref;
+        var model, modelView, viewOptions, _ref;
         _ref = this.mixinOptions.list, modelView = _ref.modelView, viewOptions = _ref.viewOptions;
         modelView = column.get('modelView') || modelView;
         if (!modelView) {
@@ -26,11 +26,10 @@
           column: column
         }, viewOptions);
         viewOptions = _.extend({}, viewOptions, column.get('viewOptions'));
-        view = this.createView({
+        return this.createView({
           view: modelView,
           viewOptions: viewOptions
         });
-        return view;
       }
     }, {
       mixins: ['List.ViewMixin', 'StaticClasses.ViewMixin']

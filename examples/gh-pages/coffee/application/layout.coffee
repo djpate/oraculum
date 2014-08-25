@@ -1,17 +1,19 @@
 define [
-  'cs!app'
-  'cs!app/libs'
-  'cs!app/views/mixins/scroll-spy'
+  'oraculum'
+  'oraculum/libs'
   'oraculum/mixins/pub-sub'
   'oraculum/mixins/listener'
   'oraculum/views/mixins/layout'
+
+  'cs!views/mixins/scroll-spy'
+
   'bootstrap'
-], (Dox) ->
+], (Oraculum) ->
   'use strict'
 
-  $ = Dox.get 'jQuery'
+  $ = Oraculum.get 'jQuery'
 
-  Dox.extend 'View', 'Dox.Layout', {
+  Oraculum.extend 'View', 'Oraculum.Layout', {
     el: document.body
 
     events:

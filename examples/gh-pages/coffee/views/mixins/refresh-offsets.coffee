@@ -1,10 +1,13 @@
 define [
-  'cs!app'
+  'oraculum'
+  'oraculum/libs'
   'oraculum/mixins/pub-sub'
   'oraculum/mixins/evented'
   'oraculum/mixins/evented-method'
-], (Dox) ->
+], (Oraculum) ->
   'use strict'
+
+  _ = Oraculum.get 'underscore'
 
   # This mixin should be mixed into any view whose representation in the DOM
   # can affect the calculated offsets of any other node in the DOM.
@@ -13,7 +16,7 @@ define [
   # implementation relies on DOM sizing calculations that it should
   # recalculate.
 
-  Dox.defineMixin 'RefreshOffsets.ViewMixin', {
+  Oraculum.defineMixin 'RefreshOffsets.ViewMixin', {
     mixinOptions:
       eventedMethods:
         render: {}

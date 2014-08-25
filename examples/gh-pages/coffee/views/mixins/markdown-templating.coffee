@@ -1,11 +1,10 @@
 define [
-  'cs!app'
-  'cs!app/libs'
+  'oraculum'
   'oraculum/views/mixins/templating-interface'
-], (Dox) ->
+], (Oraculum) ->
   'use strict'
 
-  Dox.defineMixin 'MarkdownTemplating.ViewMixin', {
+  Oraculum.defineMixin 'MarkdownTemplating.ViewMixin', {
 
     render: ->
       marked = @__factory().get 'marked'

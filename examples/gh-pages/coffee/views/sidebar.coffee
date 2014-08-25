@@ -1,6 +1,5 @@
 define [
-  'cs!app'
-  'cs!app/libs'
+  'oraculum'
 
   'oraculum/mixins/pub-sub'
   'oraculum/mixins/listener'
@@ -13,15 +12,16 @@ define [
   'oraculum/views/mixins/html-templating'
   'oraculum/views/mixins/remove-disposed'
 
-  'cs!app/views/mixins/affix'
-  'cs!app/views/mixins/scroll-spy'
-], (Dox) ->
+  'cs!libs'
+  'cs!views/mixins/affix'
+  'cs!views/mixins/scroll-spy'
+], (Oraculum) ->
   'use strict'
 
-  $ = Dox.get 'jQuery'
-  marked = Dox.get 'marked'
+  $ = Oraculum.get 'jQuery'
+  marked = Oraculum.get 'marked'
 
-  Dox.extend 'View', 'SidebarItem.View', {
+  Oraculum.extend 'View', 'SidebarItem.View', {
     tagName: 'li'
 
     mixinOptions:
@@ -37,7 +37,7 @@ define [
     'HTMLTemplating.ViewMixin'
   ]
 
-  Dox.extend 'View', 'Sidebar.View', {
+  Oraculum.extend 'View', 'Sidebar.View', {
 
     events:
       'click [href="#top"]': '_scrollTop'

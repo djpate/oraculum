@@ -1,19 +1,26 @@
 define [
-  'cs!app'
-  'cs!app/libs'
+  'oraculum'
+  'oraculum/libs'
   'oraculum/mixins/pub-sub'
   'oraculum/mixins/evented'
   'oraculum/mixins/evented-method'
   'bootstrap'
-], (Dox) ->
+], (Oraculum) ->
   'use strict'
 
-  _ = Dox.get 'underscore'
+  $ = Oraculum.get 'jQuery'
+  _ = Oraculum.get 'underscore'
+
+  # Patch a "bug" in bootstrap.
+  refresh = $.fn.scrollspy.Constructor.prototype.refresh.toString()
+  replace = '''$('[id="' + href.replace(/^#/, '') + '"]')'''
+  newRefresh = refresh.replace '$(href)', replace
+  eval "$.fn.scrollspy.Constructor.prototype.refresh = #{newRefresh}"
 
   # This mixin should be mixed into the view that represents the element of the
   # scrolling viewport that contains the content with the relevant IDs
   # In most cases, this will be a Layout.
-  Dox.defineMixin 'ScrollspyViewport.ViewMixin', {
+  Oraculum.defineMixin 'ScrollspyViewport.ViewMixin', {
     mixinOptions:
       scrollspy:
         selector: null
@@ -39,7 +46,7 @@ define [
 
   # This mixin should be mixed into the view that will contain the
   # `.nav > li > a` elements that the scrollspy plugin will manipulate.
-  Dox.defineMixin 'ScrollspyTarget.ViewMixin', {
+  Oraculum.defineMixin 'ScrollspyTarget.ViewMixin', {
     mixinOptions:
       eventedMethods:
         render: {}

@@ -1,19 +1,18 @@
 define [
-  'cs!app'
-  'cs!app/libs'
-
-  'cs!app/models/pages'
-  'cs!app/views/html'
-  'cs!app/views/navbar'
-  'cs!app/views/sidebar'
-
+  'oraculum'
+  'oraculum/libs'
   'oraculum/application/controller'
-], (Dox) ->
+
+  'cs!models/pages'
+  'cs!views/html'
+  'cs!views/navbar'
+  'cs!views/sidebar'
+], (Oraculum) ->
   'use strict'
 
-  _ = Dox.get 'underscore'
+  _ = Oraculum.get 'underscore'
 
-  Dox.extend 'Controller', 'Index.Controller', {
+  Oraculum.extend 'Controller', 'Index.Controller', {
 
     index: ({page, pages, section}) ->
       pages.invoke 'unset', 'active'
@@ -29,7 +28,7 @@ define [
         region: 'info'
         template: page.get 'template'
       return unless section
-      selector = "[id=\"#{page.id}/#{section}\"]"
+      selector = "[id='#{page.id}/#{section}']"
       _.defer => @publishEvent '!scrollTo', selector, 500
 
   }, inheritMixins: true

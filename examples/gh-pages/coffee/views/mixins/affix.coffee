@@ -1,16 +1,16 @@
 define [
-  'cs!app'
-  'cs!app/libs'
+  'oraculum'
+  'oraculum/libs'
   'oraculum/mixins/pub-sub'
   'oraculum/mixins/evented'
   'oraculum/mixins/evented-method'
   'bootstrap'
-], (Dox) ->
+], (Oraculum) ->
   'use strict'
 
-  _ = Dox.get 'underscore'
+  _ = Oraculum.get 'underscore'
 
-  Dox.defineMixin 'Affix.ViewMixin', {
+  Oraculum.defineMixin 'Affix.ViewMixin', {
 
     mixinOptions:
       eventedMethods:

@@ -1,27 +1,29 @@
 requirejs.config({
-  baseUrl: './',
+  baseUrl: 'examples/gh-pages/coffee',
 
   paths: {
+
     // RequireJS plugins
-    'cs': 'examples/gh-pages/vendor/require-cs-0.4.4',
-    'text': 'examples/gh-pages/vendor/require-text-2.0.12',
-    'coffee-script': 'examples/gh-pages/vendor/coffee-script-1.7.1.min',
+    'cs': '../../../bower_components/require-cs/cs',
+    'text': '../../../bower_components/requirejs-text/text',
+    'coffee-script': '../../../bower_components/coffee-script/extras/coffee-script',
 
     // FactoryJS
-    'Factory': 'examples/gh-pages/vendor/Factory-1.0.0.min',
-    'BackboneFactory': 'examples/gh-pages/vendor/BackboneFactory-1.0.0.min',
+    'Factory': '../../../bower_components/factoryjs/dist/Factory.min',
+    'BackboneFactory': '../../../bower_components/factoryjs/dist/BackboneFactory.min',
 
     // Util libs
-    'jquery': 'examples/gh-pages/vendor/jquery-2.1.1.min',
-    'backbone': 'examples/gh-pages/vendor/backbone-1.1.2.min',
-    'underscore': 'examples/gh-pages/vendor/underscore-1.6.0.min',
+    'jquery': '../../../bower_components/jquery/dist/jquery.min',
+    'backbone': '../../../bower_components/backbone/backbone',
+    'underscore': '../../../bower_components/underscore/underscore',
 
-    // Bootstrap stuff
-    'bootstrap': 'examples/gh-pages/vendor/bootstrap/js/bootstrap',
+    // Directories
+    'md': '../markdown',
+    'bootstrap': '../../../bower_components/bootstrap-css/js/bootstrap',
 
     // Markdown
-    'marked': 'examples/gh-pages/vendor/marked-0.3.2.min',
-    'highlight': 'examples/gh-pages/vendor/highlight/highlight.pack'
+    'marked': '../../../bower_components/marked/lib/marked',
+    'highlight': '../../../bower_components/highlightjs/highlight.pack'
   },
 
   shim: {
@@ -40,19 +42,13 @@ requirejs.config({
 
   packages: [{
     name: 'oraculum',
-    location: 'dist'
-  }, {
-    name: 'app',
-    location: 'examples/gh-pages/coffee'
-  }, {
-    name: 'md',
-    location: 'examples/gh-pages/markdown'
+    location: '../../../dist'
   }],
 
   callback: function () {
     require(['jquery'], function($) {
       $(function() {
-        require(['cs!app/index'])
+        require(['cs!index']);
       });
     });
   }

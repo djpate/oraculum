@@ -1,18 +1,17 @@
 define [
-  'cs!app'
-
-  'cs!app/views/mixins/refresh-offsets'
-
+  'oraculum'
   'oraculum/mixins/disposable'
   'oraculum/views/mixins/auto-render'
   'oraculum/views/mixins/region-attach'
   'oraculum/views/mixins/static-classes'
   'oraculum/views/mixins/html-templating'
   'oraculum/views/mixins/remove-disposed'
-], (Dox) ->
+
+  'cs!views/mixins/refresh-offsets'
+], (Oraculum) ->
   'use strict'
 
-  Dox.extend 'View', 'HTML.View', {
+  Oraculum.extend 'View', 'HTML.View', {
 
     mixinOptions:
       staticClasses: ['html-view']

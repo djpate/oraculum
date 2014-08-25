@@ -1,14 +1,14 @@
 define [
-  'cs!app'
+  'oraculum'
   'oraculum/views/mixins/list'
   'oraculum/views/mixins/auto-render'
   'oraculum/views/mixins/region-attach'
   'oraculum/views/mixins/static-classes'
   'oraculum/views/mixins/html-templating'
-], (Dox) ->
+], (Oraculum) ->
   'use strict'
 
-  Dox.extend 'View', 'NavItem.View', {
+  Oraculum.extend 'View', 'NavItem.View', {
     tagName: 'li'
 
     initialize: ->
@@ -33,7 +33,7 @@ define [
     'HTMLTemplating.ViewMixin'
   ]
 
-  Dox.extend 'View', 'Navbar.View', {
+  Oraculum.extend 'View', 'Navbar.View', {
     tagName: 'ul'
     className: 'nav nav-tabs'
 

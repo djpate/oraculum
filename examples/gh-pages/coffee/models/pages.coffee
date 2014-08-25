@@ -1,23 +1,23 @@
 define [
-  'cs!app'
+  'oraculum'
 
-  'cs!app/templates/home'
-  'cs!app/templates/overview'
-  'cs!app/templates/getting-started'
-  'cs!app/templates/advanced-techniques'
-  'cs!app/templates/examples'
+  'cs!templates/home'
+  'cs!templates/overview'
+  'cs!templates/getting-started'
+  'cs!templates/advanced-techniques'
+  'cs!templates/examples'
 
-  'cs!app/libs'
-  'cs!app/controllers/index'
-], (Dox, home, overview, gettingStarted, advancedTechniques, examples) ->
+  'cs!libs'
+  'cs!controllers/index'
+], (Oraculum, home, overview, gettingStarted, advancedTechniques, examples) ->
   'use strict'
 
   # Dynamically generate our sections based on our markdown
-  $ = Dox.get 'jQuery'
-  _ = Dox.get 'underscore'
-  marked = Dox.get 'marked'
+  $ = Oraculum.get 'jQuery'
+  _ = Oraculum.get 'underscore'
+  marked = Oraculum.get 'marked'
 
-  Dox.extend 'Model', 'Pages.Model', {
+  Oraculum.extend 'Model', 'Pages.Model', {
 
     parse: (resp) ->
       $template = $('<div/>').append marked resp.markdown
@@ -34,12 +34,12 @@ define [
   }
 
   # Create a singleton collection that will store all our available pages
-  Dox.extend 'Collection', 'Pages.Collection', {
+  Oraculum.extend 'Collection', 'Pages.Collection', {
     model: 'Pages.Model'
   }, singleton: true
 
   # Hydrate the singleton with our available pages
-  Dox.get 'Pages.Collection', [
+  Oraculum.get 'Pages.Collection', [
     {
       id: 'home'
       name: 'Home'
