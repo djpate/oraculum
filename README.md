@@ -13,7 +13,7 @@ Readme
 
 [Documentation](http://hackers.lookout.com/oraculum)
 
-[![Bower version](https://badge.fury.io/bo/Oraculum.svg)](http://badge.fury.io/bo/Oraculum)
+[![Bower version](https://badge.fury.io/bo/oraculum.svg)](http://badge.fury.io/bo/oraculum)
 [![Build Status](https://travis-ci.org/lookout/oraculum.svg)](https://travis-ci.org/lookout/oraculum)
 [![Coverage Status](https://img.shields.io/coveralls/lookout/oraculum.svg)](https://coveralls.io/r/lookout/oraculum?branch=master)
 [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/)
