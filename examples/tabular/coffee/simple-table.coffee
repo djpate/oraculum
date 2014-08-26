@@ -47,19 +47,15 @@ define [
     mixins: ['AutoFetch.ModelMixin']
   }
 
-  Oraculum.extend 'Text.Cell', 'GithubEvent.Cell', {
-    tagName: 'td'
-  }, {
-    inheritMixins: true
-    mixins: ['VariableWidth.CellMixin']
-  }
-
   # A "row" is our X axis. It is an array of `column`s
   Oraculum.extend 'View', 'GithubEvent.Row', {
     tagName: 'tr'
 
     mixinOptions:
-      list: modelView: 'GithubEvent.Cell'
+      list:
+        modelView: 'Text.Cell'
+        viewOptions:
+          tagName: 'td'
 
   }, mixins: ['Row.ViewMixin']
 
@@ -86,4 +82,3 @@ define [
     columns: columns
     container: '#simple-table'
     collection: 'GithubEvent.Collection'
-    # collection: Oraculum.get 'GithubEvent.Collection', JSON.parse data
