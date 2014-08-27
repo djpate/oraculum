@@ -18,11 +18,14 @@
         return this._updateHiddenState();
       },
       _updateHiddenState: function() {
-        var hidden;
+        var display, hidden;
         if ((hidden = this.column.get('hidden')) == null) {
           return;
         }
-        return this.$el.toggle(!hidden);
+        display = Boolean(hidden) ? 'none' : '';
+        return this.$el.css({
+          display: display
+        });
       }
     }, {
       mixins: ['StaticClasses.ViewMixin']

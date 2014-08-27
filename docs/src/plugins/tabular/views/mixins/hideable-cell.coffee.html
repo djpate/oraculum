@@ -82,7 +82,8 @@ behavior on a cell based on its columns hidden state.</p>
 
     <span class="nv">_updateHiddenState: </span><span class="nf">-&gt;</span>
       <span class="k">return</span> <span class="k">unless</span> <span class="p">(</span><span class="nv">hidden = </span><span class="nx">@column</span><span class="p">.</span><span class="nx">get</span> <span class="s">&#39;hidden&#39;</span><span class="p">)</span><span class="o">?</span>
-      <span class="nx">@$el</span><span class="p">.</span><span class="nx">toggle</span> <span class="o">not</span> <span class="nx">hidden</span>
+      <span class="nv">display = </span><span class="k">if</span> <span class="nb">Boolean</span> <span class="nx">hidden</span> <span class="k">then</span> <span class="s">&#39;none&#39;</span> <span class="k">else</span> <span class="s">&#39;&#39;</span>
+      <span class="nx">@$el</span><span class="p">.</span><span class="nx">css</span> <span class="p">{</span><span class="nx">display</span><span class="p">}</span>
 
   <span class="p">},</span> <span class="nv">mixins: </span><span class="p">[</span><span class="s">&#39;StaticClasses.ViewMixin&#39;</span><span class="p">]</span>
 </pre></div>
