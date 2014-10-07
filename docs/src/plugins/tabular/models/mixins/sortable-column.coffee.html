@@ -134,10 +134,12 @@ can mixin one of the provided sorting mixins:</p>
 <span class="s">      &#39;&#39;&#39;</span> <span class="k">unless</span> <span class="nx">sortableColumn</span><span class="p">.</span><span class="nx">collection</span>
 
     <span class="nv">mixinitialize: </span><span class="nf">-&gt;</span>
-      <span class="nv">sortCollection = </span><span class="nx">@mixinOptions</span><span class="p">.</span><span class="nx">sortableColumn</span><span class="p">.</span><span class="nx">collection</span>
-      <span class="vi">@_sortableCollection = </span><span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isString</span> <span class="nx">sortCollection</span>
-      <span class="k">then</span> <span class="nx">@__factory</span><span class="p">().</span><span class="nx">get</span> <span class="nx">sortCollection</span>
-      <span class="k">else</span> <span class="nx">sortCollection</span>
+      <span class="vi">@_sortableCollection = </span><span class="nx">@mixinOptions</span><span class="p">.</span><span class="nx">sortableColumn</span><span class="p">.</span><span class="nx">collection</span>
+      <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isString</span> <span class="nx">@_sortableCollection</span>
+        <span class="vi">@_sortableCollection = </span><span class="nx">@__factory</span><span class="p">().</span><span class="nx">get</span> <span class="nx">@_sortableCollection</span>
+      <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span> <span class="nx">@_sortableCollection</span>
+        <span class="vi">@_sortableCollection = </span><span class="nx">@_sortableCollection</span><span class="p">.</span><span class="nx">call</span> <span class="k">this</span>
+
       <span class="nx">@listenTo</span> <span class="nx">@_sortableCollection</span><span class="p">,</span> <span class="s">&#39;sort&#39;</span><span class="p">,</span> <span class="nx">@_collectionSorted</span>
       <span class="nx">@_collectionSorted</span><span class="p">()</span>
 

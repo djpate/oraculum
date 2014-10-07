@@ -27,7 +27,10 @@
       mixinitialize: function() {
         this.columns = this.mixinOptions.table.columns;
         if (_.isString(this.columns)) {
-          return this.columns = this.__factory().get(this.columns);
+          this.columns = this.__factory().get(this.columns);
+        }
+        if (_.isArray(this.columns)) {
+          return this.columns = this.__factory().get('Collection', this.columns);
         }
       }
     }, {

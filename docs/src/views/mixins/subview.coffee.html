@@ -90,12 +90,45 @@
     <span class="nv">mixinitialize: </span><span class="nf">-&gt;</span>
       <span class="vi">@_subviews = </span><span class="p">[]</span>
       <span class="vi">@_subviewsByName = </span><span class="p">{}</span>
-      <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;render:after&#39;</span><span class="p">,</span> <span class="nx">@createSubviews</span><span class="p">,</span> <span class="k">this</span>
+      <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;render:after&#39;</span><span class="p">,</span> <span class="o">=&gt;</span> <span class="nx">@createSubviews</span><span class="p">()</span>
       <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;dispose&#39;</span><span class="p">,</span> <span class="o">=&gt;</span> <span class="nx">_</span><span class="p">.</span><span class="nx">each</span> <span class="nx">@_subviews</span><span class="p">,</span> <span class="nf">(view) -&gt;</span> <span class="nx">view</span><span class="p">.</span><span class="nx">dispose</span><span class="o">?</span><span class="p">()</span>
 
     <span class="nv">createSubviews: </span><span class="nf">-&gt;</span>
-      <span class="nx">_</span><span class="p">.</span><span class="nx">each</span> <span class="nx">@mixinOptions</span><span class="p">.</span><span class="nx">subviews</span><span class="p">,</span> <span class="nf">(spec, name) =&gt;</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-3" id="section-3">&#182;</a>
+</div>
+<p>Create a mutable local clone of the subviews</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nv">mutableSubviews = </span><span class="nx">_</span><span class="p">.</span><span class="nx">clone</span> <span class="nx">@mixinOptions</span><span class="p">.</span><span class="nx">subviews</span>
+      <span class="nx">@_createDOMSubviews</span> <span class="nx">mutableSubviews</span>
+      <span class="nx">@_createDOMContainerSubviews</span> <span class="nx">mutableSubviews</span>
+      <span class="nx">_</span><span class="p">.</span><span class="nx">each</span> <span class="nx">mutableSubviews</span><span class="p">,</span> <span class="nf">(spec, name) =&gt;</span>
         <span class="nx">@createSubview</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">spec</span>
+
+    <span class="nv">_createDOMSubviews: </span><span class="nf">(mutableSubviews) -&gt;</span>
+      <span class="nv">subviewElements = </span><span class="nx">@$</span><span class="p">(</span><span class="s">&#39;[data-subview]&#39;</span><span class="p">)</span>
+      <span class="nx">_</span><span class="p">.</span><span class="nx">each</span> <span class="nx">subviewElements</span><span class="p">,</span> <span class="nf">(el) =&gt;</span>
+        <span class="nv">name = </span><span class="nx">el</span><span class="p">.</span><span class="nx">getAttribute</span> <span class="s">&#39;data-subview&#39;</span>
+        <span class="nv">spec = </span><span class="nx">mutableSubviews</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span>
+        <span class="nv">viewOptions = </span><span class="nx">_</span><span class="p">.</span><span class="nx">extend</span> <span class="p">{},</span> <span class="nx">spec</span><span class="p">.</span><span class="nx">viewOptions</span><span class="p">,</span> <span class="p">{</span> <span class="nx">el</span> <span class="p">}</span>
+        <span class="nx">@createSubview</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span> <span class="p">{},</span> <span class="nx">spec</span><span class="p">,</span> <span class="p">{</span> <span class="nx">viewOptions</span> <span class="p">}</span>
+        <span class="k">delete</span> <span class="nx">mutableSubviews</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span>
+
+    <span class="nv">_createDOMContainerSubviews: </span><span class="nf">(mutableSubviews) -&gt;</span>
+      <span class="nv">subviewElements = </span><span class="nx">@$</span><span class="p">(</span><span class="s">&#39;[data-subview-container]&#39;</span><span class="p">)</span>
+      <span class="nx">_</span><span class="p">.</span><span class="nx">each</span> <span class="nx">subviewElements</span><span class="p">,</span> <span class="nf">(container) =&gt;</span>
+        <span class="nv">name = </span><span class="nx">container</span><span class="p">.</span><span class="nx">getAttribute</span> <span class="s">&#39;data-subview-container&#39;</span>
+        <span class="nv">spec = </span><span class="nx">mutableSubviews</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span>
+        <span class="nv">viewOptions = </span><span class="nx">_</span><span class="p">.</span><span class="nx">extend</span> <span class="p">{},</span> <span class="nx">spec</span><span class="p">.</span><span class="nx">viewOptions</span><span class="p">,</span> <span class="p">{</span> <span class="nx">container</span> <span class="p">}</span>
+        <span class="nx">@createSubview</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span> <span class="p">{},</span> <span class="nx">spec</span><span class="p">,</span> <span class="p">{</span> <span class="nx">viewOptions</span> <span class="p">}</span>
+        <span class="k">delete</span> <span class="nx">mutableSubviews</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span>
 
     <span class="nv">createSubview: </span><span class="nf">(name, spec) -&gt;</span>
       <span class="k">return</span> <span class="nx">@subview</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">@createView</span> <span class="nx">spec</span>
@@ -108,7 +141,7 @@
       <span class="k">else</span> <span class="k">new</span> <span class="nx">spec</span><span class="p">.</span><span class="nx">view</span> <span class="nx">viewOptions</span>
 
     <span class="nv">subview: </span><span class="nf">(name, view) -&gt;</span>
-      <span class="k">return</span> <span class="nx">@_subviewsByName</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="k">unless</span> <span class="nx">view</span>
+      <span class="k">return</span> <span class="nx">@_resolveSubview</span><span class="p">(</span><span class="nx">name</span><span class="p">).</span><span class="nx">view</span> <span class="k">unless</span> <span class="nx">view</span>
       <span class="nx">@removeSubview</span> <span class="nx">name</span>
       <span class="nx">@_subviews</span><span class="p">.</span><span class="nx">push</span> <span class="nx">view</span>
       <span class="nx">@_subviewsByName</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="nx">view</span>
@@ -116,22 +149,19 @@
       <span class="k">return</span> <span class="nx">view</span>
 
     <span class="nv">removeSubview: </span><span class="nf">(nameOrView) -&gt;</span>
-      <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isString</span> <span class="nx">nameOrView</span>
-        <span class="nv">name = </span><span class="nx">nameOrView</span>
-        <span class="nv">view = </span><span class="nx">@_subviewsByName</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span>
-      <span class="k">else</span>
-        <span class="nv">view = </span><span class="nx">nameOrView</span>
-        <span class="k">for</span> <span class="nx">otherName</span> <span class="k">in</span> <span class="nx">@_subviewsByName</span>
-          <span class="nv">otherView = </span><span class="nx">@_subviewsByName</span><span class="p">[</span><span class="nx">otherName</span><span class="p">]</span>
-          <span class="k">if</span> <span class="nx">view</span> <span class="o">is</span> <span class="nx">otherView</span>
-            <span class="nv">name = </span><span class="nx">otherName</span>
-            <span class="k">break</span>
+      <span class="p">{</span><span class="nx">name</span><span class="p">,</span> <span class="nx">view</span><span class="p">}</span> <span class="o">=</span> <span class="nx">@_resolveSubview</span> <span class="nx">nameOrView</span>
       <span class="k">return</span> <span class="k">unless</span> <span class="nx">name</span> <span class="o">and</span> <span class="nx">view</span>
       <span class="nx">view</span><span class="p">.</span><span class="nx">remove</span><span class="p">()</span>
       <span class="nx">view</span><span class="p">.</span><span class="nx">dispose</span><span class="o">?</span><span class="p">()</span>
       <span class="nv">index = </span><span class="nx">@_subviews</span><span class="p">.</span><span class="nx">indexOf</span> <span class="nx">view</span>
       <span class="nx">@_subviews</span><span class="p">.</span><span class="nx">splice</span> <span class="nx">index</span><span class="p">,</span> <span class="mi">1</span> <span class="k">unless</span> <span class="nx">index</span> <span class="o">is</span> <span class="o">-</span><span class="mi">1</span>
       <span class="k">return</span> <span class="k">delete</span> <span class="nx">@_subviewsByName</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span>
+
+    <span class="nv">_resolveSubview: </span><span class="nf">(name) -&gt;</span>
+      <span class="nv">view = </span><span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isString</span> <span class="nx">name</span> <span class="k">then</span> <span class="nx">@_subviewsByName</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="k">else</span> <span class="nx">name</span>
+      <span class="k">return</span> <span class="p">{</span><span class="nx">name</span><span class="p">,</span> <span class="nx">view</span><span class="p">}</span> <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isString</span> <span class="nx">name</span>
+      <span class="k">for</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">otherView</span> <span class="k">of</span> <span class="nx">@_subviewsByName</span>
+        <span class="k">return</span> <span class="p">{</span><span class="nx">name</span><span class="p">,</span> <span class="nx">view</span><span class="p">}</span> <span class="k">if</span> <span class="nx">view</span> <span class="o">is</span> <span class="nx">otherView</span>
 
   <span class="p">},</span> <span class="nv">mixins: </span><span class="p">[</span>
     <span class="s">&#39;EventedMethod.Mixin&#39;</span>

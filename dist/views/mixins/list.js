@@ -1,7 +1,7 @@
 (function() {
   define(['oraculum', 'oraculum/libs', 'oraculum/mixins/evented', 'oraculum/mixins/evented-method', 'oraculum/views/mixins/subview'], function(Oraculum) {
     'use strict';
-    var initModelView, subviewName, subviewPrefix, toggleView, _;
+    var initModelView, resolveModelView, resolveViewOptions, subviewName, subviewPrefix, toggleView, _;
     _ = Oraculum.get('underscore');
     subviewPrefix = 'modelView:';
     subviewName = function(_arg) {
@@ -9,19 +9,33 @@
       cid = _arg.cid;
       return "" + subviewPrefix + cid;
     };
-    initModelView = function(model) {
-      var modelView, viewOptions, _ref;
-      _ref = this.mixinOptions.list, modelView = _ref.modelView, viewOptions = _ref.viewOptions;
-      if (!modelView) {
-        throw new TypeError('List.ViewMixin: The modelView mixin option must be defined or the\ninitModelView() must be overridden.');
+    resolveModelView = function(model) {
+      return this.mixinOptions.list.modelView;
+    };
+    resolveViewOptions = function(model) {
+      var viewOptions;
+      viewOptions = this.mixinOptions.list.viewOptions;
+      if (_.isFunction(viewOptions)) {
+        viewOptions = viewOptions.call(this, {
+          model: model
+        });
       }
-      viewOptions = _.isFunction(viewOptions) ? viewOptions.call(this, {
-        model: model
-      }) : _.extend({
+      return _.extend({
         model: model
       }, viewOptions);
+    };
+    initModelView = function(model) {
+      var view, viewOptions;
+      view = this.resolveModelView(model);
+      if (!view) {
+        throw new TypeError('List.ViewMixin#initModelView modelView is not defined.\nProvide modelView in mixinOptions or constructor arguments.\nOptionally, you can override resolveModelView or initModelView.');
+      }
+      viewOptions = this.resolveViewOptions(model);
+      if (!viewOptions) {
+        throw new TypeError('List.ViewMixin#initModelView viewOptions is not defined.\nProvide viewOptions in mixinOptions or constructor arguments.\nOptionally, you can override resolveViewOptions or initModelView.');
+      }
       return this.createView({
-        view: modelView,
+        view: view,
         viewOptions: viewOptions
       });
     };
@@ -80,10 +94,16 @@
         }
       },
       mixinitialize: function() {
-        this.visibleModels = [];
         if (this.initModelView == null) {
-          this.initModelView = _.bind(initModelView, this);
+          this.initModelView = initModelView;
         }
+        if (this.resolveModelView == null) {
+          this.resolveModelView = resolveModelView;
+        }
+        if (this.resolveViewOptions == null) {
+          this.resolveViewOptions = resolveViewOptions;
+        }
+        this.visibleModels = [];
         this.listenTo(this.collection, 'add', this.modelAdded);
         this.listenTo(this.collection, 'remove', this.modelRemoved);
         this.listenTo(this.collection, 'reset sort', this.renderAllModels);

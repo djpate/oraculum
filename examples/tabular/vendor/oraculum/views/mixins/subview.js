@@ -17,7 +17,11 @@
       mixinitialize: function() {
         this._subviews = [];
         this._subviewsByName = {};
-        this.on('render:after', this.createSubviews, this);
+        this.on('render:after', (function(_this) {
+          return function() {
+            return _this.createSubviews();
+          };
+        })(this));
         return this.on('dispose', (function(_this) {
           return function() {
             return _.each(_this._subviews, function(view) {
@@ -27,9 +31,49 @@
         })(this));
       },
       createSubviews: function() {
-        return _.each(this.mixinOptions.subviews, (function(_this) {
+        var mutableSubviews;
+        mutableSubviews = _.clone(this.mixinOptions.subviews);
+        this._createDOMSubviews(mutableSubviews);
+        this._createDOMContainerSubviews(mutableSubviews);
+        return _.each(mutableSubviews, (function(_this) {
           return function(spec, name) {
             return _this.createSubview(name, spec);
+          };
+        })(this));
+      },
+      _createDOMSubviews: function(mutableSubviews) {
+        var subviewElements;
+        subviewElements = this.$('[data-subview]');
+        return _.each(subviewElements, (function(_this) {
+          return function(el) {
+            var name, spec, viewOptions;
+            name = el.getAttribute('data-subview');
+            spec = mutableSubviews[name];
+            viewOptions = _.extend({}, spec.viewOptions, {
+              el: el
+            });
+            _this.createSubview(name, _.extend({}, spec, {
+              viewOptions: viewOptions
+            }));
+            return delete mutableSubviews[name];
+          };
+        })(this));
+      },
+      _createDOMContainerSubviews: function(mutableSubviews) {
+        var subviewElements;
+        subviewElements = this.$('[data-subview-container]');
+        return _.each(subviewElements, (function(_this) {
+          return function(container) {
+            var name, spec, viewOptions;
+            name = container.getAttribute('data-subview-container');
+            spec = mutableSubviews[name];
+            viewOptions = _.extend({}, spec.viewOptions, {
+              container: container
+            });
+            _this.createSubview(name, _.extend({}, spec, {
+              viewOptions: viewOptions
+            }));
+            return delete mutableSubviews[name];
           };
         })(this));
       },
@@ -50,7 +94,7 @@
       },
       subview: function(name, view) {
         if (!view) {
-          return this._subviewsByName[name];
+          return this._resolveSubview(name).view;
         }
         this.removeSubview(name);
         this._subviews.push(view);
@@ -59,22 +103,8 @@
         return view;
       },
       removeSubview: function(nameOrView) {
-        var index, name, otherName, otherView, view, _i, _len, _ref;
-        if (_.isString(nameOrView)) {
-          name = nameOrView;
-          view = this._subviewsByName[name];
-        } else {
-          view = nameOrView;
-          _ref = this._subviewsByName;
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            otherName = _ref[_i];
-            otherView = this._subviewsByName[otherName];
-            if (view === otherView) {
-              name = otherName;
-              break;
-            }
-          }
-        }
+        var index, name, view, _ref;
+        _ref = this._resolveSubview(nameOrView), name = _ref.name, view = _ref.view;
         if (!(name && view)) {
           return;
         }
@@ -87,6 +117,26 @@
           this._subviews.splice(index, 1);
         }
         return delete this._subviewsByName[name];
+      },
+      _resolveSubview: function(name) {
+        var otherView, view, _ref;
+        view = _.isString(name) ? this._subviewsByName[name] : name;
+        if (_.isString(name)) {
+          return {
+            name: name,
+            view: view
+          };
+        }
+        _ref = this._subviewsByName;
+        for (name in _ref) {
+          otherView = _ref[name];
+          if (view === otherView) {
+            return {
+              name: name,
+              view: view
+            };
+          }
+        }
       }
     }, {
       mixins: ['EventedMethod.Mixin']

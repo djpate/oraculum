@@ -51,16 +51,30 @@
   <span class="nv">subviewPrefix = </span><span class="s">&#39;modelView:&#39;</span>
   <span class="nv">subviewName = </span><span class="nf">({cid}) -&gt;</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">subviewPrefix</span><span class="si">}#{</span><span class="nx">cid</span><span class="si">}</span><span class="s">&quot;</span>
 
+  <span class="nv">resolveModelView = </span><span class="nf">(model) -&gt;</span>
+    <span class="k">return</span> <span class="nx">@mixinOptions</span><span class="p">.</span><span class="nx">list</span><span class="p">.</span><span class="nx">modelView</span>
+
+  <span class="nv">resolveViewOptions = </span><span class="nf">(model) -&gt;</span>
+    <span class="nv">viewOptions = </span><span class="nx">@mixinOptions</span><span class="p">.</span><span class="nx">list</span><span class="p">.</span><span class="nx">viewOptions</span>
+    <span class="nv">viewOptions = </span><span class="nx">viewOptions</span><span class="p">.</span><span class="nx">call</span> <span class="k">this</span><span class="p">,</span> <span class="p">{</span> <span class="nx">model</span> <span class="p">}</span> <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span> <span class="nx">viewOptions</span>
+    <span class="k">return</span> <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span> <span class="p">{</span> <span class="nx">model</span> <span class="p">},</span> <span class="nx">viewOptions</span>
+
   <span class="nv">initModelView = </span><span class="nf">(model) -&gt;</span>
-    <span class="p">{</span><span class="nx">modelView</span><span class="p">,</span> <span class="nx">viewOptions</span><span class="p">}</span> <span class="o">=</span> <span class="nx">@mixinOptions</span><span class="p">.</span><span class="nx">list</span>
+    <span class="nv">view = </span><span class="nx">@resolveModelView</span> <span class="nx">model</span>
     <span class="k">throw</span> <span class="k">new</span> <span class="nx">TypeError</span> <span class="s">&#39;&#39;&#39;</span>
-<span class="s">      List.ViewMixin: The modelView mixin option must be defined or the</span>
-<span class="s">      initModelView() must be overridden.</span>
-<span class="s">    &#39;&#39;&#39;</span> <span class="k">unless</span> <span class="nx">modelView</span>
-    <span class="nv">viewOptions = </span><span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isFunction</span> <span class="nx">viewOptions</span>
-    <span class="k">then</span> <span class="nx">viewOptions</span><span class="p">.</span><span class="nx">call</span> <span class="k">this</span><span class="p">,</span> <span class="p">{</span><span class="nx">model</span><span class="p">}</span>
-    <span class="k">else</span> <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span> <span class="p">{</span> <span class="nx">model</span> <span class="p">},</span> <span class="nx">viewOptions</span>
-    <span class="k">return</span> <span class="nx">@createView</span> <span class="p">{</span> <span class="nv">view: </span><span class="nx">modelView</span><span class="p">,</span> <span class="nx">viewOptions</span> <span class="p">}</span>
+<span class="s">      List.ViewMixin#initModelView modelView is not defined.</span>
+<span class="s">      Provide modelView in mixinOptions or constructor arguments.</span>
+<span class="s">      Optionally, you can override resolveModelView or initModelView.</span>
+<span class="s">    &#39;&#39;&#39;</span> <span class="k">unless</span> <span class="nx">view</span>
+
+    <span class="nv">viewOptions = </span><span class="nx">@resolveViewOptions</span> <span class="nx">model</span>
+    <span class="k">throw</span> <span class="k">new</span> <span class="nx">TypeError</span> <span class="s">&#39;&#39;&#39;</span>
+<span class="s">      List.ViewMixin#initModelView viewOptions is not defined.</span>
+<span class="s">      Provide viewOptions in mixinOptions or constructor arguments.</span>
+<span class="s">      Optionally, you can override resolveViewOptions or initModelView.</span>
+<span class="s">    &#39;&#39;&#39;</span> <span class="k">unless</span> <span class="nx">viewOptions</span>
+
+    <span class="k">return</span> <span class="nx">@createView</span> <span class="p">{</span> <span class="nx">view</span><span class="p">,</span> <span class="nx">viewOptions</span> <span class="p">}</span>
 
 
 </pre></div>
@@ -127,8 +141,11 @@ viewOptions if it's a function, otherwise extend it as an object.
       <span class="nv">list.viewSelector = </span><span class="nx">viewSelector</span> <span class="k">if</span> <span class="nx">viewSelector</span><span class="o">?</span>
 
     <span class="nv">mixinitialize: </span><span class="nf">-&gt;</span>
+      <span class="nx">@initModelView</span> <span class="o">?=</span> <span class="nx">initModelView</span>
+      <span class="nx">@resolveModelView</span> <span class="o">?=</span> <span class="nx">resolveModelView</span>
+      <span class="nx">@resolveViewOptions</span> <span class="o">?=</span> <span class="nx">resolveViewOptions</span>
+
       <span class="vi">@visibleModels = </span><span class="p">[]</span>
-      <span class="nx">@initModelView</span> <span class="o">?=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">bind</span> <span class="nx">initModelView</span><span class="p">,</span> <span class="k">this</span>
       <span class="nx">@listenTo</span> <span class="nx">@collection</span><span class="p">,</span> <span class="s">&#39;add&#39;</span><span class="p">,</span> <span class="nx">@modelAdded</span>
       <span class="nx">@listenTo</span> <span class="nx">@collection</span><span class="p">,</span> <span class="s">&#39;remove&#39;</span><span class="p">,</span> <span class="nx">@modelRemoved</span>
       <span class="nx">@listenTo</span> <span class="nx">@collection</span><span class="p">,</span> <span class="s">&#39;reset sort&#39;</span><span class="p">,</span> <span class="nx">@renderAllModels</span>

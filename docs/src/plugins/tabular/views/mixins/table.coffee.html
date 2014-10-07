@@ -62,6 +62,7 @@
     <span class="nv">mixinitialize: </span><span class="nf">-&gt;</span>
       <span class="vi">@columns = </span><span class="nx">@mixinOptions</span><span class="p">.</span><span class="nx">table</span><span class="p">.</span><span class="nx">columns</span>
       <span class="vi">@columns = </span><span class="nx">@__factory</span><span class="p">().</span><span class="nx">get</span> <span class="nx">@columns</span> <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isString</span> <span class="nx">@columns</span>
+      <span class="vi">@columns = </span><span class="nx">@__factory</span><span class="p">().</span><span class="nx">get</span> <span class="s">&#39;Collection&#39;</span><span class="p">,</span> <span class="nx">@columns</span> <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isArray</span> <span class="nx">@columns</span>
 
   <span class="p">},</span> <span class="nv">mixins: </span><span class="p">[</span>
     <span class="s">&#39;List.ViewMixin&#39;</span>

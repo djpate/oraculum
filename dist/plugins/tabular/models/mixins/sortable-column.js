@@ -46,9 +46,13 @@
         }
       },
       mixinitialize: function() {
-        var sortCollection;
-        sortCollection = this.mixinOptions.sortableColumn.collection;
-        this._sortableCollection = _.isString(sortCollection) ? this.__factory().get(sortCollection) : sortCollection;
+        this._sortableCollection = this.mixinOptions.sortableColumn.collection;
+        if (_.isString(this._sortableCollection)) {
+          this._sortableCollection = this.__factory().get(this._sortableCollection);
+        }
+        if (_.isFunction(this._sortableCollection)) {
+          this._sortableCollection = this._sortableCollection.call(this);
+        }
         this.listenTo(this._sortableCollection, 'sort', this._collectionSorted);
         return this._collectionSorted();
       },
