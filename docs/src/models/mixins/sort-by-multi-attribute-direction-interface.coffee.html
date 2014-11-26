@@ -98,7 +98,7 @@
       <span class="nx">@sortState</span><span class="p">.</span><span class="nx">remove</span> <span class="nx">model</span>
 
     <span class="nv">unsort: </span><span class="nf">-&gt;</span>
-      <span class="nx">@sortState</span><span class="p">.</span><span class="nx">reset</span><span class="p">()</span>
+      <span class="nx">@sortState</span><span class="p">.</span><span class="nx">reset</span><span class="p">()</span> <span class="k">unless</span> <span class="nx">@sortState</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">()</span>
 
   <span class="p">},</span> <span class="nv">mixins: </span><span class="p">[</span>
     <span class="s">&#39;Evented.Mixin&#39;</span>

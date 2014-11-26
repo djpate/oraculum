@@ -39,8 +39,11 @@
         </td>
         <td class="code highlight"><div class="highlight"><pre><span class="nx">define</span> <span class="p">[</span>
   <span class="s">&#39;oraculum&#39;</span>
+  <span class="s">&#39;oraculum/libs&#39;</span>
 <span class="p">],</span> <span class="nf">(Oraculum) -&gt;</span>
   <span class="s">&#39;use strict&#39;</span>
+
+  <span class="nv">_ = </span><span class="nx">require</span> <span class="s">&#39;underscore&#39;</span>
 
   <span class="nx">Oraculum</span><span class="p">.</span><span class="nx">defineMixin</span> <span class="s">&#39;StaticClasses.ViewMixin&#39;</span><span class="p">,</span>
 
@@ -48,7 +51,17 @@
       <span class="nv">staticClasses: </span><span class="p">[]</span>
 
     <span class="nv">mixinitialize: </span><span class="nf">-&gt;</span>
-      <span class="nx">@$el</span><span class="p">.</span><span class="nx">addClass</span> <span class="nx">@mixinOptions</span><span class="p">.</span><span class="nx">staticClasses</span><span class="p">.</span><span class="nx">join</span> <span class="s">&#39; &#39;</span>
+      <span class="nx">@_addTagClass</span> <span class="nx">@__type</span><span class="p">()</span>
+      <span class="nx">@$el</span><span class="p">.</span><span class="nx">addClass</span> <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isArray</span> <span class="nx">@mixinOptions</span><span class="p">.</span><span class="nx">staticClasses</span>
+      <span class="k">then</span> <span class="nx">@mixinOptions</span><span class="p">.</span><span class="nx">staticClasses</span><span class="p">.</span><span class="nx">join</span> <span class="s">&#39; &#39;</span>
+      <span class="k">else</span> <span class="nx">@mixinOptions</span><span class="p">.</span><span class="nx">staticClasses</span>
+
+    <span class="nv">_addTagClass: </span><span class="nf">(tag) -&gt;</span>
+      <span class="nx">@$el</span><span class="p">.</span><span class="nx">addClass</span> <span class="nx">_</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">tag</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="sr">/[^\w]/</span><span class="p">),</span> <span class="nf">(region) -&gt;</span>
+        <span class="k">return</span> <span class="nx">_</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">region</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/[A-Z]?[a-z]+/g</span><span class="p">),</span> <span class="nf">(value) -&gt;</span>
+          <span class="k">return</span> <span class="nx">value</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">()</span>
+        <span class="p">).</span><span class="nx">join</span> <span class="s">&#39;-&#39;</span>
+      <span class="p">).</span><span class="nx">join</span> <span class="s">&#39;_&#39;</span>
 </pre></div>
         </td>
       </tr>

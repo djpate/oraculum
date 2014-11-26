@@ -63,7 +63,9 @@
         return this.sortState.remove(model);
       },
       unsort: function() {
-        return this.sortState.reset();
+        if (!this.sortState.isEmpty()) {
+          return this.sortState.reset();
+        }
       }
     }, {
       mixins: ['Evented.Mixin']
