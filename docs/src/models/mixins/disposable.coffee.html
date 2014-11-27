@@ -216,7 +216,7 @@ collection contains any models that fail to implement the <code>disposable</code
 interface.</p>
         </td>
         <td class="code highlight"><div class="highlight"><pre>
-        <span class="nx">_</span><span class="p">.</span><span class="nx">invoke</span> <span class="nx">@models</span><span class="p">,</span> <span class="s">&#39;dispose&#39;</span>
+        <span class="nx">_</span><span class="p">.</span><span class="nx">invoke</span> <span class="nx">@models</span><span class="p">.</span><span class="nx">slice</span><span class="p">(),</span> <span class="s">&#39;dispose&#39;</span>
 
   <span class="p">},</span> <span class="nv">mixins: </span><span class="p">[</span>
     <span class="s">&#39;Disposable.Mixin&#39;</span>

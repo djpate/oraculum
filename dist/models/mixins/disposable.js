@@ -55,7 +55,7 @@
             if (!_this.mixinOptions.disposable.disposeModels) {
               return;
             }
-            return _.invoke(_this.models, 'dispose');
+            return _.invoke(_this.models.slice(), 'dispose');
           };
         })(this));
       }
