@@ -8,7 +8,9 @@
         staticClasses: []
       },
       mixinitialize: function() {
-        this._addTagClass(this.__type());
+        if (_.isFunction(this.__type)) {
+          this._addTagClass(this.__type());
+        }
         return this.$el.addClass(_.isArray(this.mixinOptions.staticClasses) ? this.mixinOptions.staticClasses.join(' ') : this.mixinOptions.staticClasses);
       },
       _addTagClass: function(tag) {
