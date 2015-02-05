@@ -23,6 +23,7 @@
         }
       },
       mixinitialize: function() {
+        this.on('render:before', this._unbindElements, this);
         return this.on('render:after', this._bindElements, this);
       },
       _bindElements: function() {
@@ -30,9 +31,9 @@
         $elements = this.$('[data-prop][data-prop-attr]');
         return _.each($elements, (function(_this) {
           return function(element) {
-            var $element, propertySpec, resolvedProperty, tags;
-            $element = $(element);
-            propertySpec = $element.attr('data-prop').split('.');
+            var propertySpec, resolvedProperty, tags;
+            element.cid = _.uniqueId('dom_property_binding_element_');
+            propertySpec = _this.$(element).attr('data-prop').split('.');
             resolvedProperty = _this._resolveProperty(_this, propertySpec);
             if (tags = typeof resolvedProperty.__tags === "function" ? resolvedProperty.__tags() : void 0) {
               if (__indexOf.call(tags, 'Model') >= 0) {
@@ -43,6 +44,25 @@
               }
             }
             return _this._updateBoundElement(element);
+          };
+        })(this));
+      },
+      _unbindElements: function() {
+        var $elements;
+        $elements = this.$('[data-prop][data-prop-attr]');
+        return _.each($elements, (function(_this) {
+          return function(element) {
+            var propertySpec, resolvedProperty, tags;
+            propertySpec = _this.$(element).attr('data-prop').split('.');
+            resolvedProperty = _this._resolveProperty(_this, propertySpec);
+            if (tags = typeof resolvedProperty.__tags === "function" ? resolvedProperty.__tags() : void 0) {
+              if (__indexOf.call(tags, 'Model') >= 0) {
+                _this._unbindFromModel(element, resolvedProperty);
+              }
+              if (__indexOf.call(tags, 'Collection') >= 0) {
+                return _this._unbindFromCollection(element, resolvedProperty);
+              }
+            }
           };
         })(this));
       },
@@ -67,6 +87,34 @@
         return this._resolveProperty(property, attributes, ++index);
       },
       _bindToModel: function(element, model) {
+        var events;
+        if (!(events = this._resolveModelEvents(element))) {
+          return;
+        }
+        return this.listenTo(model, events, this._getElementHandler(element));
+      },
+      _unbindFromModel: function(element, model) {
+        var events;
+        if (!(events = this._resolveModelEvents(element))) {
+          return;
+        }
+        return this.stopListening(model, events, this._getElementHandler(element));
+      },
+      _bindToCollection: function(element, collection) {
+        var events;
+        if (!(events = this._resolveCollectionEvents(element))) {
+          return;
+        }
+        return this.listenTo(collection, events, this._getElementHandler(element));
+      },
+      _unbindFromCollection: function(element, collection) {
+        var events;
+        if (!(events = this._resolveModelEvents(element))) {
+          return;
+        }
+        return this.stopListening(collection, events, this._getElementHandler(element));
+      },
+      _resolveModelEvents: _.memoize((function(element) {
         var $element, attr, events;
         $element = this.validateBindTarget(element);
         attr = $element.attr('data-prop-attr').split('.')[0];
@@ -74,40 +122,37 @@
         if (events == null) {
           events = "change:" + attr;
         }
-        if (events) {
-          return this.listenTo(model, events, this._getElementHandler(element));
-        }
-      },
-      _bindToCollection: function(element, collection) {
+        return events;
+      }), function(_arg) {
+        var cid;
+        cid = _arg.cid;
+        return cid;
+      }),
+      _resolveCollectionEvents: _.memoize((function(element) {
         var $element, events;
         $element = this.validateBindTarget(element);
         events = $element.attr('data-prop-events');
         if (events == null) {
           events = 'add remove reset';
         }
-        if (events) {
-          return this.listenTo(collection, events, this._getElementHandler(element));
-        }
-      },
-      validateBindTarget: function(element) {
-        var $element;
-        $element = this.$(element);
-        if (!$element.length) {
-          throw new Error("" + element + " not found in " + this + " scope");
-        }
-        if (!$element.is('[data-prop][data-prop-attr]')) {
-          throw new Error("" + element + " does not contain necessary data attributes");
-        }
-        return $element;
-      },
-      _getElementHandler: function(element) {
+        return events;
+      }), function(_arg) {
+        var cid;
+        cid = _arg.cid;
+        return cid;
+      }),
+      _getElementHandler: _.memoize((function(element) {
         this.validateBindTarget(element);
         return (function(_this) {
           return function() {
             return _this._updateBoundElement(element);
           };
         })(this);
-      },
+      }), function(_arg) {
+        var cid;
+        cid = _arg.cid;
+        return cid;
+      }),
       _updateBoundElement: function(element) {
         var $element, attrSpec, attribute, method, propertySpec, resolvedAttr, resolvedProperty;
         $element = this.validateBindTarget(element);
@@ -129,6 +174,17 @@
         }
         method = $element.attr('data-prop-method') || 'text';
         return $element[method](attribute);
+      },
+      validateBindTarget: function(element) {
+        var $element;
+        $element = this.$(element);
+        if (!$element.length) {
+          throw new Error("" + element + " not found in " + this + " scope");
+        }
+        if (!$element.is('[data-prop][data-prop-attr]')) {
+          throw new Error("" + element + " does not contain necessary data attributes");
+        }
+        return $element;
       }
     }, {
       mixins: ['Evented.Mixin', 'EventedMethod.Mixin']

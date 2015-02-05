@@ -102,13 +102,26 @@
         this.trigger('subviewCreated', view, this);
         return view;
       },
-      removeSubview: function(nameOrView) {
-        var index, name, view, _ref;
+      removeSubview: function(nameOrView, dispose) {
+        var name, view, _ref;
+        if (dispose == null) {
+          dispose = true;
+        }
         _ref = this._resolveSubview(nameOrView), name = _ref.name, view = _ref.view;
         if (!(name && view)) {
           return;
         }
         view.remove();
+        if (dispose) {
+          return this.disposeSubview(nameOrView);
+        }
+      },
+      disposeSubview: function(nameOrView) {
+        var index, name, view, _ref;
+        _ref = this._resolveSubview(nameOrView), name = _ref.name, view = _ref.view;
+        if (!(name && view)) {
+          return;
+        }
         if (typeof view.dispose === "function") {
           view.dispose();
         }

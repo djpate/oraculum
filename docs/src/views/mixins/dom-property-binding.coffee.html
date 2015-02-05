@@ -34,19 +34,22 @@
         <a href="#resolve%20property">Resolve Property</a>
       </div>
       <div class="heading h2">
-        <a href="#bind%20element%20to%20model">Bind Element to Model</a>
+        <a href="#bind%2Funbind%20element%20to%20model">Bind/Unbind Element to Model</a>
       </div>
       <div class="heading h2">
-        <a href="#bind%20element%20to%20collection">Bind Element to Collection</a>
+        <a href="#bind%2Funbind%20element%20to%20collection">Bind/Unbind Element to Collection</a>
       </div>
       <div class="heading h2">
-        <a href="#validate%20bind%20target">Validate Bind Target</a>
+        <a href="#resolve%20model%2Fcollection%20events">Resolve Model/Collection Events</a>
       </div>
       <div class="heading h2">
         <a href="#bound%20element%20handler">Bound Element Handler</a>
       </div>
       <div class="heading h2">
         <a href="#update%20bound%20element">Update Bound Element</a>
+      </div>
+      <div class="heading h2">
+        <a href="#validate%20bind%20target">Validate Bind Target</a>
       </div>
     </div>
   </div>
@@ -184,18 +187,7 @@ register an event listener for add, remove, reset events on the collection.</p>
         <td class="code highlight"><div class="highlight"><pre>
 
     <span class="nv">mixinitialize: </span><span class="nf">-&gt;</span>
-
-</pre></div>
-        </td>
-      </tr>
-      <tr>
-        <td class="docs">
-<div class="pilwrap">
-  <a class="pilcrow" href="#section-5" id="section-5">&#182;</a>
-</div>
-<p>Invoke our _bindElements method when the view renders</p>
-        </td>
-        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;render:before&#39;</span><span class="p">,</span> <span class="nx">@_unbindElements</span><span class="p">,</span> <span class="k">this</span>
       <span class="nx">@</span><span class="kc">on</span> <span class="s">&#39;render:after&#39;</span><span class="p">,</span> <span class="nx">@_bindElements</span><span class="p">,</span> <span class="k">this</span>
 
 
@@ -220,13 +212,36 @@ add an event listener to its target property.</p>
     <span class="nv">_bindElements: </span><span class="nf">-&gt;</span>
       <span class="nv">$elements = </span><span class="nx">@$</span> <span class="s">&#39;[data-prop][data-prop-attr]&#39;</span>
       <span class="nx">_</span><span class="p">.</span><span class="nx">each</span> <span class="nx">$elements</span><span class="p">,</span> <span class="nf">(element) =&gt;</span>
-        <span class="nv">$element = </span><span class="nx">$</span> <span class="nx">element</span>
-        <span class="nv">propertySpec = </span><span class="nx">$element</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s">&#39;data-prop&#39;</span><span class="p">).</span><span class="nx">split</span> <span class="s">&#39;.&#39;</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-6" id="section-6">&#182;</a>
+</div>
+<p>Assign a cid to the element so we can memoize it</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+        <span class="nv">element.cid = </span><span class="nx">_</span><span class="p">.</span><span class="nx">uniqueId</span> <span class="s">&#39;dom_property_binding_element_&#39;</span>
+        <span class="nv">propertySpec = </span><span class="nx">@$</span><span class="p">(</span><span class="nx">element</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s">&#39;data-prop&#39;</span><span class="p">).</span><span class="nx">split</span> <span class="s">&#39;.&#39;</span>
         <span class="nv">resolvedProperty = </span><span class="nx">@_resolveProperty</span> <span class="k">this</span><span class="p">,</span> <span class="nx">propertySpec</span>
         <span class="k">if</span> <span class="nv">tags = </span><span class="nx">resolvedProperty</span><span class="p">.</span><span class="nx">__tags</span><span class="o">?</span><span class="p">()</span>
           <span class="nx">@_bindToModel</span> <span class="nx">element</span><span class="p">,</span> <span class="nx">resolvedProperty</span> <span class="k">if</span> <span class="s">&#39;Model&#39;</span> <span class="k">in</span> <span class="nx">tags</span>
           <span class="nx">@_bindToCollection</span> <span class="nx">element</span><span class="p">,</span> <span class="nx">resolvedProperty</span> <span class="k">if</span> <span class="s">&#39;Collection&#39;</span> <span class="k">in</span> <span class="nx">tags</span>
         <span class="nx">@_updateBoundElement</span> <span class="nx">element</span>
+
+    <span class="nv">_unbindElements: </span><span class="nf">-&gt;</span>
+      <span class="nv">$elements = </span><span class="nx">@$</span> <span class="s">&#39;[data-prop][data-prop-attr]&#39;</span>
+      <span class="nx">_</span><span class="p">.</span><span class="nx">each</span> <span class="nx">$elements</span><span class="p">,</span> <span class="nf">(element) =&gt;</span>
+        <span class="nv">propertySpec = </span><span class="nx">@$</span><span class="p">(</span><span class="nx">element</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s">&#39;data-prop&#39;</span><span class="p">).</span><span class="nx">split</span> <span class="s">&#39;.&#39;</span>
+        <span class="nv">resolvedProperty = </span><span class="nx">@_resolveProperty</span> <span class="k">this</span><span class="p">,</span> <span class="nx">propertySpec</span>
+        <span class="k">if</span> <span class="nv">tags = </span><span class="nx">resolvedProperty</span><span class="p">.</span><span class="nx">__tags</span><span class="o">?</span><span class="p">()</span>
+          <span class="k">if</span> <span class="s">&#39;Model&#39;</span> <span class="k">in</span> <span class="nx">tags</span>
+            <span class="nx">@_unbindFromModel</span> <span class="nx">element</span><span class="p">,</span> <span class="nx">resolvedProperty</span>
+          <span class="k">if</span> <span class="s">&#39;Collection&#39;</span> <span class="k">in</span> <span class="nx">tags</span>
+            <span class="nx">@_unbindFromCollection</span> <span class="nx">element</span><span class="p">,</span> <span class="nx">resolvedProperty</span>
 
 
 </pre></div>
@@ -264,10 +279,10 @@ to access via object/array index.</p>
       </tr>
       <tr>
         <td class="docs">
-<div class="pilwrap" id="bind%20element%20to%20model">
+<div class="pilwrap" id="bind%2Funbind%20element%20to%20model">
   <h2>
-    <a href="#bind%20element%20to%20model" name="bind%20element%20to%20model" class="pilcrow">&#182;</a>
-    Bind Element to Model
+    <a href="#bind%2Funbind%20element%20to%20model" name="bind%2Funbind%20element%20to%20model" class="pilcrow">&#182;</a>
+    Bind/Unbind Element to Model
   </h2>
 </div>
 
@@ -277,11 +292,12 @@ to access via object/array index.</p>
         <td class="code highlight"><div class="highlight"><pre>
 
     <span class="nv">_bindToModel: </span><span class="nf">(element, model) -&gt;</span>
-      <span class="nv">$element = </span><span class="nx">@validateBindTarget</span> <span class="nx">element</span>
-      <span class="nv">attr = </span><span class="nx">$element</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s">&#39;data-prop-attr&#39;</span><span class="p">).</span><span class="nx">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-      <span class="nv">events = </span><span class="nx">$element</span><span class="p">.</span><span class="nx">attr</span> <span class="s">&#39;data-prop-events&#39;</span>
-      <span class="nx">events</span> <span class="o">?=</span> <span class="s">&quot;change:</span><span class="si">#{</span><span class="nx">attr</span><span class="si">}</span><span class="s">&quot;</span>
-      <span class="nx">@listenTo</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">events</span><span class="p">,</span> <span class="nx">@_getElementHandler</span> <span class="nx">element</span> <span class="k">if</span> <span class="nx">events</span>
+      <span class="k">return</span> <span class="k">unless</span> <span class="nv">events = </span><span class="nx">@_resolveModelEvents</span> <span class="nx">element</span>
+      <span class="nx">@listenTo</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">events</span><span class="p">,</span> <span class="nx">@_getElementHandler</span> <span class="nx">element</span>
+
+    <span class="nv">_unbindFromModel: </span><span class="nf">(element, model) -&gt;</span>
+      <span class="k">return</span> <span class="k">unless</span> <span class="nv">events = </span><span class="nx">@_resolveModelEvents</span> <span class="nx">element</span>
+      <span class="nx">@stopListening</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">events</span><span class="p">,</span> <span class="nx">@_getElementHandler</span> <span class="nx">element</span>
 
 
 </pre></div>
@@ -289,10 +305,10 @@ to access via object/array index.</p>
       </tr>
       <tr>
         <td class="docs">
-<div class="pilwrap" id="bind%20element%20to%20collection">
+<div class="pilwrap" id="bind%2Funbind%20element%20to%20collection">
   <h2>
-    <a href="#bind%20element%20to%20collection" name="bind%20element%20to%20collection" class="pilcrow">&#182;</a>
-    Bind Element to Collection
+    <a href="#bind%2Funbind%20element%20to%20collection" name="bind%2Funbind%20element%20to%20collection" class="pilcrow">&#182;</a>
+    Bind/Unbind Element to Collection
   </h2>
 </div>
 
@@ -302,10 +318,12 @@ to access via object/array index.</p>
         <td class="code highlight"><div class="highlight"><pre>
 
     <span class="nv">_bindToCollection: </span><span class="nf">(element, collection) -&gt;</span>
-      <span class="nv">$element = </span><span class="nx">@validateBindTarget</span> <span class="nx">element</span>
-      <span class="nv">events = </span><span class="nx">$element</span><span class="p">.</span><span class="nx">attr</span> <span class="s">&#39;data-prop-events&#39;</span>
-      <span class="nx">events</span> <span class="o">?=</span> <span class="s">&#39;add remove reset&#39;</span>
-      <span class="nx">@listenTo</span> <span class="nx">collection</span><span class="p">,</span> <span class="nx">events</span><span class="p">,</span> <span class="nx">@_getElementHandler</span> <span class="nx">element</span> <span class="k">if</span> <span class="nx">events</span>
+      <span class="k">return</span> <span class="k">unless</span> <span class="nv">events = </span><span class="nx">@_resolveCollectionEvents</span> <span class="nx">element</span>
+      <span class="nx">@listenTo</span> <span class="nx">collection</span><span class="p">,</span> <span class="nx">events</span><span class="p">,</span> <span class="nx">@_getElementHandler</span> <span class="nx">element</span>
+
+    <span class="nv">_unbindFromCollection: </span><span class="nf">(element, collection) -&gt;</span>
+      <span class="k">return</span> <span class="k">unless</span> <span class="nv">events = </span><span class="nx">@_resolveModelEvents</span> <span class="nx">element</span>
+      <span class="nx">@stopListening</span> <span class="nx">collection</span><span class="p">,</span> <span class="nx">events</span><span class="p">,</span> <span class="nx">@_getElementHandler</span> <span class="nx">element</span>
 
 
 </pre></div>
@@ -313,51 +331,34 @@ to access via object/array index.</p>
       </tr>
       <tr>
         <td class="docs">
-<div class="pilwrap" id="validate%20bind%20target">
+<div class="pilwrap" id="resolve%20model%2Fcollection%20events">
   <h2>
-    <a href="#validate%20bind%20target" name="validate%20bind%20target" class="pilcrow">&#182;</a>
-    Validate Bind Target
+    <a href="#resolve%20model%2Fcollection%20events" name="resolve%20model%2Fcollection%20events" class="pilcrow">&#182;</a>
+    Resolve Model/Collection Events
   </h2>
 </div>
 
 
-<p>Validate that a given element, wrapped element, or selector is found in
-this view's element and matches our data-attribute convention.
-Return a wrapped element if it does.</p>
+<p>Resolve the target events to add our callback for on a per-element basis.
+It is assumed that the data-prop-events attribute on a bound element will
+not change if present.</p>
         </td>
         <td class="code highlight"><div class="highlight"><pre>
 
-    <span class="nv">validateBindTarget: </span><span class="nf">(element) -&gt;</span>
-      <span class="nv">$element = </span><span class="nx">@$</span> <span class="nx">element</span>
-      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span> <span class="s">&quot;&quot;&quot;</span>
+    <span class="nv">_resolveModelEvents: </span><span class="nx">_</span><span class="p">.</span><span class="nx">memoize</span> <span class="p">(</span><span class="nf">(element) -&gt;</span>
+      <span class="nv">$element = </span><span class="nx">@validateBindTarget</span> <span class="nx">element</span>
+      <span class="nv">attr = </span><span class="nx">$element</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s">&#39;data-prop-attr&#39;</span><span class="p">).</span><span class="nx">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+      <span class="nv">events = </span><span class="nx">$element</span><span class="p">.</span><span class="nx">attr</span> <span class="s">&#39;data-prop-events&#39;</span>
+      <span class="nx">events</span> <span class="o">?=</span> <span class="s">&quot;change:</span><span class="si">#{</span><span class="nx">attr</span><span class="si">}</span><span class="s">&quot;</span>
+      <span class="k">return</span> <span class="nx">events</span>
+    <span class="p">),</span> <span class="nf">({cid}) -&gt;</span> <span class="nx">cid</span>
 
-</pre></div>
-        </td>
-      </tr>
-      <tr>
-        <td class="docs">
-<div class="pilwrap">
-  <a class="pilcrow" href="#section-11" id="section-11">&#182;</a>
-</div>
-<p>{element} not found in #{this} scope</p>
-        </td>
-        <td class="code highlight"><div class="highlight"><pre>
-<span class="s">      &quot;&quot;&quot;</span> <span class="k">unless</span> <span class="nx">$element</span><span class="p">.</span><span class="nx">length</span>
-      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span> <span class="s">&quot;&quot;&quot;</span>
-
-</pre></div>
-        </td>
-      </tr>
-      <tr>
-        <td class="docs">
-<div class="pilwrap">
-  <a class="pilcrow" href="#section-12" id="section-12">&#182;</a>
-</div>
-<p>{element} does not contain necessary data attributes</p>
-        </td>
-        <td class="code highlight"><div class="highlight"><pre>
-<span class="s">      &quot;&quot;&quot;</span> <span class="k">unless</span> <span class="nx">$element</span><span class="p">.</span><span class="o">is</span> <span class="s">&#39;[data-prop][data-prop-attr]&#39;</span>
-      <span class="k">return</span> <span class="nx">$element</span>
+    <span class="nv">_resolveCollectionEvents: </span><span class="nx">_</span><span class="p">.</span><span class="nx">memoize</span> <span class="p">(</span><span class="nf">(element) -&gt;</span>
+      <span class="nv">$element = </span><span class="nx">@validateBindTarget</span> <span class="nx">element</span>
+      <span class="nv">events = </span><span class="nx">$element</span><span class="p">.</span><span class="nx">attr</span> <span class="s">&#39;data-prop-events&#39;</span>
+      <span class="nx">events</span> <span class="o">?=</span> <span class="s">&#39;add remove reset&#39;</span>
+      <span class="k">return</span> <span class="nx">events</span>
+    <span class="p">),</span> <span class="nf">({cid}) -&gt;</span> <span class="nx">cid</span>
 
 
 </pre></div>
@@ -373,14 +374,16 @@ Return a wrapped element if it does.</p>
 </div>
 
 
-<p>Returns a function that invokes @_updateBoundElement with a reference to
-the bound element.</p>
+<p>Returns a memoized function that invokes @_updateBoundElement with
+a reference to the bound element. The return value is memoized based on
+the method signature's input to bind the return value to the element.</p>
         </td>
         <td class="code highlight"><div class="highlight"><pre>
 
-    <span class="nv">_getElementHandler: </span><span class="nf">(element) -&gt;</span>
+    <span class="nv">_getElementHandler: </span><span class="nx">_</span><span class="p">.</span><span class="nx">memoize</span> <span class="p">(</span><span class="nf">(element) -&gt;</span>
       <span class="nx">@validateBindTarget</span> <span class="nx">element</span>
       <span class="k">return</span> <span class="o">=&gt;</span> <span class="nx">@_updateBoundElement</span> <span class="nx">element</span>
+    <span class="p">),</span> <span class="nf">({cid}) -&gt;</span> <span class="nx">cid</span>
 
 
 </pre></div>
@@ -416,6 +419,58 @@ with the value prescribed by the elements data-prop attributes.</p>
       <span class="nx">attribute</span> <span class="o">?=</span> <span class="nx">@mixinOptions</span><span class="p">.</span><span class="nx">domPropertyBinding</span><span class="p">.</span><span class="nx">placeholder</span>
       <span class="nv">method = </span><span class="nx">$element</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s">&#39;data-prop-method&#39;</span><span class="p">)</span> <span class="o">or</span> <span class="s">&#39;text&#39;</span>
       <span class="nx">$element</span><span class="p">[</span><span class="nx">method</span><span class="p">]</span> <span class="nx">attribute</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="validate%20bind%20target">
+  <h2>
+    <a href="#validate%20bind%20target" name="validate%20bind%20target" class="pilcrow">&#182;</a>
+    Validate Bind Target
+  </h2>
+</div>
+
+
+<p>Validate that a given element, wrapped element, or selector is found in
+this view's element and matches our data-attribute convention.
+Return a wrapped element if it does.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+    <span class="nv">validateBindTarget: </span><span class="nf">(element) -&gt;</span>
+      <span class="nv">$element = </span><span class="nx">@$</span> <span class="nx">element</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span> <span class="s">&quot;&quot;&quot;</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-14" id="section-14">&#182;</a>
+</div>
+<p>{element} not found in #{this} scope</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+<span class="s">      &quot;&quot;&quot;</span> <span class="k">unless</span> <span class="nx">$element</span><span class="p">.</span><span class="nx">length</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span> <span class="s">&quot;&quot;&quot;</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-15" id="section-15">&#182;</a>
+</div>
+<p>{element} does not contain necessary data attributes</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+<span class="s">      &quot;&quot;&quot;</span> <span class="k">unless</span> <span class="nx">$element</span><span class="p">.</span><span class="o">is</span> <span class="s">&#39;[data-prop][data-prop-attr]&#39;</span>
+      <span class="k">return</span> <span class="nx">$element</span>
 
   <span class="p">},</span> <span class="nv">mixins: </span><span class="p">[</span>
     <span class="s">&#39;Evented.Mixin&#39;</span>
